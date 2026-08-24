@@ -5,13 +5,14 @@ import type { MaterialAsset } from "../types";
 import { MarkdownPreview } from "./MarkdownPreview";
 
 interface PreviewPaneProps {
+  projectId: string;
   asset?: MaterialAsset;
   expanded: boolean;
   onToggleExpanded: () => void;
   onCollapse: () => void;
 }
 
-export function PreviewPane({ asset, expanded, onToggleExpanded, onCollapse }: PreviewPaneProps) {
+export function PreviewPane({ projectId, asset, expanded, onToggleExpanded, onCollapse }: PreviewPaneProps) {
   const [text, setText] = useState("");
   const [error, setError] = useState("");
 
@@ -31,7 +32,7 @@ export function PreviewPane({ asset, expanded, onToggleExpanded, onCollapse }: P
   async function reveal() {
     if (!asset) return;
     try {
-      await revealMaterial(asset.path);
+      await revealMaterial(projectId, asset.path);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "无法打开 Finder");
     }
@@ -63,7 +64,7 @@ export function PreviewPane({ asset, expanded, onToggleExpanded, onCollapse }: P
         {asset?.mimeType.startsWith("image/") && <img src={asset.url} alt={asset.name} />}
         {asset?.mimeType.startsWith("video/") && <video src={asset.url} controls preload="metadata">你的浏览器无法播放这个视频。</video>}
         {asset?.mimeType.startsWith("text/") && !text && !error && <p className="preview-loading">正在读取文档…</p>}
-        {asset?.mimeType.startsWith("text/") && text && <MarkdownPreview source={text} assetPath={asset.path} />}
+        {asset?.mimeType.startsWith("text/") && text && <MarkdownPreview source={text} projectId={projectId} assetPath={asset.path} />}
         {asset && !asset.mimeType.startsWith("text/") && !asset.mimeType.startsWith("image/") && !asset.mimeType.startsWith("video/") && (
           <div className="preview-empty"><FileQuestion size={32} strokeWidth={1.35} /><p>该文件暂不支持网页预览，请在 Finder 中查看。</p></div>
         )}

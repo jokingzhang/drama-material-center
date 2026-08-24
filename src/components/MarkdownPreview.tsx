@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 
 interface MarkdownPreviewProps {
   source: string;
+  projectId: string;
   assetPath: string;
 }
 
@@ -108,7 +109,7 @@ function decodePathSegment(value: string) {
   }
 }
 
-function resolveMaterialUrl(reference: string | undefined, assetPath: string) {
+function resolveMaterialUrl(reference: string | undefined, projectId: string, assetPath: string) {
   if (!reference || /^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i.test(reference)) return reference;
 
   const [rawPath, suffix = ""] = reference.split(/(?=[?#])/, 2);
@@ -124,7 +125,7 @@ function resolveMaterialUrl(reference: string | undefined, assetPath: string) {
     segments.push(segment);
   }
 
-  return `/api/material-library/file?path=${encodeURIComponent(segments.join("/"))}${suffix}`;
+  return `/api/projects/${encodeURIComponent(projectId)}/file?path=${encodeURIComponent(segments.join("/"))}${suffix}`;
 }
 
 function CopyableCodeBlock({ children }: { children?: ReactNode }) {
@@ -175,7 +176,7 @@ const markdownComponents: Components = {
   },
 };
 
-export function MarkdownPreview({ source, assetPath }: MarkdownPreviewProps) {
+export function MarkdownPreview({ source, projectId, assetPath }: MarkdownPreviewProps) {
   const [previewImage, setPreviewImage] = useState<PreviewImage | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -216,7 +217,7 @@ export function MarkdownPreview({ source, assetPath }: MarkdownPreviewProps) {
     ...markdownComponents,
     a({ children, href, title }) {
       return (
-        <a href={resolveMaterialUrl(href, assetPath)} title={title} target="_blank" rel="noreferrer">
+        <a href={resolveMaterialUrl(href, projectId, assetPath)} title={title} target="_blank" rel="noreferrer">
           {children}
         </a>
       );
@@ -224,7 +225,7 @@ export function MarkdownPreview({ source, assetPath }: MarkdownPreviewProps) {
     img({ alt, src, title }) {
       if (!src) return null;
 
-      const resolvedSrc = resolveMaterialUrl(src, assetPath);
+      const resolvedSrc = resolveMaterialUrl(src, projectId, assetPath);
       if (!resolvedSrc) return null;
 
       const image = { alt: alt || "文档图片", src: resolvedSrc };
@@ -244,7 +245,7 @@ export function MarkdownPreview({ source, assetPath }: MarkdownPreviewProps) {
         </button>
       );
     },
-  }), [assetPath, openImage]);
+  }), [assetPath, openImage, projectId]);
 
   return (
     <>

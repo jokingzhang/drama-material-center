@@ -1,5 +1,21 @@
 export type MaterialKind = "story" | "image" | "video" | "other";
 
+export interface ProjectSummary {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface ProjectsResponse {
+  projects: ProjectSummary[];
+}
+
+export interface CreateProjectInput {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export interface MaterialAsset {
   id: string;
   path: string;
@@ -21,5 +37,4 @@ export interface MaterialDirectory {
 export interface MaterialResponse {
   assets: MaterialAsset[];
   directories: MaterialDirectory[];
-  libraryRoot: string;
 }
