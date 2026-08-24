@@ -1,4 +1,4 @@
-export type MaterialKind = "story" | "image" | "video" | "other";
+export type MaterialKind = "story" | "image" | "video" | "audio" | "other";
 
 export interface ProjectSummary {
   id: string;
@@ -38,4 +38,13 @@ export interface MaterialDirectory {
 export interface MaterialResponse {
   assets: MaterialAsset[];
   directories: MaterialDirectory[];
+}
+
+export interface MaterialTextSearchResult {
+  path: string;
+  snippet: string;
+}
+
+export interface MaterialTextSearchResponse {
+  results: MaterialTextSearchResult[];
 }

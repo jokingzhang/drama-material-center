@@ -1,4 +1,4 @@
-import type { CreateProjectInput, MaterialResponse, ProjectSummary, ProjectsResponse } from "../types";
+import type { CreateProjectInput, MaterialResponse, MaterialTextSearchResponse, ProjectSummary, ProjectsResponse } from "../types";
 
 async function responseError(response: Response, fallback: string) {
   try {
@@ -44,6 +44,15 @@ export async function getMaterials(projectId: string) {
   const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/assets`, { cache: "no-store" });
   if (!response.ok) throw await responseError(response, "无法读取本地素材目录，请确认站点通过 npm run dev 启动。");
   return response.json() as Promise<MaterialResponse>;
+}
+
+export async function searchMaterialText(projectId: string, query: string, signal?: AbortSignal) {
+  const response = await fetch(
+    `/api/projects/${encodeURIComponent(projectId)}/search?q=${encodeURIComponent(query)}`,
+    { cache: "no-store", signal },
+  );
+  if (!response.ok) throw await responseError(response, "无法搜索文档正文。");
+  return response.json() as Promise<MaterialTextSearchResponse>;
 }
 
 export async function revealMaterial(projectId: string, path?: string) {

@@ -1,5 +1,5 @@
 import { createReadStream } from "node:fs";
-import { readdir, stat } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { extname, relative, resolve, sep } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -22,7 +22,17 @@ const contentTypes: Record<string, string> = {
   ".mov": "video/quicktime",
   ".mkv": "video/x-matroska",
   ".webm": "video/webm",
+  ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".m4a": "audio/mp4",
+  ".aac": "audio/aac",
+  ".ogg": "audio/ogg",
+  ".flac": "audio/flac",
 };
+
+const searchableTextExtensions = new Set([".md", ".txt"]);
+const MAX_SEARCHABLE_TEXT_BYTES = 2 * 1024 * 1024;
+const MAX_SEARCH_RESULTS = 200;
 
 interface LibraryEntries {
   files: string[];
@@ -85,10 +95,12 @@ async function walkLibrary(directory: string): Promise<LibraryEntries> {
   }), { files: [], directories: [] });
 }
 
-function kindFor(path: string) {
-  if (path === "剧情" || path.startsWith("剧情/")) return "story";
-  if (path === "图片" || path.startsWith("图片/")) return "image";
-  if (path === "视频" || path.startsWith("视频/")) return "video";
+export function kindFor(path: string) {
+  const mimeType = contentTypes[extname(path).toLowerCase()] ?? "";
+  if (mimeType.startsWith("image/")) return "image";
+  if (mimeType.startsWith("video/")) return "video";
+  if (mimeType.startsWith("audio/")) return "audio";
+  if (mimeType.startsWith("text/")) return "story";
   return "other";
 }
 
@@ -97,9 +109,38 @@ function folderLabel(path: string) {
 }
 
 function projectRoute(pathname: string) {
-  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal)$/);
+  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal|search)$/);
   if (!match) return undefined;
   return { projectId: decodeURIComponent(match[1]), action: match[2] };
+}
+
+function searchSnippet(source: string, matchIndex: number, queryLength: number) {
+  const start = Math.max(0, matchIndex - 58);
+  const end = Math.min(source.length, matchIndex + queryLength + 92);
+  return `${start ? "…" : ""}${source.slice(start, end).replace(/\s+/g, " ").trim()}${end < source.length ? "…" : ""}`;
+}
+
+async function searchTextFiles(libraryRoot: string, query: string) {
+  const normalizedQuery = query.trim().toLocaleLowerCase("zh-CN");
+  if (normalizedQuery.length < 2) return [];
+
+  const entries = await walkLibrary(libraryRoot);
+  const results: Array<{ path: string; snippet: string }> = [];
+
+  for (const filePath of entries.files) {
+    if (results.length >= MAX_SEARCH_RESULTS) break;
+    if (!searchableTextExtensions.has(extname(filePath).toLowerCase())) continue;
+    const fileStat = await stat(filePath);
+    if (fileStat.size > MAX_SEARCHABLE_TEXT_BYTES) continue;
+
+    const source = await readFile(filePath, "utf8");
+    const matchIndex = source.toLocaleLowerCase("zh-CN").indexOf(normalizedQuery);
+    if (matchIndex < 0) continue;
+    const path = relative(libraryRoot, filePath).split(sep).join("/");
+    results.push({ path, snippet: searchSnippet(source, matchIndex, query.length) });
+  }
+
+  return results;
 }
 
 function statusFor(error: ProjectWorkspaceError) {
@@ -190,6 +231,13 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
           };
         });
         sendJson(response, 200, { assets, directories });
+        return;
+      }
+
+      if (request.method === "GET" && route.action === "search") {
+        const libraryRoot = await workspace.resolveMaterialPath(route.projectId);
+        const results = await searchTextFiles(libraryRoot, url.searchParams.get("q") ?? "");
+        sendJson(response, 200, { results });
         return;
       }
 
