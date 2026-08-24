@@ -613,8 +613,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
 .audio-waveform span { font-size: 12px; }
 .audio-preview audio { width: 100%; }
 
-.markdown-reader { --reader-scale: 1; width: min(100%, 1120px); display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 16px 22px; margin: 0 auto; }
-.markdown-reader.outline-open { grid-template-columns: 210px minmax(0, 1fr); }
+.markdown-reader { --reader-scale: 1; width: min(100%, 1120px); min-height: 0; display: grid; grid-template-rows: auto auto; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 16px; margin: 0 auto; }
+.markdown-reader-content { min-width: 0; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 22px; }
+.markdown-reader.outline-open .markdown-reader-content { grid-template-columns: 210px minmax(0, 1fr); }
 .document-toolbar { position: sticky; z-index: 6; top: -20px; grid-column: 1 / -1; min-height: 48px; display: flex; align-items: center; gap: 5px; padding: 6px; background: rgb(248 250 252 / 94%); border: 1px solid #dce3ea; border-radius: 9px; box-shadow: 0 5px 16px rgb(34 55 80 / 7%); backdrop-filter: blur(10px); }
 .document-toolbar > button, .font-scale-control button { min-width: 34px; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 0 8px; color: #526273; font-size: 11px; font-weight: 650; background: #fff; border: 1px solid #dce3ea; border-radius: 6px; cursor: pointer; }
 .document-toolbar > button:hover, .document-toolbar > button[aria-pressed="true"], .font-scale-control button:hover { color: var(--blue); background: #edf5ff; border-color: #a9cdf9; }
@@ -628,10 +629,12 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
 .document-outline strong { padding: 2px 6px 7px; color: #405064; font-size: 12px; }
 .document-outline button { min-height: 30px; padding: 5px 7px; overflow: hidden; color: #5c6b7b; font-size: 11px; line-height: 1.35; text-align: left; text-overflow: ellipsis; white-space: nowrap; background: transparent; border: 0; border-radius: 5px; cursor: pointer; }
 .document-outline button:hover { color: var(--blue); background: #edf5ff; }
+.document-outline button.active { color: #0d56bd; font-weight: 700; background: #e4f0ff; box-shadow: inset 3px 0 #176fe8; }
 .document-outline button.level-2 { padding-left: 14px; }
 .document-outline button.level-3 { padding-left: 24px; font-size: 10px; }
+.markdown-content-scroll { min-width: 0; min-height: 0; }
+.markdown-reader.outline-open .markdown-content-scroll { grid-column: 2; }
 .markdown-preview { max-inline-size: 51.25rem; color: #2f3843; font-size: calc(15px * var(--reader-scale)); line-height: 1.76; }
-.markdown-reader.outline-open .markdown-preview { grid-column: 2; }
 .markdown-preview h1, .markdown-preview h2, .markdown-preview h3 { scroll-margin-top: 70px; }
 .markdown-preview h1 { font-size: calc(25px * var(--reader-scale)); }
 .markdown-preview h2 { font-size: calc(19px * var(--reader-scale)); }
@@ -643,11 +646,25 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
 .markdown-preview th, .markdown-preview td { min-width: 110px; word-break: normal; }
 .markdown-preview th:first-child, .markdown-preview td:first-child { min-width: 90px; }
 
+.preview-expanded .preview-body:has(.markdown-reader) { padding-bottom: 20px; overflow-y: hidden; scrollbar-gutter: auto; }
+.markdown-reader.focus-reader { height: 100%; grid-template-rows: auto minmax(0, 1fr); align-items: stretch; }
+.focus-reader .document-toolbar { position: static; }
+.focus-reader .markdown-reader-content { height: 100%; align-items: stretch; }
+.focus-reader .document-outline { position: static; top: auto; height: 100%; max-height: none; }
+.focus-reader .markdown-content-scroll { height: 100%; padding-right: 12px; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; overscroll-behavior: contain; scroll-behavior: smooth; }
+.document-outline, .markdown-content-scroll { scrollbar-width: thin; scrollbar-color: #b8c6d8 #eef2f6; }
+.document-outline::-webkit-scrollbar, .markdown-content-scroll::-webkit-scrollbar { width: 10px; }
+.document-outline::-webkit-scrollbar-track, .markdown-content-scroll::-webkit-scrollbar-track { background: #eef2f6; }
+.document-outline::-webkit-scrollbar-thumb, .markdown-content-scroll::-webkit-scrollbar-thumb { background: #b8c6d8; border: 2px solid #eef2f6; border-radius: 999px; }
+.document-outline::-webkit-scrollbar-thumb:hover, .markdown-content-scroll::-webkit-scrollbar-thumb:hover { background: #8fa4bd; }
+
 @container (max-width: 860px) {
-  .markdown-reader.outline-open { grid-template-columns: minmax(0, 1fr); }
-  .markdown-reader.outline-open .markdown-preview { grid-column: 1; }
+  .markdown-reader.outline-open .markdown-reader-content { grid-template-columns: minmax(0, 1fr); }
+  .markdown-reader.outline-open .markdown-content-scroll { grid-column: 1; }
   .document-outline { position: static; max-height: 155px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .document-outline strong { grid-column: 1 / -1; }
+  .focus-reader .markdown-reader-content { grid-template-rows: max-content minmax(0, 1fr); }
+  .focus-reader .document-outline { height: auto; max-height: 155px; }
 }
 
 @media (max-width: 1180px) {
@@ -655,4 +672,20 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
   .header-actions { gap: 6px; }
   .header-actions button, .header-actions a { padding-right: 11px; padding-left: 11px; }
   .path-bar { padding-right: 18px; padding-left: 18px; }
+}
+
+@media (max-width: 900px) {
+  .app-shell:has(.library-layout.preview-expanded) { height: 100dvh; min-height: 0; overflow: hidden; }
+  .library-layout.preview-expanded { height: auto; min-width: 0; min-height: 0; flex: 1; display: block; overflow: hidden; }
+  .preview-expanded .preview-pane { height: 100%; min-height: 0; overflow: hidden; }
+  .preview-expanded .preview-body:has(.markdown-reader) { max-height: none; min-height: 0; padding: 12px 12px 16px; overflow: hidden; }
+  .preview-expanded .markdown-reader { width: 100%; }
+}
+
+@media (max-width: 640px) {
+  .preview-expanded .document-toolbar { flex-wrap: wrap; }
+  .preview-expanded .document-toolbar > button,
+  .preview-expanded .font-scale-control { flex: 0 0 auto; white-space: nowrap; }
+  .preview-expanded .document-search { min-width: 140px; }
+  .preview-expanded .font-scale-control { margin-left: auto; }
 }

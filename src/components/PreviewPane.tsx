@@ -121,7 +121,7 @@ export function PreviewPane({
         {asset?.kind === "audio" && <AudioPreview src={asset.url} name={asset.name} />}
         {asset?.mimeType.startsWith("text/") && !text && !error && <p className="preview-loading">正在读取文档…</p>}
         {asset?.mimeType.startsWith("text/") && text && (
-          <MarkdownPreview source={text} projectId={projectId} assetPath={asset.path} onOpenMaterial={onOpenMaterial} />
+          <MarkdownPreview source={text} projectId={projectId} assetPath={asset.path} expanded={expanded} onOpenMaterial={onOpenMaterial} />
         )}
         {asset && asset.kind === "other" && !asset.mimeType.startsWith("text/") && (
           <div className="preview-empty"><FileQuestion size={32} strokeWidth={1.35} /><p>该文件暂不支持网页预览，请在 Finder 中查看。</p></div>

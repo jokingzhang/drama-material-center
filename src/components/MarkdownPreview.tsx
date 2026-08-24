@@ -1,5 +1,5 @@
 import { Check, ChevronDown, ChevronUp, Copy, List, Maximize2, Search, Type, X } from "lucide-react";
-import { Children, isValidElement, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Children, isValidElement, type ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
@@ -9,6 +9,7 @@ interface MarkdownPreviewProps {
   source: string;
   projectId: string;
   assetPath: string;
+  expanded?: boolean;
   onOpenMaterial?: (path: string) => void;
 }
 
@@ -223,17 +224,25 @@ const markdownComponents: Components = {
   },
 };
 
-export function MarkdownPreview({ source, projectId, assetPath, onOpenMaterial }: MarkdownPreviewProps) {
+export function MarkdownPreview({ source, projectId, assetPath, expanded = false, onOpenMaterial }: MarkdownPreviewProps) {
   const [previewImage, setPreviewImage] = useState<PreviewImage | null>(null);
   const [outlineOpen, setOutlineOpen] = useState(true);
   const [fontScale, setFontScale] = useState(1);
   const [documentQuery, setDocumentQuery] = useState("");
   const [matchCount, setMatchCount] = useState(0);
   const [activeMatch, setActiveMatch] = useState(0);
+  const [activeHeadingIndex, setActiveHeadingIndex] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const articleRef = useRef<HTMLElement>(null);
+  const contentScrollRef = useRef<HTMLDivElement>(null);
+  const outlineRef = useRef<HTMLElement>(null);
+  const previousExpandedRef = useRef(expanded);
   const headings = useMemo(() => documentHeadings(source), [source]);
+
+  const renderedHeadings = useCallback(() => (
+    Array.from(articleRef.current?.querySelectorAll<HTMLElement>("h1[id], h2[id], h3[id]") ?? [])
+  ), []);
 
   const openImage = useCallback((image: PreviewImage, trigger: HTMLButtonElement) => {
     triggerRef.current = trigger;
@@ -271,7 +280,74 @@ export function MarkdownPreview({ source, projectId, assetPath, onOpenMaterial }
     setDocumentQuery("");
     setMatchCount(0);
     setActiveMatch(0);
+    setActiveHeadingIndex(0);
   }, [assetPath]);
+
+  useLayoutEffect(() => {
+    if (previousExpandedRef.current === expanded) return;
+    previousExpandedRef.current = expanded;
+    const headingIndex = activeHeadingIndex;
+    const frame = window.requestAnimationFrame(() => {
+      renderedHeadings()[headingIndex]?.scrollIntoView({ block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [expanded, renderedHeadings]);
+
+  useEffect(() => {
+    if (!headings.length) return;
+    const scrollRoot = expanded
+      ? contentScrollRef.current
+      : articleRef.current?.closest<HTMLElement>(".preview-body");
+    if (!scrollRoot) return;
+
+    let frame = 0;
+    const updateActiveHeading = () => {
+      frame = 0;
+      const elements = renderedHeadings();
+      if (!elements.length) return;
+
+      const rootTop = scrollRoot.getBoundingClientRect().top;
+      const activationLine = rootTop + (expanded ? 76 : 86);
+      let nextIndex = 0;
+      elements.forEach((heading, index) => {
+        if (heading.getBoundingClientRect().top <= activationLine) nextIndex = index;
+      });
+      if (scrollRoot.scrollTop + scrollRoot.clientHeight >= scrollRoot.scrollHeight - 2) {
+        nextIndex = elements.length - 1;
+      }
+      setActiveHeadingIndex(nextIndex);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateActiveHeading);
+    };
+
+    scheduleUpdate();
+    scrollRoot.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      scrollRoot.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+    };
+  }, [expanded, headings, renderedHeadings]);
+
+  useEffect(() => {
+    const outline = outlineRef.current;
+    const activeButton = outline?.querySelector<HTMLElement>(`button[data-heading-index="${activeHeadingIndex}"]`);
+    if (!outline || !activeButton) return;
+
+    const visibleTop = outline.scrollTop + 40;
+    const visibleBottom = outline.scrollTop + outline.clientHeight - 10;
+    const buttonTop = activeButton.offsetTop;
+    const buttonBottom = buttonTop + activeButton.offsetHeight;
+    if (buttonTop < visibleTop) outline.scrollTo({ top: Math.max(0, buttonTop - 40), behavior: "smooth" });
+    else if (buttonBottom > visibleBottom) outline.scrollTo({ top: buttonBottom - outline.clientHeight + 10, behavior: "smooth" });
+  }, [activeHeadingIndex]);
+
+  function goToHeading(index: number) {
+    setActiveHeadingIndex(index);
+    renderedHeadings()[index]?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }
 
   useEffect(() => {
     const root = articleRef.current;
@@ -386,7 +462,7 @@ export function MarkdownPreview({ source, projectId, assetPath, onOpenMaterial }
 
   return (
     <>
-      <div className={`markdown-reader${outlineOpen && headings.length ? " outline-open" : ""}`} style={{ "--reader-scale": fontScale } as React.CSSProperties}>
+      <div className={`markdown-reader${outlineOpen && headings.length ? " outline-open" : ""}${expanded ? " focus-reader" : ""}`} style={{ "--reader-scale": fontScale } as React.CSSProperties}>
         <div className="document-toolbar" aria-label="文档阅读工具">
           <button type="button" aria-pressed={outlineOpen} onClick={() => setOutlineOpen((open) => !open)} disabled={!headings.length}>
             <List size={15} />章节
@@ -405,28 +481,40 @@ export function MarkdownPreview({ source, projectId, assetPath, onOpenMaterial }
           </span>
         </div>
 
-        {outlineOpen && headings.length > 0 && (
-          <nav className="document-outline" aria-label="文档章节目录">
-            <strong>章节目录</strong>
-            {headings.map((heading) => (
-              <button
-                type="button"
-                className={`level-${heading.level}`}
-                key={`${heading.id}-${heading.text}`}
-                title={heading.text}
-                onClick={() => document.getElementById(heading.id)?.scrollIntoView({ block: "start", behavior: "smooth" })}
-              >
-                {heading.text}
-              </button>
-            ))}
-          </nav>
-        )}
+        <div className="markdown-reader-content">
+          {outlineOpen && headings.length > 0 && (
+            <nav ref={outlineRef} className="document-outline" aria-label="文档章节目录">
+              <strong>章节目录</strong>
+              {headings.map((heading, index) => (
+                <button
+                  type="button"
+                  className={`level-${heading.level}${index === activeHeadingIndex ? " active" : ""}`}
+                  key={`${heading.id}-${heading.text}-${index}`}
+                  title={heading.text}
+                  data-heading-index={index}
+                  aria-current={index === activeHeadingIndex ? "location" : undefined}
+                  onClick={() => goToHeading(index)}
+                >
+                  {heading.text}
+                </button>
+              ))}
+            </nav>
+          )}
 
-        <article ref={articleRef} className="markdown-preview">
-          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks, remarkImageGalleries]} components={components}>
-            {source}
-          </ReactMarkdown>
-        </article>
+          <div
+            ref={contentScrollRef}
+            className="markdown-content-scroll"
+            role={expanded ? "region" : undefined}
+            aria-label={expanded ? "文档正文（独立滚动）" : undefined}
+            tabIndex={expanded ? 0 : undefined}
+          >
+            <article ref={articleRef} className="markdown-preview">
+              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks, remarkImageGalleries]} components={components}>
+                {source}
+              </ReactMarkdown>
+            </article>
+          </div>
+        </div>
       </div>
 
       {previewImage && createPortal(
