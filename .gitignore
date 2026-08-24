@@ -17,3 +17,6 @@ workspace/*
 .qa/
 .playwright-cli/
 output/
+
+# Local LibTV CLI canvas binding.
+.libtv/

@@ -2,6 +2,7 @@ import { ArrowRight, FolderKanban, ImagePlus, Plus, RefreshCw, X } from "lucide-
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { createProject, getProjects, uploadProjectCover } from "../lib/materials";
 import { projectLibraryPath } from "../lib/routes";
 import type { ProjectSummary } from "../types";
@@ -128,6 +129,7 @@ export function ProjectsPage() {
           <div><strong>AI 短剧素材中心</strong><span>多个项目 · 本地文件 · 不上传云端</span></div>
         </div>
         <div className="header-actions">
+          <ThemeToggle />
           <button className="secondary-button" type="button" disabled={loading} onClick={() => void refresh()}>
             <RefreshCw size={18} className={loading ? "spinning" : ""} />刷新
           </button>

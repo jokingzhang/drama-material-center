@@ -17,6 +17,7 @@ import { EpisodeSummary, type StageFilter } from "../components/EpisodeSummary";
 import { FileList, type AssetDisplay } from "../components/FileList";
 import { PreviewPane } from "../components/PreviewPane";
 import { Sidebar, type WorkspaceMode } from "../components/Sidebar";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { getMaterials, getProjects, revealMaterial, searchMaterialText } from "../lib/materials";
 import { naturalProductionCompare, productionMetaFor, productionStageIndex } from "../lib/production";
 import { projectLibraryPath } from "../lib/routes";
@@ -353,6 +354,7 @@ export function ProjectLibraryPage() {
               {projects.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}
             </select>
           )}
+          <ThemeToggle />
           <Link className="course-link" to="/"><ArrowLeft size={18} />所有项目</Link>
           <button className="primary-button" type="button" onClick={openLibrary}><FolderOpen size={18} />打开素材文件夹</button>
           <button className="secondary-button" type="button" disabled={loading} onClick={() => void refresh()}>
@@ -375,7 +377,18 @@ export function ProjectLibraryPage() {
         </div>
         <div className="layout-presets" aria-label="工作区布局">
           <button type="button" onClick={() => { setPreviewExpanded(false); setPreviewCollapsed(false); setSidebarWidth(320); setBrowserWidth(560); }} title="扩大目录和文件列表"><Columns3 size={15} />整理</button>
-          <button type="button" onClick={() => { setPreviewExpanded(false); setPreviewCollapsed(false); setSidebarWidth(DEFAULT_SIDEBAR_WIDTH); setBrowserWidth(DEFAULT_BROWSER_WIDTH); }}><Columns3 size={15} />均衡</button>
+          <button
+            type="button"
+            title="将目录栏和文件栏同时收窄到左侧"
+            onClick={() => {
+              setPreviewExpanded(false);
+              setPreviewCollapsed(false);
+              setSidebarWidth(MIN_SIDEBAR_WIDTH);
+              setBrowserWidth(MIN_BROWSER_WIDTH);
+            }}
+          >
+            <Columns3 size={15} />收拢
+          </button>
           <button type="button" onClick={() => { setPreviewCollapsed(false); setPreviewExpanded(true); }}><BookOpen size={15} />阅读</button>
         </div>
       </div>
