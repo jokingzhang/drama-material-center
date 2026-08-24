@@ -55,6 +55,18 @@ async function readJson(request: IncomingMessage): Promise<unknown> {
   }
 }
 
+async function readBinary(request: IncomingMessage, maxBytes: number): Promise<Buffer> {
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const chunk of request) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    size += buffer.length;
+    if (size > maxBytes) throw new ProjectWorkspaceError("invalid_cover", "封面图片不能超过 10 MB。");
+    chunks.push(buffer);
+  }
+  return Buffer.concat(chunks);
+}
+
 async function walkLibrary(directory: string): Promise<LibraryEntries> {
   const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(entries
@@ -85,13 +97,13 @@ function folderLabel(path: string) {
 }
 
 function projectRoute(pathname: string) {
-  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|file|reveal)$/);
+  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal)$/);
   if (!match) return undefined;
   return { projectId: decodeURIComponent(match[1]), action: match[2] };
 }
 
 function statusFor(error: ProjectWorkspaceError) {
-  if (error.code === "invalid_project") return 400;
+  if (error.code === "invalid_project" || error.code === "invalid_cover") return 400;
   if (error.code === "project_exists") return 409;
   return 404;
 }
@@ -127,6 +139,26 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
       const route = projectRoute(url.pathname);
       if (!route) {
         sendJson(response, 404, { error: "接口不存在" });
+        return;
+      }
+
+      if (request.method === "GET" && route.action === "cover") {
+        const target = await workspace.resolveProjectCover(route.projectId);
+        response.statusCode = 200;
+        response.setHeader("Content-Type", contentTypes[extname(target).toLowerCase()] ?? "application/octet-stream");
+        response.setHeader("Content-Disposition", "inline");
+        response.setHeader("Cache-Control", "no-store");
+        createReadStream(target).pipe(response);
+        return;
+      }
+
+      if (request.method === "PUT" && route.action === "cover") {
+        const contentType = String(request.headers["content-type"] ?? "").split(";", 1)[0].trim().toLowerCase();
+        const project = await workspace.setProjectCover(route.projectId, {
+          contentType,
+          data: await readBinary(request, 10 * 1024 * 1024),
+        });
+        sendJson(response, 200, { project });
         return;
       }
 

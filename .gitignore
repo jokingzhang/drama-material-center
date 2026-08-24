@@ -15,4 +15,5 @@ workspace/*
 
 # Local browser QA output.
 .qa/
-
+.playwright-cli/
+output/

@@ -25,6 +25,21 @@ export async function createProject(input: CreateProjectInput) {
   return (await response.json() as { project: ProjectSummary }).project;
 }
 
+export async function uploadProjectCover(projectId: string, file: File) {
+  if (!["image/png", "image/jpeg", "image/webp", "image/gif"].includes(file.type)) {
+    throw new Error("封面仅支持 PNG、JPEG、WebP 或 GIF 图片。");
+  }
+  if (file.size > 10 * 1024 * 1024) throw new Error("封面图片不能超过 10 MB。");
+
+  const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/cover`, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+  if (!response.ok) throw await responseError(response, "无法保存项目封面。");
+  return (await response.json() as { project: ProjectSummary }).project;
+}
+
 export async function getMaterials(projectId: string) {
   const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/assets`, { cache: "no-store" });
   if (!response.ok) throw await responseError(response, "无法读取本地素材目录，请确认站点通过 npm run dev 启动。");

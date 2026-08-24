@@ -1,8 +1,8 @@
-import { ArrowRight, FolderKanban, Plus, RefreshCw, X } from "lucide-react";
+import { ArrowRight, FolderKanban, ImagePlus, Plus, RefreshCw, X } from "lucide-react";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
-import { createProject, getProjects } from "../lib/materials";
+import { createProject, getProjects, uploadProjectCover } from "../lib/materials";
 import { projectLibraryPath } from "../lib/routes";
 import type { ProjectSummary } from "../types";
 
@@ -13,9 +13,12 @@ export function ProjectsPage() {
   const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [coverUploading, setCoverUploading] = useState("");
   const [name, setName] = useState("");
   const [id, setId] = useState("");
   const [description, setDescription] = useState("");
+  const [cover, setCover] = useState<File>();
+  const [coverPreview, setCoverPreview] = useState("");
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -33,10 +36,63 @@ export function ProjectsPage() {
     void refresh();
   }, [refresh]);
 
+  useEffect(() => {
+    if (!cover) {
+      setCoverPreview("");
+      return undefined;
+    }
+    const preview = URL.createObjectURL(cover);
+    setCoverPreview(preview);
+    return () => URL.revokeObjectURL(preview);
+  }, [cover]);
+
+  function openCreateDialog() {
+    setName("");
+    setId("");
+    setDescription("");
+    setCover(undefined);
+    setError("");
+    setCreating(true);
+  }
+
   function closeCreateDialog() {
     if (submitting) return;
     setCreating(false);
+    setCover(undefined);
     setError("");
+  }
+
+  async function changeCover(projectId: string, file?: File) {
+    if (!file) return;
+    setCoverUploading(projectId);
+    setError("");
+    try {
+      await uploadProjectCover(projectId, file);
+      await refresh();
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "无法保存项目封面");
+    } finally {
+      setCoverUploading("");
+    }
+  }
+
+  function selectNewProjectCover(file?: File) {
+    if (!file) {
+      setCover(undefined);
+      return;
+    }
+    if (!["image/png", "image/jpeg", "image/webp", "image/gif"].includes(file.type)) {
+      setCover(undefined);
+      setError("封面仅支持 PNG、JPEG、WebP 或 GIF 图片。");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setCover(undefined);
+      setError("封面图片不能超过 10 MB。");
+      return;
+    }
+    setError("");
+    setCover(file);
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -45,6 +101,18 @@ export function ProjectsPage() {
     setError("");
     try {
       const project = await createProject({ id, name, ...(description.trim() ? { description } : {}) });
+      if (cover) {
+        try {
+          await uploadProjectCover(project.id, cover);
+        } catch (reason) {
+          setCreating(false);
+          setSubmitting(false);
+          await refresh();
+          const message = reason instanceof Error ? reason.message : "无法保存项目封面";
+          setError(`项目已经创建，但封面保存失败：${message}`);
+          return;
+        }
+      }
       navigate(projectLibraryPath(project.id));
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "无法创建项目");
@@ -63,7 +131,7 @@ export function ProjectsPage() {
           <button className="secondary-button" type="button" disabled={loading} onClick={() => void refresh()}>
             <RefreshCw size={18} className={loading ? "spinning" : ""} />刷新
           </button>
-          <button className="primary-button" type="button" onClick={() => setCreating(true)}><Plus size={18} />新建项目</button>
+          <button className="primary-button" type="button" onClick={openCreateDialog}><Plus size={18} />新建项目</button>
         </div>
       </header>
 
@@ -77,17 +145,39 @@ export function ProjectsPage() {
         {loading && !projects.length ? (
           <div className="projects-loading"><RefreshCw size={25} className="spinning" />正在读取本地项目…</div>
         ) : projects.length ? (
-          <div className="project-list" aria-label="短剧项目列表">
+          <div className="project-grid" aria-label="短剧项目">
             {projects.map((project) => (
-              <Link className="project-row" key={project.id} to={projectLibraryPath(project.id)}>
-                <span className="project-icon"><FolderKanban size={22} /></span>
-                <span className="project-copy">
-                  <strong>{project.name}</strong>
-                  <small>{project.description || "本地短剧素材项目"}</small>
-                </span>
-                <code>{project.id}</code>
-                <ArrowRight size={20} aria-hidden="true" />
-              </Link>
+              <article className="project-card" key={project.id}>
+                <Link className="project-card-link" to={projectLibraryPath(project.id)} aria-label={`打开项目：${project.name}`}>
+                  <div className="project-cover">
+                    {project.coverUrl ? (
+                      <img src={project.coverUrl} alt={`${project.name}封面`} />
+                    ) : (
+                      <div className="project-cover-placeholder"><FolderKanban size={34} strokeWidth={1.45} /><span>暂未设置项目封面</span></div>
+                    )}
+                  </div>
+                  <div className="project-card-body">
+                    <div className="project-card-title"><h2>{project.name}</h2><code>{project.id}</code></div>
+                    <p>{project.description || "本地短剧素材项目"}</p>
+                    <span className="open-project">打开项目<ArrowRight size={17} aria-hidden="true" /></span>
+                  </div>
+                </Link>
+                <label className={`project-cover-action${coverUploading === project.id ? " uploading" : ""}`}>
+                  {coverUploading === project.id ? <RefreshCw size={15} className="spinning" /> : <ImagePlus size={15} />}
+                  <span>{project.coverUrl ? "更换封面" : "添加封面"}</span>
+                  <input
+                    className="sr-only"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    disabled={Boolean(coverUploading)}
+                    onChange={(event) => {
+                      const file = event.currentTarget.files?.[0];
+                      event.currentTarget.value = "";
+                      void changeCover(project.id, file);
+                    }}
+                  />
+                </label>
+              </article>
             ))}
           </div>
         ) : (
@@ -95,7 +185,7 @@ export function ProjectsPage() {
             <FolderKanban size={38} strokeWidth={1.35} />
             <strong>还没有短剧项目</strong>
             <p>创建第一个项目后，程序会在本地工作区生成标准素材目录。</p>
-            <button className="primary-button" type="button" onClick={() => setCreating(true)}><Plus size={18} />新建项目</button>
+            <button className="primary-button" type="button" onClick={openCreateDialog}><Plus size={18} />新建项目</button>
           </div>
         )}
       </main>
@@ -108,6 +198,23 @@ export function ProjectsPage() {
               <label><span>项目名称</span><input autoFocus required value={name} onChange={(event) => setName(event.target.value)} placeholder="例如：长生喜宴" /></label>
               <label><span>项目标识</span><input required pattern="[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?" value={id} onChange={(event) => setId(event.target.value.toLowerCase())} placeholder="例如：longevity-banquet" /><small>用于网址和文件夹名，只能包含小写字母、数字和连字符。</small></label>
               <label><span>项目说明（可选）</span><textarea rows={3} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="记录当前阶段或项目简介" /></label>
+              <label className="cover-picker">
+                <span>项目封面（可选）</span>
+                <span className={`cover-picker-preview${coverPreview ? " has-image" : ""}`}>
+                  {coverPreview ? <img src={coverPreview} alt="待上传的项目封面预览" /> : <><ImagePlus size={24} /><b>选择一张封面图</b><small>推荐 16:9 横图</small></>}
+                </span>
+                <input
+                  className="sr-only"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  onChange={(event) => {
+                    const file = event.currentTarget.files?.[0];
+                    event.currentTarget.value = "";
+                    selectNewProjectCover(file);
+                  }}
+                />
+                <small>支持 PNG、JPEG、WebP、GIF，最大 10 MB。封面保存在本地项目资源包中。</small>
+              </label>
               {error && <div className="library-error" role="alert">{error}</div>}
               <footer><button className="secondary-button" type="button" disabled={submitting} onClick={closeCreateDialog}>取消</button><button className="primary-button" type="submit" disabled={submitting}>{submitting ? <RefreshCw size={17} className="spinning" /> : <Plus size={17} />}{submitting ? "正在创建" : "创建项目"}</button></footer>
             </form>

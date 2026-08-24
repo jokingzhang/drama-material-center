@@ -4,6 +4,7 @@ export interface ProjectSummary {
   id: string;
   name: string;
   description?: string;
+  coverUrl?: string;
 }
 
 export interface ProjectsResponse {

@@ -27,7 +27,7 @@ export function ProjectLibraryPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedId = searchParams.get("file") ?? undefined;
-  const query = searchParams.get("q") ?? "";
+  const query = searchParams.get("search") ?? "";
   const sortMode: SortMode = searchParams.get("sort") === "name" ? "name" : "updated";
 
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
@@ -217,8 +217,8 @@ export function ProjectLibraryPage() {
             <label className="file-search">
               <Search size={17} aria-hidden="true" />
               <span className="sr-only">搜索当前目录</span>
-              <input value={query} onChange={(event) => updateSearchParam("q", event.target.value, true)} placeholder="搜索当前目录的文件" />
-              {query && <button type="button" aria-label="清空搜索" onClick={() => updateSearchParam("q", undefined, true)}><X size={15} /></button>}
+              <input value={query} onChange={(event) => updateSearchParam("search", event.target.value, true)} placeholder="搜索当前目录的文件" />
+              {query && <button type="button" aria-label="清空搜索" onClick={() => updateSearchParam("search", undefined, true)}><X size={15} /></button>}
             </label>
             <label className="sort-control">
               <span>排序</span>

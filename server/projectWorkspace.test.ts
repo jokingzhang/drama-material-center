@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { mkdir, mkdtemp, readdir, realpath, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, realpath, rm, symlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createProjectWorkspace } from "./projectWorkspace";
@@ -69,6 +69,36 @@ describe("project workspace", () => {
     await expect(workspace.listProjects()).resolves.toEqual([
       { id: "new-drama", name: "我的新短剧", description: "筹备中" },
     ]);
+  });
+
+  it("stores one active cover inside the project and exposes a versioned cover URL", async () => {
+    const root = await temporaryWorkspace();
+    const workspace = createProjectWorkspace(root);
+    await workspace.createProject({ id: "new-drama", name: "我的新短剧" });
+    const image = Buffer.from("fake png data");
+
+    await workspace.setProjectCover("new-drama", { contentType: "image/png", data: image });
+
+    await expect(workspace.listProjects()).resolves.toEqual([
+      expect.objectContaining({
+        id: "new-drama",
+        name: "我的新短剧",
+        coverUrl: expect.stringMatching(/^\/api\/projects\/new-drama\/cover\?v=\d+$/),
+      }),
+    ]);
+    await expect(readFile(await workspace.resolveProjectCover("new-drama"))).resolves.toEqual(image);
+    await expect(readFile(join(root, "new-drama", "project.json"), "utf8")).resolves.toContain('"cover": "cover.png"');
+  });
+
+  it("rejects unsupported cover formats", async () => {
+    const root = await temporaryWorkspace();
+    const workspace = createProjectWorkspace(root);
+    await workspace.createProject({ id: "new-drama", name: "我的新短剧" });
+
+    await expect(workspace.setProjectCover("new-drama", {
+      contentType: "image/svg+xml",
+      data: Buffer.from("<svg />"),
+    })).rejects.toMatchObject({ code: "invalid_cover" });
   });
 
   it("resolves an existing material through the selected project", async () => {

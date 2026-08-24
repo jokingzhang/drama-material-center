@@ -20,6 +20,7 @@ const oversizedFiles = trackedFiles.filter((path) => {
 
 const ignoreProbes = [
   "workspace/example/project.json",
+  "workspace/example/cover.png",
   "workspace/example/library/剧情/EP01.md",
   "workspace/example/library/图片/角色.png",
   "workspace/example/library/视频/EP01.mp4",
