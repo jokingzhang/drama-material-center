@@ -50,8 +50,12 @@ For every generation unit:
 
 ### 5. Knowledge used
 
-- Active standard ID, version, policy status, evidence status, condition match, and adaptation:
-- Supporting or conflicting card ID, maturity, condition match, and falsification evidence:
+- For every materially considered standard, card, or case: exact ID and kind, current title/status snapshot, trigger matches, exclusions, and missing inputs:
+- Disposition: `ADOPTED`, `REJECTED_CONDITION`, or `OVERRIDDEN_BY_HIGHER_PRIORITY`, with a concrete reason:
+- For adopted knowledge: exact affected artifact and locator; for condition-based rejection: the matched exclusion or missing input; for override: authority, source locator, and summary:
+- Falsification evidence or representative test still required:
+
+When this is a durable project analysis, mirror this section exactly in `ScriptProductionAnalysis v1.knowledgeUsed` and register it using [script-production-analysis-schema.md](script-production-analysis-schema.md). A prose list of IDs is not the machine-readable record. When the request is non-persistent, retain the same reasoning in the response but do not create or update a project index.
 
 ## Director Bible
 

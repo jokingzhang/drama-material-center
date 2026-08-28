@@ -33,8 +33,9 @@ For every used item report:
 
 - standard ID, version, and `policyStatus`;
 - evidence status or card maturity;
-- why its conditions match;
-- any adaptation or rejection;
+- why its trigger conditions match;
+- whether it is adopted, rejected because an exclusion or required input applies, or overridden by a named user decision, project fact, or approved contract;
+- the exact output fields affected when it is adopted;
 - what current evidence would falsify it.
 
 Current project facts and accepted assets outrank all standards and cards.
@@ -96,8 +97,25 @@ The ShotPromptPlan is a directing contract, not final creative prose. For each s
 
 Use `0.0–2.4s` style intervals. Reject ambiguous time notation, aspect-ratio contradictions, role-to-node mismatches, duplicated global blocks, contradictory costume or state descriptions, and undefined tail duration.
 
+## 6. Emit and, when authorized, register the structured analysis
+
+Keep the human-readable plan and its machine-readable record semantically identical. The structured record is `ScriptProductionAnalysis v1`; read [script-production-analysis-schema.md](script-production-analysis-schema.md) and use its exact root fields, `knowledgeUsed` dispositions, snapshots, output references, project paths, and index format.
+
+Treat the result as project-bound and durable only when all of these are true:
+
+- the request is the full script-to-production analysis for a named, existing material-center project rather than advice, comparison, or review alone;
+- the repository-configured workspace and project `project.json` have been resolved and checked;
+- `sourceBinding.relativePath` points to the exact existing script file under that project, and the requested version and scope are known;
+- the user has not requested a non-persistent answer or prohibited writes.
+
+For that durable case, announce the project ID and target paths, create a new versioned analysis file without replacing an earlier analysis, and register it in `.ai-director/analysis-index.json`. Write the analysis file before updating the index so a failed draft cannot break the currently visible catalog. Preserve every existing index entry, reject duplicate IDs or unsafe paths, and stop rather than repairing or replacing a malformed index without separate authorization. After registration, read the analysis back through the current local application's analysis list and detail API; if that readback is unavailable or fails, report registration as unverified rather than claiming Web visibility.
+
+For every standard, card, or case that materially influenced the plan, populate `knowledgeUsed` from the current knowledge entry. Record adopted rules, condition-based rejections, and higher-priority overrides rather than listing only successful matches. Snapshot the version/status/maturity values at analysis time; do not rewrite older analyses when the knowledge base later changes.
+
+If any durable binding condition is missing, return a non-persistent `DRAFT` and name the missing binding. Do not create `.ai-director`, save the supplied script, invent a placeholder path, or register a conversational answer merely to make the Web page non-empty.
+
 ## Handoff and stopping point
 
 Return the analysis as `DRAFT` when assets are missing or material choices remain unresolved. If final generation prompt prose is requested, pass the approved WorldGenreProfile, AssetPlan, ShotTypePlan, exact dialogue, reference responsibilities, hard constraints, bounded creative latitude, and decision IDs to `$doubao-creative-studio`. Validate its return against this plan; do not silently rewrite creative prose.
 
-Planning never authorizes image/video generation, LibTV writes, paid runs, retries, or asset replacement.
+Analysis registration does not change its approval state. Planning and registration never authorize image/video generation, LibTV writes, paid runs, retries, asset replacement, or knowledge promotion.

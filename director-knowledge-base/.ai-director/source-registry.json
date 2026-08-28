@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "snapshots": [
+    {
+      "snapshotId": "SCRIPT-MARKET-20260828-123012",
+      "sourceType": "SCRIPT_SAMPLE",
+      "workspaceRelativePath": "short-drama-case-studies/source-archives/剧本市场/20260828-123012",
+      "indexFile": "index.json",
+      "checksumFile": "SHA256SUMS",
+      "providers": [
+        "reelmate-wondershare",
+        "yuewen-dramabuddy"
+      ],
+      "expectedCatalog": {
+        "marketTotal": 273,
+        "archivedTotal": 268,
+        "unavailableTotal": 5,
+        "capturedFiveTotal": 231,
+        "metadataOnlyTotal": 37,
+        "providers": [
+          {
+            "provider": "yuewen-dramabuddy",
+            "marketCount": 95,
+            "archivedCount": 90,
+            "unavailableCount": 5,
+            "capturedFiveCount": 89,
+            "metadataOnlyCount": 1
+          },
+          {
+            "provider": "reelmate-wondershare",
+            "marketCount": 178,
+            "archivedCount": 178,
+            "unavailableCount": 0,
+            "capturedFiveCount": 142,
+            "metadataOnlyCount": 36
+          }
+        ]
+      }
+    }
+  ],
+  "pendingSources": [
+    {
+      "sourceId": "COURSE-BV1BoM76iEih",
+      "sourceType": "COURSE_MATERIAL",
+      "provider": "bilibili",
+      "title": "AI漫剧全流程",
+      "sourceUrl": "https://www.bilibili.com/video/BV1BoM76iEih",
+      "importStatus": "IMPORT_PENDING",
+      "researchStatus": "SELECTED",
+      "inspectionDepth": "REGISTERED_CANDIDATE_ONLY",
+      "freshness": {
+        "basis": "REGISTRY_ONLY",
+        "revalidationStatus": "NOT_IMPORTED"
+      },
+      "claimTypes": [
+        "CREATOR_CLAIM",
+        "DOCUMENTED_PROCEDURE",
+        "ILLUSTRATIVE_EXAMPLE"
+      ],
+      "productionStages": [
+        "topic-validation",
+        "brief",
+        "script",
+        "assets",
+        "storyboard",
+        "representative-test",
+        "editing",
+        "publishing",
+        "retrospective"
+      ]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-SHANHAI-TRAINER",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "山海驯兽师",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740023&projectId=cbae593df2784ba0a5ca93c4e3699455",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-SHANHAI-TRAINER"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-201", "DRAMA-RISK-101", "DRAMA-RISK-201"]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-HEARTH",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "最后一捧灶心土",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740036&projectId=373cdc0f15104e68b164bc86872e7e31",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-HEARTH"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-105", "DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-PAT-203", "DRAMA-PAT-205", "DRAMA-RISK-201"]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-WANWU",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "万物生变 EP02",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6513072&projectId=9ec18aa50b774e6796aedb6b1ff018c9",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-WANWU"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-104", "DRAMA-PAT-201", "DRAMA-PAT-203", "DRAMA-PAT-204", "DRAMA-PAT-205", "DRAMA-RISK-101", "DRAMA-RISK-201"]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-DOCTOR",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "今天不宜约会",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740179&projectId=7cce3c8f42cb46389b4d1264ac07f086",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-DOCTOR"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-RISK-101"]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-SHANHAIJIE",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "山海劫",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740194&projectId=2fcce0850edd467f9444a94d842dcf3a",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-SHANHAIJIE"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-PAT-203", "DRAMA-RISK-201"]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-SUMMER",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "无尽蝉鸣的盛夏",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740210&projectId=7f0886970af94d4c8104be52d9d13703",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-SUMMER"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-105", "DRAMA-PAT-201", "DRAMA-PAT-203", "DRAMA-PAT-205", "DRAMA-PAT-207", "DRAMA-RISK-201"]
+    },
+    {
+      "sourceId": "CANVAS-LIBLIB-NUO",
+      "sourceType": "COMPLETED_WORK_CANVAS",
+      "provider": "liblib",
+      "title": "镇魂谣 NUO",
+      "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6742422&projectId=a527cf50a6144c2dbef9945dbc1f614c",
+      "importStatus": "MEDIA_NOT_IMPORTED",
+      "researchStatus": "MEDIA_STUDIED",
+      "inspectionDepth": "GRAPH_AND_MEDIA_SAMPLED",
+      "freshness": {
+        "basis": "STUDIED_AT",
+        "asOf": "2026-08-28",
+        "revalidationStatus": "NOT_REVALIDATED"
+      },
+      "claimTypes": ["OBSERVED_ARTIFACT"],
+      "rights": {
+        "status": "RIGHTS_UNKNOWN",
+        "gate": "RIGHTS_REVIEW_REQUIRED"
+      },
+      "productionStages": ["assets", "storyboard", "video-generation"],
+      "relatedCaseIds": ["CASE-20260828-NUO"],
+      "relatedKnowledgeIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-104", "DRAMA-PAT-105", "DRAMA-PAT-201", "DRAMA-PAT-204", "DRAMA-PAT-206", "DRAMA-PAT-207", "DRAMA-RISK-201"]
+    }
+  ]
+}

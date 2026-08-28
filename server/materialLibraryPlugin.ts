@@ -1,5 +1,5 @@
 import { createReadStream } from "node:fs";
-import { readFile, readdir, stat } from "node:fs/promises";
+import { open as openFile, readFile, readdir, stat } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { extname, relative, resolve, sep } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -9,6 +9,7 @@ import {
   ProjectWorkspaceError,
   type CreateProjectInput,
 } from "./projectWorkspace.ts";
+import { createDirectorKnowledgeMiddleware } from "./directorKnowledgeApi.ts";
 
 const contentTypes: Record<string, string> = {
   ".md": "text/markdown; charset=utf-8",
@@ -32,6 +33,7 @@ const contentTypes: Record<string, string> = {
 
 const searchableTextExtensions = new Set([".md", ".txt"]);
 const MAX_SEARCHABLE_TEXT_BYTES = 2 * 1024 * 1024;
+const MAX_MATERIAL_SUMMARY_BYTES = 64 * 1024;
 const MAX_SEARCH_RESULTS = 200;
 
 interface LibraryEntries {
@@ -41,6 +43,7 @@ interface LibraryEntries {
 
 interface MaterialLibraryPluginOptions {
   workspaceRoot?: string;
+  knowledgeRoot?: string;
 }
 
 function sendJson(response: ServerResponse, statusCode: number, value: unknown) {
@@ -109,9 +112,26 @@ function folderLabel(path: string) {
 }
 
 function projectRoute(pathname: string) {
-  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal|search)$/);
+  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal|search|summary)$/);
   if (!match) return undefined;
   return { projectId: decodeURIComponent(match[1]), action: match[2] };
+}
+
+export async function readMaterialSummary(filePath: string) {
+  const file = await openFile(filePath, "r");
+  try {
+    const fileStat = await file.stat();
+    const requestedBytes = Math.min(fileStat.size, MAX_MATERIAL_SUMMARY_BYTES);
+    const buffer = Buffer.alloc(requestedBytes);
+    const { bytesRead } = await file.read(buffer, 0, requestedBytes, 0);
+    return {
+      content: new TextDecoder().decode(buffer.subarray(0, bytesRead)),
+      bytesRead,
+      truncated: fileStat.size > bytesRead,
+    };
+  } finally {
+    await file.close();
+  }
 }
 
 function searchSnippet(source: string, matchIndex: number, queryLength: number) {
@@ -149,8 +169,10 @@ function statusFor(error: ProjectWorkspaceError) {
   return 404;
 }
 
-function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspaceRoot: string) {
+function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspaceRoot: string, knowledgeRoot: string) {
   const workspace = createProjectWorkspace(workspaceRoot);
+
+  server.middlewares.use(createDirectorKnowledgeMiddleware({ workspaceRoot, knowledgeRoot }));
 
   server.middlewares.use(async (request, response, next) => {
     if (!request.url?.startsWith("/api/")) {
@@ -241,6 +263,16 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
         return;
       }
 
+      if (request.method === "GET" && route.action === "summary") {
+        const target = await workspace.resolveMaterialPath(route.projectId, url.searchParams.get("path") ?? "");
+        if (!searchableTextExtensions.has(extname(target).toLowerCase())) {
+          sendJson(response, 415, { error: "这个文件不支持文本摘要。", code: "UNSUPPORTED_SUMMARY" });
+          return;
+        }
+        sendJson(response, 200, await readMaterialSummary(target));
+        return;
+      }
+
       if (request.method === "GET" && route.action === "file") {
         const target = await workspace.resolveMaterialPath(route.projectId, url.searchParams.get("path") ?? "");
         response.statusCode = 200;
@@ -275,14 +307,15 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
 export function materialLibraryPlugin(options: MaterialLibraryPluginOptions = {}): Plugin {
   const siteRoot = resolve(process.cwd());
   const workspaceRoot = resolve(siteRoot, options.workspaceRoot ?? "workspace");
+  const knowledgeRoot = resolve(siteRoot, options.knowledgeRoot ?? "director-knowledge-base");
 
   return {
     name: "drama-material-workspace",
     configureServer(server) {
-      attachMaterialMiddleware(server, workspaceRoot);
+      attachMaterialMiddleware(server, workspaceRoot, knowledgeRoot);
     },
     configurePreviewServer(server) {
-      attachMaterialMiddleware(server, workspaceRoot);
+      attachMaterialMiddleware(server, workspaceRoot, knowledgeRoot);
     },
   };
 }

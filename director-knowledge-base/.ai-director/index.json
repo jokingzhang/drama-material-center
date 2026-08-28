@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "cases": [
     {
       "schemaVersion": 2,
@@ -12,8 +12,23 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740023&projectId=cbae593df2784ba0a5ca93c4e3699455",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-SHANHAI-TRAINER/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-201", "DRAMA-RISK-101", "DRAMA-RISK-201"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-201",
+        "DRAMA-RISK-101",
+        "DRAMA-RISK-201"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
     },
     {
       "schemaVersion": 2,
@@ -26,8 +41,27 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740036&projectId=373cdc0f15104e68b164bc86872e7e31",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-HEARTH/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-105", "DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-PAT-203", "DRAMA-PAT-205", "DRAMA-RISK-201"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-103",
+        "DRAMA-PAT-105",
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-202",
+        "DRAMA-PAT-203",
+        "DRAMA-PAT-205",
+        "DRAMA-RISK-201"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
     },
     {
       "schemaVersion": 2,
@@ -40,8 +74,28 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6513072&projectId=9ec18aa50b774e6796aedb6b1ff018c9",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-WANWU/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-104", "DRAMA-PAT-201", "DRAMA-PAT-203", "DRAMA-PAT-204", "DRAMA-PAT-205", "DRAMA-RISK-101", "DRAMA-RISK-201"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-103",
+        "DRAMA-PAT-104",
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-203",
+        "DRAMA-PAT-204",
+        "DRAMA-PAT-205",
+        "DRAMA-RISK-101",
+        "DRAMA-RISK-201"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
     },
     {
       "schemaVersion": 2,
@@ -54,8 +108,23 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740179&projectId=7cce3c8f42cb46389b4d1264ac07f086",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-DOCTOR/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-RISK-101"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-202",
+        "DRAMA-RISK-101"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
     },
     {
       "schemaVersion": 2,
@@ -68,8 +137,25 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740194&projectId=2fcce0850edd467f9444a94d842dcf3a",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-SHANHAIJIE/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-PAT-203", "DRAMA-RISK-201"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-103",
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-202",
+        "DRAMA-PAT-203",
+        "DRAMA-RISK-201"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
     },
     {
       "schemaVersion": 2,
@@ -82,8 +168,26 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6740210&projectId=7f0886970af94d4c8104be52d9d13703",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-SUMMER/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-105", "DRAMA-PAT-201", "DRAMA-PAT-203", "DRAMA-PAT-205", "DRAMA-PAT-207", "DRAMA-RISK-201"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-105",
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-203",
+        "DRAMA-PAT-205",
+        "DRAMA-PAT-207",
+        "DRAMA-RISK-201"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
     },
     {
       "schemaVersion": 2,
@@ -96,267 +200,1983 @@
       "sourceUrl": "https://www.liblib.tv/canvas?spaceId=6742422&projectId=a527cf50a6144c2dbef9945dbc1f614c",
       "sourceDocument": "来源/2026-08-28-LibTV七案例素材与分镜研究.md",
       "evidenceDocument": "案例/CASE-20260828-NUO/证据账本.md",
-      "domains": ["visual-material", "cinematography", "workflow"],
-      "derivedCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-104", "DRAMA-PAT-105", "DRAMA-PAT-201", "DRAMA-PAT-204", "DRAMA-PAT-206", "DRAMA-PAT-207", "DRAMA-RISK-201"]
+      "domains": [
+        "visual-material",
+        "cinematography",
+        "workflow"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-103",
+        "DRAMA-PAT-104",
+        "DRAMA-PAT-105",
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-204",
+        "DRAMA-PAT-206",
+        "DRAMA-PAT-207",
+        "DRAMA-RISK-201"
+      ],
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-MATH-CULTIVATION",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "我会九九乘法表，他们呆若木鸡",
+      "path": "案例/CASE-20260828-MATH-CULTIVATION/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://www.reelmate.cn/novel-market/1939198267519938572",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-MATH-CULTIVATION/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-006",
+        "DRAMA-RISK-001"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-PRISON-FATHER",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "第一次带男朋友回家，20年狱警爸爸说他不对劲",
+      "path": "案例/CASE-20260828-PRISON-FATHER/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://www.reelmate.cn/novel-market/1913607050652561427",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-PRISON-FATHER/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-FUNERAL-TRUTH",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "葬礼上女儿悄悄话：棺材里不是外婆",
+      "path": "案例/CASE-20260828-FUNERAL-TRUTH/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://www.reelmate.cn/novel-market/1935913711933067343",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-FUNERAL-TRUTH/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-APOCALYPSE-KITCHEN",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "末日料理系统",
+      "path": "案例/CASE-20260828-APOCALYPSE-KITCHEN/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://www.reelmate.cn/novel-market/1907003429869584399",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-APOCALYPSE-KITCHEN/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-AUTUM-ECHO",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "秋末有回声",
+      "path": "案例/CASE-20260828-AUTUM-ECHO/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://www.reelmate.cn/novel-market/1918262192991633441",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-AUTUM-ECHO/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-FORTUNE-WITHDRAWAL",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "我撤回福运后，全家跪着求我回头",
+      "path": "案例/CASE-20260828-FORTUNE-WITHDRAWAL/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://www.reelmate.cn/novel-market/1927277371704217644",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-FORTUNE-WITHDRAWAL/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-002"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-FORENSIC-PRINCE",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "法医太子：满朝文武求我别解剖了",
+      "path": "案例/CASE-20260828-FORENSIC-PRINCE/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://aicomic.yuewen.com/marketplace/script-market/detail/2089999365117767680",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-FORENSIC-PRINCE/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-OFFICE-WHISPERS",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "公司破产前，办公用品疯狂向我爆料",
+      "path": "案例/CASE-20260828-OFFICE-WHISPERS/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://aicomic.yuewen.com/marketplace/script-market/detail/2089986560880750592",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-OFFICE-WHISPERS/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-001"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-RULE-EXAM",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "规则怪谈：我在惊悚考场带鬼卷清北",
+      "path": "案例/CASE-20260828-RULE-EXAM/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://aicomic.yuewen.com/marketplace/script-market/detail/738309840660729856",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-RULE-EXAM/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-VILLAIN-SYSTEM",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "系统逼我当反派，大小姐苟不住了",
+      "path": "案例/CASE-20260828-VILLAIN-SYSTEM/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://aicomic.yuewen.com/marketplace/script-market/detail/2089236798527193088",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-VILLAIN-SYSTEM/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-002",
+        "DRAMA-RISK-003"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-SOLAR-FORTRESS",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "耀斑降临：我在极热废土当倒爷",
+      "path": "案例/CASE-20260828-SOLAR-FORTRESS/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://aicomic.yuewen.com/marketplace/script-market/detail/2089547119368269824",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-SOLAR-FORTRESS/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-002",
+        "DRAMA-RISK-003"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
+    },
+    {
+      "schemaVersion": 2,
+      "id": "CASE-20260828-ANTI-SCAM",
+      "kind": "case",
+      "origin": "external-work",
+      "title": "重生第一剑，先斩杀猪盘",
+      "path": "案例/CASE-20260828-ANTI-SCAM/案例档案.md",
+      "studiedAt": "2026-08-28",
+      "sourceUrl": "https://aicomic.yuewen.com/marketplace/script-market/detail/2090285244406894592",
+      "sourceDocument": "来源/2026-08-28-剧本市场十二案例剧情研究.md",
+      "evidenceDocument": "案例/CASE-20260828-ANTI-SCAM/证据账本.md",
+      "domains": [
+        "narrative"
+      ],
+      "derivedCardIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-003"
+      ],
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY"
     }
   ],
   "cards": [
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-101",
       "kind": "pattern",
       "title": "按参考职责选择最小充分集合",
       "path": "知识卡/画面与素材/DRAMA-PAT-101-按参考职责选择最小充分集合.md",
       "domain": "visual-material",
       "status": "REUSABLE",
-      "tags": ["参考职责", "最小集合", "referencePlan", "图片数量"],
-      "sourceCaseIds": ["CASE-20260828-SHANHAI-TRAINER", "CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-DOCTOR", "CASE-20260828-SHANHAIJIE", "CASE-20260828-SUMMER", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-SHT-GRAPH-001", "EV-SHT-ASSET-001", "EV-HEARTH-GRAPH-001", "EV-WANWU-GRAPH-001", "EV-DOCTOR-ASSET-001", "EV-SHJ-ASSET-001", "EV-SUMMER-GRAPH-001", "EV-NUO-GRAPH-001"],
+      "tags": [
+        "参考职责",
+        "最小集合",
+        "referencePlan",
+        "图片数量"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-SHANHAI-TRAINER",
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-DOCTOR",
+        "CASE-20260828-SHANHAIJIE",
+        "CASE-20260828-SUMMER",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-SHT-GRAPH-001",
+        "EV-SHT-ASSET-001",
+        "EV-HEARTH-GRAPH-001",
+        "EV-WANWU-GRAPH-001",
+        "EV-DOCTOR-ASSET-001",
+        "EV-SHJ-ASSET-001",
+        "EV-SUMMER-GRAPH-001",
+        "EV-NUO-GRAPH-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 7,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "为单个 generation unit 选择参考图片，或处理媒体预算、缺失职责和多参考冲突。"
+        ],
+        "exclusions": [
+          "参考互相冲突，或单张关键帧已承担全部静态事实且额外引用只会抢控制。"
+        ],
+        "requiredInputs": [
+          "逐镜可见事实、primaryShotType、实际打开过的候选资产、连续性及实时媒体预算。"
+        ],
+        "outputTargets": [
+          "AssetPlan.referenceMatrix[]",
+          "ShotPromptPlan.referencePlan",
+          "AssetPlan.missingAndConflicts[]"
+        ],
+        "stopConditions": [
+          "关键人物、道具或状态职责缺失；同一事实多主责；引用冲突；预算排除会改变镜头且未获决定。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每项关键事实恰好一个主要责任来源；所有引用、处置和预算排除原因结构完整。"
+          ],
+          "actualViewing": [
+            "生成前逐图确认实际内容；生成后连续播放代表输出，逐职责记录遵循、忽略、冲突或污染。"
+          ],
+          "actualListening": [
+            "本条目不新增声音验收；镜头含对白或声音时继承分镜与声音合同的实际试听要求。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-102",
       "kind": "pattern",
       "title": "一人一文件使用当前造型复合板",
       "path": "知识卡/画面与素材/DRAMA-PAT-102-一人一文件使用当前造型复合板.md",
       "domain": "visual-material",
       "status": "REUSABLE",
-      "tags": ["人物复合板", "一人一图", "身份", "三视图", "当前造型"],
-      "sourceCaseIds": ["CASE-20260828-SHANHAI-TRAINER", "CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-DOCTOR", "CASE-20260828-SHANHAIJIE", "CASE-20260828-SUMMER", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-SHT-ASSET-001", "EV-HEARTH-ASSET-001", "EV-WANWU-ASSET-001", "EV-DOCTOR-ASSET-001", "EV-SHJ-ASSET-001", "EV-SUMMER-ASSET-001", "EV-NUO-ASSET-001"],
+      "tags": [
+        "人物复合板",
+        "一人一图",
+        "身份",
+        "三视图",
+        "当前造型"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-SHANHAI-TRAINER",
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-DOCTOR",
+        "CASE-20260828-SHANHAIJIE",
+        "CASE-20260828-SUMMER",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-SHT-ASSET-001",
+        "EV-HEARTH-ASSET-001",
+        "EV-WANWU-ASSET-001",
+        "EV-DOCTOR-ASSET-001",
+        "EV-SHJ-ASSET-001",
+        "EV-SUMMER-ASSET-001",
+        "EV-NUO-ASSET-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 7,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "人物直接引用槽受限，拟建立一人一文件的当前造型复合输入。"
+        ],
+        "exclusions": [
+          "多个造型、伤情或状态混板；复杂骑乘、拥抱或压制关系；高身份要求近景中脸部过小。"
+        ],
+        "requiredInputs": [
+          "IDENTITY_AVATAR、对应造型三视图母版、唯一连续性状态、目标模型、画幅及近景或转身风险。"
+        ],
+        "outputTargets": [
+          "AssetPlan.assets[CHARACTER_COMPOSITE_DIRECT_INPUT]",
+          "AssetPlan.referenceMatrix[]"
+        ],
+        "stopConditions": [
+          "母版缺失；视图身份或造型不一致；存在文字、网格或 Logo 污染；无代表试片即扩大范围。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "派生来源、版本、scope、人物与状态唯一性、required/forbidden 字段完整；母版状态未被替换。"
+          ],
+          "actualViewing": [
+            "逐视图检查身份、严格侧面、脚部和造型；连续播放代表输出检查近景、转身、重复人物与拼板污染。"
+          ],
+          "actualListening": [
+            "本条目不新增声音验收；镜头含对白或声音时继承分镜与声音合同的实际试听要求。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-103",
       "kind": "pattern",
       "title": "专项关键帧锁定构图关系与尺度",
       "path": "知识卡/画面与素材/DRAMA-PAT-103-专项关键帧锁定构图关系与尺度.md",
       "domain": "visual-material",
       "status": "REUSABLE",
-      "tags": ["关键帧", "关系", "尺度", "站位", "接触"],
-      "sourceCaseIds": ["CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-SHANHAIJIE", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-HEARTH-ASSET-002", "EV-WANWU-ASSET-002", "EV-SHJ-ASSET-002", "EV-NUO-ASSET-002", "EV-NUO-PROMPT-003"],
+      "tags": [
+        "关键帧",
+        "关系",
+        "尺度",
+        "站位",
+        "接触"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-SHANHAIJIE",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-HEARTH-ASSET-002",
+        "EV-WANWU-ASSET-002",
+        "EV-SHJ-ASSET-002",
+        "EV-NUO-ASSET-002",
+        "EV-NUO-PROMPT-003"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 4,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "骑乘、拥抱、压制、搀扶、包围、队形、明显尺度差、困难机位或精确左右关系。"
+        ],
+        "exclusions": [
+          "简单单人正面表演，或关键帧自身事实错误、尚未派生为干净输入。"
+        ],
+        "requiredInputs": [
+          "主体连续性、目标站位、视线、接触、尺度、终态、场景、实际资产和媒体预算。"
+        ],
+        "outputTargets": [
+          "AssetPlan.assets[SHOT_KEYFRAME|INTERACTION_POSE|SCALE_REFERENCE_INTERNAL]",
+          "AssetPlan.referenceMatrix[]"
+        ],
+        "stopConditions": [
+          "关系或尺度无法唯一说明；身份、服装、道具或状态错误；关键帧被用来冒充身份职责。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "资产类型、来源版本、使用范围和关系主责唯一；INTERNAL 与 DIRECT_INPUT 状态分离。"
+          ],
+          "actualViewing": [
+            "静帧可回答左右、接触点、尺度、前后景与终态；连续播放仍保持这些事实。"
+          ],
+          "actualListening": [
+            "本条目不新增声音验收；镜头含对白或声音时继承分镜与声音合同的实际试听要求。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-104",
       "kind": "pattern",
       "title": "剧情状态按前中后版本拆分",
       "path": "知识卡/画面与素材/DRAMA-PAT-104-剧情状态按前中后版本拆分.md",
       "domain": "visual-material",
       "status": "REUSABLE",
-      "tags": ["状态版本", "before after", "变身", "戴面", "连续性"],
-      "sourceCaseIds": ["CASE-20260828-WANWU", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-WANWU-ASSET-003", "EV-WANWU-PROMPT-003", "EV-NUO-ASSET-001", "EV-NUO-PROMPT-001"],
+      "tags": [
+        "状态版本",
+        "before after",
+        "变身",
+        "戴面",
+        "连续性"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-WANWU",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-WANWU-ASSET-003",
+        "EV-WANWU-PROMPT-003",
+        "EV-NUO-ASSET-001",
+        "EV-NUO-PROMPT-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 2,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "变身、戴面或脱戴、伤势、换装、道具开合或损坏等可见剧情状态变化。"
+        ],
+        "exclusions": [
+          "只改变色温或粒子而不改变结构；前后资产身份或基础造型不一致；时长不足以展示完成。"
+        ],
+        "requiredInputs": [
+          "同一实体的 start、transition、end 状态事实和资产、身份连续性、节点时长及下一镜继承状态。"
+        ],
+        "outputTargets": [
+          "ScriptProductionAnalysis.continuityStates[]",
+          "AssetPlan.assets[STATE_VARIANT]",
+          "AssetPlan.referenceMatrix[]"
+        ],
+        "stopConditions": [
+          "前后状态冲突或缺失；阶段职责不明；终态没有稳定停留。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每文件单一状态；版本、实体、阶段顺序、引用职责与下一镜终态一致。"
+          ],
+          "actualViewing": [
+            "逐张比较前中后状态；连续播放可指出开始、过程和完成，且无回退、复制或身份漂移。"
+          ],
+          "actualListening": [
+            "本条目不新增声音验收；镜头含对白或声音时继承分镜与声音合同的实际试听要求。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-105",
       "kind": "pattern",
       "title": "内部细节与风格母版先派生干净输入",
       "path": "知识卡/画面与素材/DRAMA-PAT-105-内部细节与风格母版先派生干净输入.md",
       "domain": "visual-material",
       "status": "REUSABLE",
-      "tags": ["INTERNAL", "GEN_INPUT", "风格母版", "服装细节", "干净输入"],
-      "sourceCaseIds": ["CASE-20260828-HEARTH", "CASE-20260828-SUMMER", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-HEARTH-ASSET-002", "EV-SUMMER-ASSET-001", "EV-SUMMER-ASSET-002", "EV-NUO-ASSET-001", "EV-NUO-ASSET-003"],
+      "tags": [
+        "INTERNAL",
+        "GEN_INPUT",
+        "风格母版",
+        "服装细节",
+        "干净输入"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-SUMMER",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-HEARTH-ASSET-002",
+        "EV-SUMMER-ASSET-001",
+        "EV-SUMMER-ASSET-002",
+        "EV-NUO-ASSET-001",
+        "EV-NUO-ASSET-003"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 3,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "服装细节、风格、场景圣经、比例尺或说明板需要转成当前镜头直接输入。"
+        ],
+        "exclusions": [
+          "目标本身是图文拼贴或 UI，或派生会丢失不可替代剧情信息。"
+        ],
+        "requiredInputs": [
+          "实际查看过的 INTERNAL 母版、哈希、版本、目标模型、镜头范围和当前任务唯一需要的事实。"
+        ],
+        "outputTargets": [
+          "AssetPlan.assets[INTERNAL]",
+          "AssetPlan.assets[DIRECT_INPUT]",
+          "AssetPlan.referenceMatrix[]"
+        ],
+        "stopConditions": [
+          "无法追溯母版；无法派生干净输入；派生丢失关键事实；试图静默把 INTERNAL 改为生产输入。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "母版与派生件 ID、哈希、版本、scope、usedBy 和状态分离；母版保持零生成职责。"
+          ],
+          "actualViewing": [
+            "打开派生图确认只含当前事实且无文字、网格、Logo 或无关人物；代表输出无拼板和文字污染。"
+          ],
+          "actualListening": [
+            "本条目不新增声音验收；镜头含对白或声音时继承分镜与声音合同的实际试听要求。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-RISK-101",
       "kind": "risk",
       "title": "引用必须核对实际内容与角色职责",
       "path": "知识卡/画面与素材/DRAMA-RISK-101-引用必须核对实际内容与角色职责.md",
       "domain": "visual-material",
       "status": "REUSABLE",
-      "tags": ["节点映射", "角色错位", "实际看图", "node key"],
-      "sourceCaseIds": ["CASE-20260828-SHANHAI-TRAINER", "CASE-20260828-WANWU", "CASE-20260828-DOCTOR"],
-      "evidenceRefs": ["EV-SHT-RISK-001", "EV-WANWU-RISK-001", "EV-DOCTOR-RISK-001"],
+      "tags": [
+        "节点映射",
+        "角色错位",
+        "实际看图",
+        "node key"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-SHANHAI-TRAINER",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-DOCTOR"
+      ],
+      "evidenceRefs": [
+        "EV-SHT-RISK-001",
+        "EV-WANWU-RISK-001",
+        "EV-DOCTOR-RISK-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 3,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING",
+      "usageContract": {
+        "triggers": [
+          "使用外部画布、历史资产、同名节点、多个近似版本或自动装配引用。"
+        ],
+        "exclusions": [
+          "完全无外部引用的纯文本规划；进入生成前仍必须重新核对真实资产。"
+        ],
+        "requiredInputs": [
+          "预期参考职责、实际原图、asset/node ID、显示名、提示词引用、媒体顺序与实际入边。"
+        ],
+        "outputTargets": [
+          "AssetPlan.referenceMatrix[].actualContent",
+          "ShotPromptPlan.referencePlan",
+          "ScriptProductionAnalysis.handoff.blockedUnits[]"
+        ],
+        "stopConditions": [
+          "原图不可读；名称不唯一；实际内容与职责不符；提示词、媒体顺序与入边不一致。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "ID 唯一；批准映射与 prompt token、媒体列表顺序和实际入边逐项一致。"
+          ],
+          "actualViewing": [
+            "必须打开原图确认人物、造型、道具、场景和状态；节点名或生成成功不能替代。"
+          ],
+          "actualListening": [
+            "图片职责核对不新增声音验收；音频引用必须按其独立声音职责实际试听。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-201",
       "kind": "pattern",
       "title": "先选主镜头类型再写提示词",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-201-先选主镜头类型再写提示词.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["shotType", "镜头类型", "提示词合同", "generation unit"],
-      "sourceCaseIds": ["CASE-20260828-SHANHAI-TRAINER", "CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-DOCTOR", "CASE-20260828-SHANHAIJIE", "CASE-20260828-SUMMER", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-SHT-PROMPT-001", "EV-HEARTH-PROMPT-001", "EV-HEARTH-PROMPT-002", "EV-WANWU-PROMPT-001", "EV-WANWU-PROMPT-002", "EV-WANWU-PROMPT-003", "EV-DOCTOR-PROMPT-001", "EV-SHJ-PROMPT-001", "EV-SHJ-PROMPT-002", "EV-SUMMER-PROMPT-001", "EV-SUMMER-PROMPT-002", "EV-SUMMER-PROMPT-003", "EV-NUO-PROMPT-001"],
+      "tags": [
+        "shotType",
+        "镜头类型",
+        "提示词合同",
+        "generation unit"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-SHANHAI-TRAINER",
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-DOCTOR",
+        "CASE-20260828-SHANHAIJIE",
+        "CASE-20260828-SUMMER",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-SHT-PROMPT-001",
+        "EV-HEARTH-PROMPT-001",
+        "EV-HEARTH-PROMPT-002",
+        "EV-WANWU-PROMPT-001",
+        "EV-WANWU-PROMPT-002",
+        "EV-WANWU-PROMPT-003",
+        "EV-DOCTOR-PROMPT-001",
+        "EV-SHJ-PROMPT-001",
+        "EV-SHJ-PROMPT-002",
+        "EV-SUMMER-PROMPT-001",
+        "EV-SUMMER-PROMPT-002",
+        "EV-SUMMER-PROMPT-003",
+        "EV-NUO-PROMPT-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 7,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "为可生成的 scene beat 选择主镜头类型并加载类型特有字段。"
+        ],
+        "exclusions": [
+          "明确开放式候选采样，或事实不足以判断主要可见事件。"
+        ],
+        "requiredInputs": [
+          "SourceBinding、storyFunction、audienceEffect、startState、endState、可见实体、AssetPlan、时长、模型和画幅。"
+        ],
+        "outputTargets": [
+          "ScriptProductionAnalysis.generationUnits[].primaryShotType",
+          "ShotTypePlan",
+          "ShotPromptPlan"
+        ],
+        "stopConditions": [
+          "主任务不唯一；多个高风险机制争抢主任务；时长不足；只能靠风格词选类型。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每个 unit 恰好一个主类型；类型必填字段齐全；无关字段未硬填；时长与任务容量一致。"
+          ],
+          "actualViewing": [
+            "连续播放能读清唯一主要任务的开始、转折与结束。"
+          ],
+          "actualListening": [
+            "含对白或声音的类型继承实际试听；无声镜头不得伪造试听通过。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-202",
       "kind": "pattern",
       "title": "对白表演按说听反应和时间盒组织",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-202-对白表演按说听反应和时间盒组织.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["对白", "表演", "声音", "口型", "反应"],
-      "sourceCaseIds": ["CASE-20260828-HEARTH", "CASE-20260828-DOCTOR", "CASE-20260828-SHANHAIJIE"],
-      "evidenceRefs": ["EV-HEARTH-PROMPT-001", "EV-DOCTOR-PROMPT-001", "EV-SHJ-PROMPT-003"],
+      "tags": [
+        "对白",
+        "表演",
+        "声音",
+        "口型",
+        "反应"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-DOCTOR",
+        "CASE-20260828-SHANHAIJIE"
+      ],
+      "evidenceRefs": [
+        "EV-HEARTH-PROMPT-001",
+        "EV-DOCTOR-PROMPT-001",
+        "EV-SHJ-PROMPT-003"
+      ],
       "evidenceStrength": "MEDIUM",
       "sourceCount": 3,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "逐字对白需要通过可见说听关系和表演承载。"
+        ],
+        "exclusions": [
+          "纯旁白、广播、完全画外音，或台词无法自然塞入时长、复杂抢话尚未拆分。"
+        ],
+        "requiredInputs": [
+          "逐字台词、speaker、intent、voice、mouthVisibility、listener、reaction 和 nodeDuration。"
+        ],
+        "outputTargets": [
+          "ShotPromptPlan.dialogue",
+          "ShotPromptPlan.beats[]",
+          "ShotPromptPlan.timeboxes[]",
+          "ShotPromptPlan.editExit"
+        ],
+        "stopConditions": [
+          "台词或声音未冻结；说话人或听者不明；时间窗不足；嘴部策略缺失。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每句台词同时进入时间轴与声音职责；speaker/voice 唯一；时间窗覆盖且不越界。"
+          ],
+          "actualViewing": [
+            "连续播放确认正确角色说话、嘴部策略、听者反应、表演落点和可剪终态。"
+          ],
+          "actualListening": [
+            "实际试听逐字内容、说话人、情绪、音色、噪声、失真和音画同步。"
+          ],
+          "humanAcceptance": [
+            "人类确认台词可懂、表演自然、人物关系与情绪成立。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-203",
       "kind": "pattern",
       "title": "物理动作写轴线接触反作用与终态",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-203-物理动作写轴线接触反作用与终态.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["动作", "接触点", "轴线", "反作用", "终态"],
-      "sourceCaseIds": ["CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-SHANHAIJIE", "CASE-20260828-SUMMER"],
-      "evidenceRefs": ["EV-HEARTH-PROMPT-002", "EV-WANWU-PROMPT-002", "EV-SHJ-PROMPT-002", "EV-SUMMER-PROMPT-002"],
+      "tags": [
+        "动作",
+        "接触点",
+        "轴线",
+        "反作用",
+        "终态"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-SHANHAIJIE",
+        "CASE-20260828-SUMMER"
+      ],
+      "evidenceRefs": [
+        "EV-HEARTH-PROMPT-002",
+        "EV-WANWU-PROMPT-002",
+        "EV-SHJ-PROMPT-002",
+        "EV-SUMMER-PROMPT-002"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 4,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "触碰、推拉、击打、追逐、扑咬、持握、跌倒或遮挡构成核心物理因果。"
+        ],
+        "exclusions": [
+          "纯静态情绪或抽象梦境，或一个 unit 含多轮攻防、转场和对白而未拆分。"
+        ],
+        "requiredInputs": [
+          "start、mover/object、path/axis、contact、reaction/counterforce、end、站位、道具归属与时长。"
+        ],
+        "outputTargets": [
+          "ShotPromptPlan.beats[]",
+          "ShotPromptPlan.axis",
+          "ShotPromptPlan.contact",
+          "ShotPromptPlan.endState"
+        ],
+        "stopConditions": [
+          "起始站位、对象、接触点或归属不明；时长不能容纳一个核心因果；参考互相冲突。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "物理链字段非空，且方向、主体、道具归属和时序一致。"
+          ],
+          "actualViewing": [
+            "暂停和连续播放均能回答谁对谁、路径、接触点、受力和终态，且无翻转、重置或穿帮。"
+          ],
+          "actualListening": [
+            "动作声属于镜头合同时，实际试听接触时点与音画同步；否则明确不适用。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-204",
       "kind": "pattern",
       "title": "状态转换提示词使用可见状态阶梯",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-204-状态转换提示词使用可见状态阶梯.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["状态转换", "变身", "戴面", "时间轴", "完成判据"],
-      "sourceCaseIds": ["CASE-20260828-WANWU", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-WANWU-PROMPT-003", "EV-NUO-PROMPT-001"],
+      "tags": [
+        "状态转换",
+        "变身",
+        "戴面",
+        "时间轴",
+        "完成判据"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-WANWU",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-WANWU-PROMPT-003",
+        "EV-NUO-PROMPT-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 2,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "过程本身是主要信息的变身、戴面、伤情、结构或道具状态转换。"
+        ],
+        "exclusions": [
+          "只属背景氛围，或同镜还承担完整对白、群战、重大揭示且没有终态停留。"
+        ],
+        "requiredInputs": [
+          "匹配的 A/B 状态资产、触发、阶段路径、主体数锁、身份、服装、时长与终态。"
+        ],
+        "outputTargets": [
+          "ShotTypePlan[STATE_TRANSITION]",
+          "ShotPromptPlan.beats[]",
+          "ShotPromptPlan.completionCriterion"
+        ],
+        "stopConditions": [
+          "前后资产身份不匹配；阶段参考缺失；时长不足；复杂任务未拆分。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "A 到触发、阶段、B 的顺序、引用职责、时间盒和完成判据一致。"
+          ],
+          "actualViewing": [
+            "连续播放可指出转换开始和完成帧；无重置、回退或双人物，B 状态可接下一镜。"
+          ],
+          "actualListening": [
+            "转换含声音或对白时实际试听职责与同步；纯视觉转换明确不适用。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-205",
       "kind": "pattern",
       "title": "续接与修复使用实际有效帧",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-205-续接与修复使用实际有效帧.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["续接", "修复", "截图", "尾帧", "连续性"],
-      "sourceCaseIds": ["CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-SUMMER"],
-      "evidenceRefs": ["EV-HEARTH-WORKFLOW-001", "EV-WANWU-ASSET-002", "EV-WANWU-PROMPT-002", "EV-SUMMER-WORKFLOW-001", "EV-SUMMER-PROMPT-002"],
+      "tags": [
+        "续接",
+        "修复",
+        "截图",
+        "尾帧",
+        "连续性"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-SUMMER"
+      ],
+      "evidenceRefs": [
+        "EV-HEARTH-WORKFLOW-001",
+        "EV-WANWU-ASSET-002",
+        "EV-WANWU-PROMPT-002",
+        "EV-SUMMER-WORKFLOW-001",
+        "EV-SUMMER-PROMPT-002"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 3,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING",
+      "usageContract": {
+        "triggers": [
+          "前镜或失败候选有干净有效帧，需要续接精确状态或只修一个局部失败。"
+        ],
+        "exclusions": [
+          "帧含水印、字幕、错误服装或道具、严重模糊，或源镜导演决定本身错误。"
+        ],
+        "requiredInputs": [
+          "实际有效帧及来源、版本、哈希、observedFailure、mustKeep、mustChange 与连续性。"
+        ],
+        "outputTargets": [
+          "AssetPlan.assets[CONTINUITY_FRAME]",
+          "ShotTypePlan[CONTINUITY_REPAIR]",
+          "ShotPromptPlan"
+        ],
+        "stopConditions": [
+          "有效帧不干净或状态不再适用；失败无法局部描述；必须保持项与修正项冲突。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "帧来源、版本、哈希、observedFailure、mustKeep、mustChange、引用职责与范围完整。"
+          ],
+          "actualViewing": [
+            "打开源帧并对比修复前后；连续播放确认正确部分保留、错误修正且可接镜。"
+          ],
+          "actualListening": [
+            "修复涉及原声音时实际试听是否保持或正确替换；纯视觉修复明确不适用。"
+          ],
+          "humanAcceptance": [
+            "关键取舍、代表试片和扩大适用范围必须由人类确认；知识成熟度或节点成功不能替代验收。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-206",
       "kind": "pattern",
       "title": "群体编舞单独控制领舞与队形",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-206-群体编舞单独控制领舞与队形.md",
       "domain": "cinematography",
       "status": "OBSERVED",
-      "tags": ["群体编舞", "群演", "队形", "主角唯一性", "傩舞"],
-      "sourceCaseIds": ["CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-NUO-ASSET-002", "EV-NUO-PROMPT-002"],
+      "tags": [
+        "群体编舞",
+        "群演",
+        "队形",
+        "主角唯一性",
+        "傩舞"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-NUO-ASSET-002",
+        "EV-NUO-PROMPT-002"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 1,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "主要事件是领舞与群体的队形、同步或反同步变化。"
+        ],
+        "exclusions": [
+          "群体只是模糊背景、每名成员均为具名人物，或时长不足以看清阵型。"
+        ],
+        "requiredInputs": [
+          "领舞身份和造型、CROWD_ARCHETYPE_SHEET、场景、阵型、人数、差异规则、节拍、模型和时长。"
+        ],
+        "outputTargets": [
+          "AssetPlan.assets[CROWD_ARCHETYPE_SHEET]",
+          "ShotTypePlan[ENSEMBLE_CHOREOGRAPHY]",
+          "ShotPromptPlan.ensemble"
+        ],
+        "stopConditions": [
+          "群演板缺失；无法保证具名主角只有一个；阵型或层级不明；无自有代表试片。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "领舞与群演职责分离；人数、差异、阵型、同步、遮挡和节拍字段完整；主角 multiplicity 固定。"
+          ],
+          "actualViewing": [
+            "连续播放确认具名主角数量、群演差异、阵型和层级，且无主角脸无限复制或随机重置。"
+          ],
+          "actualListening": [
+            "声音节拍参与编舞时实际试听动作同步；无声编舞明确不适用。"
+          ],
+          "humanAcceptance": [
+            "本卡仅 OBSERVED；必须先由人类接受自有群舞代表镜头，不能从单个外部案例泛化。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-PAT-207",
       "kind": "pattern",
       "title": "蒙太奇区分叙事合同与候选采样",
       "path": "知识卡/分镜与运镜/DRAMA-PAT-207-蒙太奇区分叙事合同与候选采样.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["蒙太奇", "候选采样", "抽卡", "选片", "氛围"],
-      "sourceCaseIds": ["CASE-20260828-SUMMER", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-SUMMER-PROMPT-003", "EV-NUO-WORKFLOW-001", "EV-NUO-RISK-001"],
+      "tags": [
+        "蒙太奇",
+        "候选采样",
+        "抽卡",
+        "选片",
+        "氛围"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-SUMMER",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-SUMMER-PROMPT-003",
+        "EV-NUO-WORKFLOW-001",
+        "EV-NUO-RISK-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 2,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "诗意氛围、生活细节、表演姿态或动作快照需要蒙太奇组织。"
+        ],
+        "exclusions": [
+          "关键因果、逐字对白、连续变身或精确接触必须完整发生，或无人工选片资源却采用候选采样。"
+        ],
+        "requiredInputs": [
+          "确定性叙事或候选采样模式、每镜对象、运动、信息作用、时长、参考、成本与停止条件。"
+        ],
+        "outputTargets": [
+          "ShotTypePlan[MONTAGE]",
+          "ShotPromptPlan.beats[]",
+          "ShotPromptPlan.selectionEvidence"
+        ],
+        "stopConditions": [
+          "模式不明；节拍过密却声称逐拍完成；候选模式没有选片流程、成本和停止条件。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "叙事模式每镜一对象、一运动、一作用且顺序完整；候选模式标签、成本、选片和停止条件非空。"
+          ],
+          "actualViewing": [
+            "叙事模式播放检查逐镜信息与顺序；候选模式记录实际可用片段和选片证据。"
+          ],
+          "actualListening": [
+            "声音属于共同蒙太奇合同时实际试听连续性与节拍；纯视觉候选明确不适用。"
+          ],
+          "humanAcceptance": [
+            "人类完成选片并确认成本收益；可用率和成本阈值必须项目化。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-RISK-201",
       "kind": "risk",
       "title": "时长任务与参数合同过载",
       "path": "知识卡/分镜与运镜/DRAMA-RISK-201-时长任务与参数合同过载.md",
       "domain": "cinematography",
       "status": "REUSABLE",
-      "tags": ["任务过载", "时长", "参数冲突", "拆镜", "时间轴"],
-      "sourceCaseIds": ["CASE-20260828-SHANHAI-TRAINER", "CASE-20260828-HEARTH", "CASE-20260828-WANWU", "CASE-20260828-SHANHAIJIE", "CASE-20260828-SUMMER", "CASE-20260828-NUO"],
-      "evidenceRefs": ["EV-SHT-PROMPT-001", "EV-HEARTH-RISK-001", "EV-WANWU-PROMPT-001", "EV-WANWU-RISK-001", "EV-SHJ-RISK-001", "EV-SUMMER-RISK-001", "EV-NUO-PROMPT-001"],
+      "tags": [
+        "任务过载",
+        "时长",
+        "参数冲突",
+        "拆镜",
+        "时间轴"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-SHANHAI-TRAINER",
+        "CASE-20260828-HEARTH",
+        "CASE-20260828-WANWU",
+        "CASE-20260828-SHANHAIJIE",
+        "CASE-20260828-SUMMER",
+        "CASE-20260828-NUO"
+      ],
+      "evidenceRefs": [
+        "EV-SHT-PROMPT-001",
+        "EV-HEARTH-RISK-001",
+        "EV-WANWU-PROMPT-001",
+        "EV-WANWU-RISK-001",
+        "EV-SHJ-RISK-001",
+        "EV-SUMMER-RISK-001",
+        "EV-NUO-PROMPT-001"
+      ],
       "evidenceStrength": "HIGH",
       "sourceCount": 6,
       "ownProductionUses": 0,
       "ownAcceptedUses": 0,
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "多节拍、长对白、动作、变身、群体、复杂特效，或节点参数与文字时间轴需要写前比较。"
+        ],
+        "exclusions": [
+          "明确开放式候选采样且不声称逐拍完成；仍必须声明成本与停止条件。"
+        ],
+        "requiredInputs": [
+          "精确 nodeDuration、deliveryTotalDuration、unitDurationBudget、时间盒、primary task、模型、画幅、引用和对白参数。"
+        ],
+        "outputTargets": [
+          "ScriptProductionAnalysis.generationUnits[].unitDurationBudget",
+          "ShotPromptPlan.timeboxes[]",
+          "ShotPromptPlan.fallbackSplit",
+          "ScriptProductionAnalysis.handoff"
+        ],
+        "stopConditions": [
+          "文字时长与节点不一致；时间轴有空尾段、越界或重叠；多个独立高风险任务未拆分。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "时间轴从 0 覆盖 nodeDuration；声明时长、节点参数、画幅、模型和引用一致；每 unit 一个主任务。"
+          ],
+          "actualViewing": [
+            "连续播放能读清主因果和终态；技术解码、输出存在或提示词很长均不构成通过。"
+          ],
+          "actualListening": [
+            "含对白或声音时实际试听内容、自然时长和同步；只检测音轨存在不构成通过。"
+          ],
+          "humanAcceptance": [
+            "人类基于代表试片校准任务容量；经验秒数不得硬编码为通用质量阈值。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-PAT-001",
+      "kind": "pattern",
+      "title": "高概念先写成可执行规则",
+      "path": "知识卡/剧本/DRAMA-PAT-001-高概念先写成可执行规则.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "高概念",
+        "世界规则",
+        "触发与代价",
+        "开篇兑现"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-MATH-CULTIVATION",
+        "CASE-20260828-APOCALYPSE-KITCHEN",
+        "CASE-20260828-FORTUNE-WITHDRAWAL",
+        "CASE-20260828-OFFICE-WHISPERS",
+        "CASE-20260828-RULE-EXAM"
+      ],
+      "evidenceRefs": [
+        "EV-MATH-RULE-001",
+        "EV-FOOD-RULE-001",
+        "EV-FORTUNE-RULE-001",
+        "EV-OFFICE-ABILITY-001",
+        "EV-EXAM-RULE-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 5,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "想法、大纲或剧本依赖系统、规则怪谈、超能力、知识差、奇物或超自然因果。"
+        ],
+        "exclusions": [
+          "没有超常机制的现实主义冲突，或用户已冻结完整规则且只要求局部语言润色。"
+        ],
+        "requiredInputs": [
+          "当前 premise、canon、目标受众效果、已声明规则、允许改动范围和已知边界。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.storyEngine.ruleContract",
+          "ScriptDevelopmentAnalysis.problemLedger[]",
+          "ScriptDevelopmentAnalysis.episodeLadder[]"
+        ],
+        "stopConditions": [
+          "新规则与 canon 冲突；触发、边界或代价需要用户做方向性选择；知识库校验失败。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "ruleContract 包含 trigger、capability、boundary、cost、observableResult、counterexample 与 escalationSpace，未知项显式保留。"
+          ],
+          "actualViewing": [
+            "文本阶段不声称视觉通过；进入生产后实际观看规则触发、代价和结果是否可读。"
+          ],
+          "actualListening": [
+            "规则依赖声音或旁白时进入生产后实际试听，文本结构检查不能替代。"
+          ],
+          "humanAcceptance": [
+            "用户批准会改变世界观、能力上限或主要升级路线的 DEV 决定。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-PAT-002",
+      "kind": "pattern",
+      "title": "能力通过选择与局面变化兑现",
+      "path": "知识卡/剧本/DRAMA-PAT-002-能力通过选择与局面变化兑现.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "主角能动性",
+        "能力兑现",
+        "选择代价",
+        "局面变化"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-APOCALYPSE-KITCHEN",
+        "CASE-20260828-AUTUM-ECHO",
+        "CASE-20260828-FORTUNE-WITHDRAWAL",
+        "CASE-20260828-FORENSIC-PRINCE",
+        "CASE-20260828-OFFICE-WHISPERS",
+        "CASE-20260828-RULE-EXAM",
+        "CASE-20260828-SOLAR-FORTRESS",
+        "CASE-20260828-ANTI-SCAM"
+      ],
+      "evidenceRefs": [
+        "EV-FOOD-LOOP-001",
+        "EV-AUTUM-BIND-001",
+        "EV-FORTUNE-CHOICE-001",
+        "EV-FORENSIC-GOAL-001",
+        "EV-OFFICE-CHOICE-001",
+        "EV-EXAM-DESIRE-001",
+        "EV-SOLAR-CHOICE-001",
+        "EV-SCAM-CHOICE-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 8,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "主角拥有职业、系统、重生、预知、资源或知识优势，但情节被动、炫技或重复。"
+        ],
+        "exclusions": [
+          "当前主题有意表现无能为力，或用户只授权不改变动作因果的文字校对。"
+        ],
+        "requiredInputs": [
+          "能力边界、当前目标、可选行动、代价或放弃项、行动前后局面和对手反制。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.storyEngine",
+          "ScriptDevelopmentAnalysis.characterEngines[]",
+          "ScriptDevelopmentAnalysis.episodeLadder[]",
+          "ScriptDevelopmentAnalysis.problemLedger[]"
+        ],
+        "stopConditions": [
+          "能力来源或边界不明；选择会改写主角核心价值但用户未批准；结果与 canon 冲突。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每次关键能力使用能追到 input、choice、costOrForgoneOption、visibleConsequence 和 newConstraint。"
+          ],
+          "actualViewing": [
+            "生产后实际观看角色选择、动作和局面变化是否在银幕上可读。"
+          ],
+          "actualListening": [
+            "能力依赖对白、声音或口头判断时实际试听内容与行动因果。"
+          ],
+          "humanAcceptance": [
+            "用户确认主角能动性、代价尺度和能力使用不会背离期望的人物方向。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-PAT-003",
+      "kind": "pattern",
+      "title": "信息阶梯每级都改变行动",
+      "path": "知识卡/剧本/DRAMA-PAT-003-信息阶梯每级都改变行动.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "悬疑",
+        "信息释放",
+        "线索",
+        "前五集"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-PRISON-FATHER",
+        "CASE-20260828-FUNERAL-TRUTH",
+        "CASE-20260828-FORENSIC-PRINCE"
+      ],
+      "evidenceRefs": [
+        "EV-FATHER-CLUE-001",
+        "EV-FUNERAL-CLUE-001",
+        "EV-FORENSIC-GOAL-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 3,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "犯罪、家庭秘密、身份谜团、阴谋或调查故事的线索推进和前五集优化。"
+        ],
+        "exclusions": [
+          "没有谜团的生活切片，或关键真相已公开且当前任务只处理后果。"
+        ],
+        "requiredInputs": [
+          "线索来源、人物知情范围、验证行动、风险变化、误导和计划回收位置。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.episodeLadder[]",
+          "ScriptDevelopmentAnalysis.problemLedger[]",
+          "ScriptDevelopmentAnalysis.changePlan[]"
+        ],
+        "stopConditions": [
+          "谜底或证据规则不明；修改会让角色获得无来源知识；用户未选择公平性与悬念的方向。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每条信息包含 source、knowerBefore、newMeaning、actionForced、riskChanged、nextQuestion 和 payoffLocator。"
+          ],
+          "actualViewing": [
+            "生产后实际观看线索、观察者反应与行动后果是否连续可读。"
+          ],
+          "actualListening": [
+            "口述线索和隐瞒信息需实际试听措辞、知情范围与可辨识度。"
+          ],
+          "humanAcceptance": [
+            "用户接受谜底公平性、信息提前量和需要保留的误导。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-PAT-004",
+      "kind": "pattern",
+      "title": "关系引擎来自不兼容目标与解释",
+      "path": "知识卡/剧本/DRAMA-PAT-004-关系引擎来自不兼容目标与解释.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "关系引擎",
+        "目标冲突",
+        "误读",
+        "契约关系"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-MATH-CULTIVATION",
+        "CASE-20260828-AUTUM-ECHO",
+        "CASE-20260828-VILLAIN-SYSTEM"
+      ],
+      "evidenceRefs": [
+        "EV-MATH-RELATION-001",
+        "EV-AUTUM-BIND-001",
+        "EV-VILLAIN-RELATION-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 3,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "双主角、搭档、契约、敌友或爱情关系靠偶遇、拌嘴或重复误会推进。"
+        ],
+        "exclusions": [
+          "一方有意被写成无行动权的短时功能角色，或关系方向已冻结且不授权调整。"
+        ],
+        "requiredInputs": [
+          "双方当前目标、对彼此目标的判断、共享任务、不兼容点、权力和关系状态。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.characterEngines[]",
+          "ScriptDevelopmentAnalysis.relationshipMatrix",
+          "ScriptDevelopmentAnalysis.episodeLadder[]"
+        ],
+        "stopConditions": [
+          "任一方核心目标缺失；关系选择会改变结局或主角价值但用户未决定；维持冲突只能让角色失智。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每轮关系互动标记 goalA、goalB、beliefAAboutB、beliefBAboutA、nonCompatiblePoint 与 stateChange。"
+          ],
+          "actualViewing": [
+            "生产后观看双方意图、误读和关系状态变化是否能从表演与动作读出。"
+          ],
+          "actualListening": [
+            "含对白时实际试听潜台词、信息差和说听反应，不能只看台词文本。"
+          ],
+          "humanAcceptance": [
+            "用户批准会改变核心关系方向、承诺或角色能动性的 DEV 决定。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-PAT-005",
+      "kind": "pattern",
+      "title": "分集尾钩打开下一步行动",
+      "path": "知识卡/剧本/DRAMA-PAT-005-分集尾钩打开下一步行动.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "分集尾钩",
+        "下一步行动",
+        "连载结构",
+        "前五集"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-PRISON-FATHER",
+        "CASE-20260828-FUNERAL-TRUTH",
+        "CASE-20260828-APOCALYPSE-KITCHEN",
+        "CASE-20260828-AUTUM-ECHO",
+        "CASE-20260828-FORTUNE-WITHDRAWAL",
+        "CASE-20260828-FORENSIC-PRINCE",
+        "CASE-20260828-OFFICE-WHISPERS",
+        "CASE-20260828-RULE-EXAM",
+        "CASE-20260828-VILLAIN-SYSTEM",
+        "CASE-20260828-SOLAR-FORTRESS",
+        "CASE-20260828-ANTI-SCAM"
+      ],
+      "evidenceRefs": [
+        "EV-FATHER-CLUE-001",
+        "EV-FUNERAL-HOOK-001",
+        "EV-FOOD-LOOP-001",
+        "EV-AUTUM-BIND-001",
+        "EV-FORTUNE-PAYOFF-001",
+        "EV-FORENSIC-GOAL-001",
+        "EV-OFFICE-CHOICE-001",
+        "EV-EXAM-HOOK-001",
+        "EV-VILLAIN-CONFLICT-001",
+        "EV-SOLAR-DEADLINE-001",
+        "EV-SCAM-HOOK-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 11,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "竖屏短剧、连续分集、章节末尾或前五集的切点、追看和任务承接优化。"
+        ],
+        "exclusions": [
+          "独立单元有意保留情绪余韵，或用户只授权场内语言修改而不调整切点。"
+        ],
+        "requiredInputs": [
+          "当前分集起止、结尾局面变化、下一集首要任务、角色目标和允许调整的切点。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.episodeLadder[].endHook",
+          "ScriptDevelopmentAnalysis.episodeLadder[].nextActionOpened",
+          "ScriptDevelopmentAnalysis.options[]"
+        ],
+        "stopConditions": [
+          "下一动作依赖未选的方向性分支；调整会破坏已冻结集数结构；没有精确分集范围。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每集同时填写 stateChange、endHook 与 nextActionOpened，且下一集开头能追到该动作。"
+          ],
+          "actualViewing": [
+            "成片后连续观看分集切点与下一集开头，验证钩子可读并实际承接。"
+          ],
+          "actualListening": [
+            "钩子依赖对白或声音时实际试听信息是否完整、不过早且不被音乐遮蔽。"
+          ],
+          "humanAcceptance": [
+            "用户接受切点、付费点或追看节奏；没有真实留存数据时不得声称提升留存。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-PAT-006",
+      "kind": "pattern",
+      "title": "职业技能必须在现场产出证据",
+      "path": "知识卡/剧本/DRAMA-PAT-006-职业技能必须在现场产出证据.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "职业题材",
+        "技能现场化",
+        "证据",
+        "人物塑造"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-MATH-CULTIVATION",
+        "CASE-20260828-PRISON-FATHER",
+        "CASE-20260828-FUNERAL-TRUTH",
+        "CASE-20260828-AUTUM-ECHO",
+        "CASE-20260828-FORENSIC-PRINCE"
+      ],
+      "evidenceRefs": [
+        "EV-MATH-SKILL-001",
+        "EV-FATHER-SKILL-001",
+        "EV-FUNERAL-SKILL-001",
+        "EV-AUTUM-SKILL-001",
+        "EV-FORENSIC-SKILL-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 5,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "职业、手艺、医疗、法律、工程、知识差或日常技能主角只靠标签、术语或旁人夸赞成立。"
+        ],
+        "exclusions": [
+          "场景有意表现角色无法发挥技能，或专业内容尚未核验且当前不允许补充。"
+        ],
+        "requiredInputs": [
+          "角色能力来源、现场可观察对象、程序或测试、工具、专业核验状态和后果。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.characterEngines[]",
+          "ScriptDevelopmentAnalysis.episodeLadder[]",
+          "ScriptDevelopmentAnalysis.problemLedger[]"
+        ],
+        "stopConditions": [
+          "专业事实无法核验且会影响安全或案件结论；补动作会改写 canon；没有具体场景 locator。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "能力场景包含 observation、procedureOrTest、tool、decision、evidenceProduced、consequence 与 expertiseReviewNeeded。"
+          ],
+          "actualViewing": [
+            "生产后实际观看专业动作、工具使用、证据和结果是否清楚且可信。"
+          ],
+          "actualListening": [
+            "专业判断靠对白或声音时实际试听信息准确性、可懂度和节奏。"
+          ],
+          "humanAcceptance": [
+            "用户接受人物能力表达；高风险专业内容由合适的人类专家或权利人确认。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-RISK-001",
+      "kind": "risk",
+      "title": "能力边界漂移会稀释高概念",
+      "path": "知识卡/剧本/DRAMA-RISK-001-能力边界漂移会稀释高概念.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "能力边界",
+        "高概念稀释",
+        "万能解法",
+        "升级风险"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-MATH-CULTIVATION",
+        "CASE-20260828-OFFICE-WHISPERS"
+      ],
+      "evidenceRefs": [
+        "EV-MATH-BOUNDARY-001",
+        "EV-OFFICE-RISK-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 2,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "系统、超能力、预知、知识差或信息源在中后段准备扩大范围或连续轻易解题。"
+        ],
+        "exclusions": [
+          "升级已由明确训练、代价和旧规则铺垫，且只提升熟练度不改变能力类别。"
+        ],
+        "requiredInputs": [
+          "开篇能力承诺、已展示边界、代价、失效方式、升级来源和反制。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.storyEngine.abilityBoundaryLedger",
+          "ScriptDevelopmentAnalysis.problemLedger[]",
+          "ScriptDevelopmentAnalysis.options[]"
+        ],
+        "stopConditions": [
+          "现有能力 canon 不清；升级方向会改变核心卖点但用户未选；只能靠临时新能力解题。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每项升级记录来源、前置条件、代价、保留的反制和对旧冲突结构的影响。"
+          ],
+          "actualViewing": [
+            "生产后观看升级是否仍能从既有规则理解，不能用特效规模替代边界清晰。"
+          ],
+          "actualListening": [
+            "依赖解释台词时实际试听其可懂度；旁白说明不替代剧情铺垫。"
+          ],
+          "humanAcceptance": [
+            "用户批准会改变核心卖点或能力类别的升级；OBSERVED 风险不自动否决方案。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-RISK-002",
+      "kind": "risk",
+      "title": "重复打脸但局面不变会耗尽升级",
+      "path": "知识卡/剧本/DRAMA-RISK-002-重复打脸但局面不变会耗尽升级.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "重复打脸",
+        "复仇",
+        "爽点升级",
+        "主角主动性"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-FORTUNE-WITHDRAWAL",
+        "CASE-20260828-VILLAIN-SYSTEM",
+        "CASE-20260828-SOLAR-FORTRESS"
+      ],
+      "evidenceRefs": [
+        "EV-FORTUNE-RISK-001",
+        "EV-VILLAIN-RISK-001",
+        "EV-SOLAR-RISK-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 3,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "复仇、逆袭、断亲、末日资源或反派系统连续使用相似公开羞辱或自动惩罚。"
+        ],
+        "exclusions": [
+          "重复是有意的形式设计且每轮有明确变化，或当前只评估一次已冻结的阶段兑现。"
+        ],
+        "requiredInputs": [
+          "每轮目标、方法、主角代价、对手学习、关系或资源变化和下一层任务。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.episodeLadder[]",
+          "ScriptDevelopmentAnalysis.problemLedger[]",
+          "ScriptDevelopmentAnalysis.options[]"
+        ],
+        "stopConditions": [
+          "爽点取舍会改变类型承诺但用户未决定；只取得片段无法比较重复；当前项目明确保留重复节奏。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "连续两次兑现至少在 newCost、opponentLearning、stateChange 或 nextLevel 中有一项不同。"
+          ],
+          "actualViewing": [
+            "成片后连续观看多集，检查爽点是否可区分且主线真实前进。"
+          ],
+          "actualListening": [
+            "重复羞辱或围观对白需实际试听，避免同义台词和相同情绪节拍。"
+          ],
+          "humanAcceptance": [
+            "用户接受合并、升级或删除哪一轮爽点；没有留存数据时不宣称优化已提升效果。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-RISK-003",
+      "kind": "risk",
+      "title": "系统或先知替代选择会消除不确定性",
+      "path": "知识卡/剧本/DRAMA-RISK-003-系统或先知替代选择会消除不确定性.md",
+      "domain": "narrative",
+      "status": "OBSERVED",
+      "tags": [
+        "系统",
+        "重生",
+        "预知",
+        "不确定性",
+        "选择空间"
+      ],
+      "sourceCaseIds": [
+        "CASE-20260828-VILLAIN-SYSTEM",
+        "CASE-20260828-SOLAR-FORTRESS",
+        "CASE-20260828-ANTI-SCAM"
+      ],
+      "evidenceRefs": [
+        "EV-VILLAIN-SYSTEM-001",
+        "EV-SOLAR-RISK-001",
+        "EV-SCAM-RISK-001"
+      ],
+      "evidenceStrength": "MEDIUM",
+      "sourceCount": 3,
+      "ownProductionUses": 0,
+      "ownAcceptedUses": 0,
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "系统、重生、预知、回档、万能资源或身份碾压让主角连续正确且几乎不付出代价。"
+        ],
+        "exclusions": [
+          "主题有意讨论宿命且人物承担真实道德后果，或系统信息本身持续不可靠。"
+        ],
+        "requiredInputs": [
+          "信息可靠性、选择空间、放弃项、不可逆成本、对手适应和未来偏差。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.storyEngine.uncertainty",
+          "ScriptDevelopmentAnalysis.characterEngines[]",
+          "ScriptDevelopmentAnalysis.problemLedger[]"
+        ],
+        "stopConditions": [
+          "系统规则和未来信息范围不明；新增代价会改变主角价值方向但用户未批准；没有可行的第二选项。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "关键节点记录 informationReliability、choiceSpace、forgoneOption、irreversibleCost、counterplay 和 deviationFromMemory。"
+          ],
+          "actualViewing": [
+            "生产后观看角色是否真的权衡与失去，而非由系统界面或旁白自动给出答案。"
+          ],
+          "actualListening": [
+            "系统通知或解释对白需实际试听，确认没有替代角色决策和表演。"
+          ],
+          "humanAcceptance": [
+            "用户接受不确定性、成本和失败可能；OBSERVED 风险只提供选择，不强行改写。"
+          ]
+        }
+      }
     }
   ],
   "standards": [
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-STD-ASSET-001",
       "kind": "asset-standard",
       "title": "图片素材与逐镜参考职责",
@@ -365,15 +2185,72 @@
       "policyStatus": "ACTIVE",
       "evidenceStatus": "REUSABLE",
       "version": "0.1.1",
-      "tags": ["图片素材", "AssetPlan", "referencePlan", "人物复合板"],
-      "triggerFeatures": ["剧本素材规划", "人物参考图", "场景道具", "状态变化", "逐镜引用"],
-      "exclusionFeatures": ["纯音频任务"],
-      "sourceCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-102", "DRAMA-PAT-103", "DRAMA-PAT-104", "DRAMA-PAT-105", "DRAMA-RISK-101"],
+      "tags": [
+        "图片素材",
+        "AssetPlan",
+        "referencePlan",
+        "人物复合板"
+      ],
+      "triggerFeatures": [
+        "剧本素材规划",
+        "人物参考图",
+        "场景道具",
+        "状态变化",
+        "逐镜引用"
+      ],
+      "exclusionFeatures": [
+        "纯音频任务"
+      ],
+      "sourceCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-102",
+        "DRAMA-PAT-103",
+        "DRAMA-PAT-104",
+        "DRAMA-PAT-105",
+        "DRAMA-RISK-101"
+      ],
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "image-asset"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "从剧本或 generation unit 规划、验收或装配人物、场景、道具、状态、构图或连续性图片。"
+        ],
+        "exclusions": [
+          "纯音频任务，或完全不涉及可见实体、构图和图片引用的工作。"
+        ],
+        "requiredInputs": [
+          "绑定剧本与世界类型合同、连续性、逐 unit 可见事实、primaryShotType、目标画幅、模型、时长、实时媒体预算和已有资产验收状态。"
+        ],
+        "outputTargets": [
+          "AssetPlan.assets[]",
+          "AssetPlan.referenceMatrix[]",
+          "ScriptProductionAnalysis.handoff"
+        ],
+        "stopConditions": [
+          "事实冲突；具名人物身份或当前造型母版缺失；职责错位；只有污染 INTERNAL；预算未决；新板式无代表试片。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "资产字段、scope、status、usedBy、职责唯一性、ID、预算和排除原因结构完整。"
+          ],
+          "actualViewing": [
+            "逐张打开原图核对身份、状态和污染；连续播放代表视频检查近景、转身、接触、群体或状态风险。"
+          ],
+          "actualListening": [
+            "本标准不新增声音验收；镜头含对白或声音时继承分镜与声音合同的实际试听要求。"
+          ],
+          "humanAcceptance": [
+            "人类明确确认预算排除、冲突处置、代表试片结果和扩大使用范围；REUSABLE 不等于图片或成片通过。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-STD-SHOT-001",
       "kind": "shot-type",
       "title": "镜头类型与提示词合同",
@@ -382,38 +2259,110 @@
       "policyStatus": "ACTIVE",
       "evidenceStatus": "REUSABLE",
       "version": "0.1.2",
-      "tags": ["分镜提示词", "ShotPromptPlan", "shotType", "时间轴"],
-      "triggerFeatures": ["分镜设计", "视频提示词", "对白", "动作", "变身", "单人表演", "双主体互动", "群舞", "修复"],
-      "exclusionFeatures": ["纯图片生成"],
-      "sourceCardIds": ["DRAMA-PAT-201", "DRAMA-PAT-202", "DRAMA-PAT-203", "DRAMA-PAT-204", "DRAMA-PAT-205", "DRAMA-PAT-206", "DRAMA-PAT-207", "DRAMA-RISK-201"],
+      "tags": [
+        "分镜提示词",
+        "ShotPromptPlan",
+        "shotType",
+        "时间轴"
+      ],
+      "triggerFeatures": [
+        "分镜设计",
+        "视频提示词",
+        "对白",
+        "动作",
+        "变身",
+        "单人表演",
+        "双主体互动",
+        "群舞",
+        "修复"
+      ],
+      "exclusionFeatures": [
+        "纯图片生成"
+      ],
+      "sourceCardIds": [
+        "DRAMA-PAT-201",
+        "DRAMA-PAT-202",
+        "DRAMA-PAT-203",
+        "DRAMA-PAT-204",
+        "DRAMA-PAT-205",
+        "DRAMA-PAT-206",
+        "DRAMA-PAT-207",
+        "DRAMA-RISK-201"
+      ],
       "evidenceOverrides": [
         {
           "feature": "SOLO_PERFORMANCE",
           "evidenceStatus": "OBSERVED",
           "reason": "The boundary between a solo performance and another subject's terminal reaction has only external-case evidence.",
           "representativeTestRequired": true,
-          "sourceCardIds": ["DRAMA-PAT-201", "DRAMA-PAT-207"]
+          "sourceCardIds": [
+            "DRAMA-PAT-201",
+            "DRAMA-PAT-207"
+          ]
         },
         {
           "feature": "TWO_SUBJECT_INTERACTION",
           "evidenceStatus": "OBSERVED",
           "reason": "The non-dialogue, non-contact initiative-response subtype is currently derived from the NUO human-dragon sequence.",
           "representativeTestRequired": true,
-          "sourceCardIds": ["DRAMA-PAT-201", "DRAMA-PAT-203"]
+          "sourceCardIds": [
+            "DRAMA-PAT-201",
+            "DRAMA-PAT-203"
+          ]
         },
         {
           "feature": "ENSEMBLE_CHOREOGRAPHY",
           "evidenceStatus": "OBSERVED",
           "reason": "Lead-versus-ensemble choreography currently has one inspected external source case.",
           "representativeTestRequired": true,
-          "sourceCardIds": ["DRAMA-PAT-206"]
+          "sourceCardIds": [
+            "DRAMA-PAT-206"
+          ]
         }
       ],
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "把 scene beat 拆成 generation units、选择 primary shot type 或形成 ShotPromptPlan。"
+        ],
+        "exclusions": [
+          "纯图片生成，或仅执行已批准提示词且不再设计或修改导演合同。"
+        ],
+        "requiredInputs": [
+          "绑定剧本事实与世界类型合同、storyFunction、audienceEffect、startState、endState、AssetPlan、对白、声音、模型、画幅与时长。"
+        ],
+        "outputTargets": [
+          "ScriptProductionAnalysis.generationUnits[]",
+          "ShotTypePlan",
+          "ShotPromptPlan",
+          "ShotPromptPlan.fallbackSplit"
+        ],
+        "stopConditions": [
+          "主任务不唯一；复杂机制未拆分；对白、声音、人物或状态合同缺失；时长、模型或引用冲突；高风险机制无代表试片。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "每 unit 恰好一个 primary type；类型字段完整；时间盒覆盖节点时长；参数、引用和媒体预算一致；OBSERVED override 显式带出。"
+          ],
+          "actualViewing": [
+            "输出视频必须连续播放，验证主要事件、动作或状态因果、终态和剪辑出口。"
+          ],
+          "actualListening": [
+            "含对白或声音时实际试听逐字内容、说话人、情绪、声音职责、口型策略和音画同步。"
+          ],
+          "humanAcceptance": [
+            "最终采用及代表试片由人类确认；局部 OBSERVED 边界不得被总标准 REUSABLE 隐去。"
+          ]
+        }
+      }
     },
     {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "id": "DRAMA-STD-WORKFLOW-001",
       "kind": "workflow-standard",
       "title": "剧本到素材与分镜分析",
@@ -422,12 +2371,157 @@
       "policyStatus": "ACTIVE",
       "evidenceStatus": "REUSABLE",
       "version": "0.1.1",
-      "tags": ["剧本分析", "WorldGenreProfile", "AssetPlan", "ShotTypePlan", "ShotPromptPlan"],
-      "triggerFeatures": ["给剧本做素材规划", "世界观类型分析", "剧本到分镜"],
-      "exclusionFeatures": ["仅执行已批准提示词"],
-      "sourceCardIds": ["DRAMA-PAT-101", "DRAMA-PAT-201", "DRAMA-RISK-101", "DRAMA-RISK-201"],
+      "tags": [
+        "剧本分析",
+        "WorldGenreProfile",
+        "AssetPlan",
+        "ShotTypePlan",
+        "ShotPromptPlan"
+      ],
+      "triggerFeatures": [
+        "给剧本做素材规划",
+        "世界观类型分析",
+        "剧本到分镜"
+      ],
+      "exclusionFeatures": [
+        "仅执行已批准提示词"
+      ],
+      "sourceCardIds": [
+        "DRAMA-PAT-101",
+        "DRAMA-PAT-201",
+        "DRAMA-RISK-101",
+        "DRAMA-RISK-201"
+      ],
       "createdAt": "2026-08-28",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script",
+        "image-asset",
+        "shot-prompt"
+      ],
+      "knowledgeAreaRole": "CROSS_CUTTING",
+      "usageContract": {
+        "triggers": [
+          "收到精确剧本、场景或分集文本，并要求构建世界类型、图片素材和分镜提示词分析。"
+        ],
+        "exclusions": [
+          "只执行已批准提示词、生成媒体、写入 LibTV、运行节点、付费或发布。"
+        ],
+        "requiredInputs": [
+          "精确来源、版本、范围、用户决定、项目规则、连续性、当前素材清单、ACTIVE 标准及目标模型或明确 UNKNOWN。"
+        ],
+        "outputTargets": [
+          "ScriptProductionAnalysis.sourceBinding",
+          "ScriptProductionAnalysis.worldGenreProfile",
+          "ScriptProductionAnalysis.generationUnits[]",
+          "AssetPlan",
+          "ShotPromptPlan",
+          "ScriptProductionAnalysis.knowledgeUsed[]"
+        ],
+        "stopConditions": [
+          "canon 不明；事实冲突；关键创作分支未选；缺图片、对白、声音或模型却欲标 prompt-ready；知识库校验失败；分析授权被越界为执行。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "来源绑定、事实/决定/未知分层、主类型、时长、资产职责、知识成熟度、决策理由和 ready 状态结构一致。"
+          ],
+          "actualViewing": [
+            "结构通过不授予媒体通过；涉及图片或视频时落实子合同的逐图查看和连续播放。"
+          ],
+          "actualListening": [
+            "结构通过不授予声音通过；涉及对白或声音时落实子合同的实际试听。"
+          ],
+          "humanAcceptance": [
+            "用户选择关键创作分支并批准 AI_DIRECTOR_DECISION、导演合同和 prompt handoff；分析完整不授权生成或外部写入。"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "id": "DRAMA-STD-WORKFLOW-002",
+      "kind": "workflow-standard",
+      "title": "短剧剧本诊断与优化合同",
+      "path": "标准/剧本/DRAMA-STD-WORKFLOW-002-短剧剧本诊断与优化合同.md",
+      "domain": "narrative",
+      "policyStatus": "ACTIVE",
+      "evidenceStatus": "OBSERVED",
+      "version": "0.1.0",
+      "tags": [
+        "剧本开发",
+        "剧本优化",
+        "ScriptDevelopmentAnalysis",
+        "知识使用"
+      ],
+      "triggerFeatures": [
+        "想法开发",
+        "故事大纲优化",
+        "角色设定优化",
+        "前五集诊断",
+        "分集正文改编"
+      ],
+      "exclusionFeatures": [
+        "仅执行已批准提示词",
+        "纯媒体生成",
+        "不允许修改的逐字校对"
+      ],
+      "sourceCardIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006",
+        "DRAMA-RISK-001",
+        "DRAMA-RISK-002",
+        "DRAMA-RISK-003"
+      ],
+      "createdAt": "2026-08-28",
+      "updatedAt": "2026-08-28",
+      "knowledgeAreas": [
+        "script"
+      ],
+      "knowledgeAreaRole": "PRIMARY",
+      "usageContract": {
+        "triggers": [
+          "用户提供想法、大纲、角色设定、分集正文或现有剧本，并要求诊断、开发、改编或优化。"
+        ],
+        "exclusions": [
+          "仅执行已批准提示词、纯媒体生成、外部发布，或只做不改变内容的逐字校对。"
+        ],
+        "requiredInputs": [
+          "精确来源与版本、DEVELOP 或 ADAPT 模式、受众、格式、范围、优化目标、保护内容、允许改动范围、用户决定和项目规则。"
+        ],
+        "outputTargets": [
+          "ScriptDevelopmentAnalysis.sourceBinding",
+          "ScriptDevelopmentAnalysis.taskContract",
+          "ScriptDevelopmentAnalysis.storyEngine",
+          "ScriptDevelopmentAnalysis.characterEngines[]",
+          "ScriptDevelopmentAnalysis.episodeLadder[]",
+          "ScriptDevelopmentAnalysis.problemLedger[]",
+          "ScriptDevelopmentAnalysis.options[]",
+          "ScriptDevelopmentAnalysis.changePlan[]",
+          "ScriptDevelopmentAnalysis.knowledgeUsed[]",
+          "ScriptDevelopmentAnalysis.doubaoHandoff"
+        ],
+        "stopConditions": [
+          "输入版本或 canon 不明；方向性分支未由用户选择；required input 缺失；知识库校验失败；请求涉及未授权复制、生成、发布或付费。"
+        ],
+        "acceptance": {
+          "machineChecks": [
+            "来源绑定、事实分层、规则、主角能动性、关系、信息阶梯、尾钩、问题 locator、选项、决定和 canonical knowledgeUsed 结构完整。"
+          ],
+          "actualViewing": [
+            "文本分析不冒充成片效果；进入生产后按批准 Brief 实际观看动作、信息和关系变化。"
+          ],
+          "actualListening": [
+            "文本分析不冒充声音通过；含对白或声音的结果需实际试听并核对说话人、内容和功能。"
+          ],
+          "humanAcceptance": [
+            "用户批准方向性 DEV 决定、change plan 和进入豆包创作的 Brief；OBSERVED 知识不能替用户决定。"
+          ]
+        }
+      }
     }
   ]
 }

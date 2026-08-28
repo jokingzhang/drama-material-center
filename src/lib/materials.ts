@@ -55,6 +55,15 @@ export async function searchMaterialText(projectId: string, query: string, signa
   return response.json() as Promise<MaterialTextSearchResponse>;
 }
 
+export async function getMaterialSummary(projectId: string, path: string, signal?: AbortSignal) {
+  const response = await fetch(
+    `/api/projects/${encodeURIComponent(projectId)}/summary?path=${encodeURIComponent(path)}`,
+    { cache: "no-store", signal },
+  );
+  if (!response.ok) throw await responseError(response, "无法读取文档摘要。");
+  return response.json() as Promise<{ content: string; bytesRead: number; truncated: boolean }>;
+}
+
 export async function revealMaterial(projectId: string, path?: string) {
   const query = path ? `?path=${encodeURIComponent(path)}` : "";
   const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/reveal${query}`, { method: "POST" });

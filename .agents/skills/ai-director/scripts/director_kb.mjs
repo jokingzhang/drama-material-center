@@ -10,6 +10,8 @@ const POLICY_STATUSES = new Set(['DRAFT', 'ACTIVE', 'RETIRED']);
 const EVIDENCE_STATUSES = new Set(['OBSERVED', 'REUSABLE', 'VALIDATED']);
 const EVIDENCE_STATUS_RANK = new Map([['OBSERVED', 1], ['REUSABLE', 2], ['VALIDATED', 3]]);
 const DOMAINS = new Set(['narrative', 'visual-material', 'cinematography', 'workflow']);
+const KNOWLEDGE_AREAS = new Set(['script', 'image-asset', 'shot-prompt']);
+const KNOWLEDGE_AREA_ROLES = new Set(['PRIMARY', 'CROSS_CUTTING']);
 const STRENGTHS = new Set(['LOW', 'MEDIUM', 'HIGH']);
 const CASE_ORIGINS = new Set(['external-work', 'own-production']);
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -194,6 +196,46 @@ function requireStringArray(meta, key, file, errors, allowEmpty = false) {
   }
 }
 
+function validateKnowledgeClassification(meta, file, errors) {
+  requireStringArray(meta, 'knowledgeAreas', file, errors);
+  const areas = Array.isArray(meta.knowledgeAreas) ? meta.knowledgeAreas : [];
+  for (const area of areas) {
+    if (!KNOWLEDGE_AREAS.has(area)) errors.push(`${file}: unsupported knowledgeArea ${area}`);
+  }
+  if (new Set(areas).size !== areas.length) errors.push(`${file}: knowledgeAreas must not contain duplicates`);
+  if (!KNOWLEDGE_AREA_ROLES.has(meta.knowledgeAreaRole)) {
+    errors.push(`${file}: knowledgeAreaRole must be PRIMARY or CROSS_CUTTING`);
+  } else if (meta.knowledgeAreaRole === 'PRIMARY' && areas.length !== 1) {
+    errors.push(`${file}: PRIMARY knowledge entries must name exactly one knowledgeArea`);
+  } else if (meta.knowledgeAreaRole === 'CROSS_CUTTING' && areas.length < 2) {
+    errors.push(`${file}: CROSS_CUTTING knowledge entries must name at least two knowledgeAreas`);
+  }
+}
+
+function validateUsageContract(meta, file, errors) {
+  const contract = meta.usageContract;
+  if (!isPlainObject(contract)) {
+    errors.push(`${file}: usageContract must be an object`);
+    return;
+  }
+  for (const key of ['triggers', 'exclusions', 'requiredInputs', 'outputTargets', 'stopConditions']) {
+    const values = contract[key];
+    if (!Array.isArray(values) || values.length === 0 || values.some((item) => typeof item !== 'string' || item.trim() === '')) {
+      errors.push(`${file}: usageContract.${key} must be a non-empty string array`);
+    }
+  }
+  if (!isPlainObject(contract.acceptance)) {
+    errors.push(`${file}: usageContract.acceptance must be an object`);
+    return;
+  }
+  for (const key of ['machineChecks', 'actualViewing', 'actualListening', 'humanAcceptance']) {
+    const values = contract.acceptance[key];
+    if (!Array.isArray(values) || values.length === 0 || values.some((item) => typeof item !== 'string' || item.trim() === '')) {
+      errors.push(`${file}: usageContract.acceptance.${key} must be a non-empty string array`);
+    }
+  }
+}
+
 function validateCaseRecord(record, errors) {
   const { meta, text, file } = record;
   if (![1, 2].includes(meta.schemaVersion)) errors.push(`${file}: schemaVersion must be 1 or 2`);
@@ -207,6 +249,7 @@ function validateCaseRecord(record, errors) {
   requireString(meta, 'evidenceDocument', file, errors);
   requireStringArray(meta, 'domains', file, errors);
   requireStringArray(meta, 'derivedCardIds', file, errors, true);
+  validateKnowledgeClassification(meta, file, errors);
   for (const domain of Array.isArray(meta.domains) ? meta.domains : []) if (!DOMAINS.has(domain)) errors.push(`${file}: unsupported domain ${domain}`);
   const requiredHeadings = meta.schemaVersion === 2 ? CASE_V2_REQUIRED_HEADINGS : CASE_V1_REQUIRED_HEADINGS;
   for (const heading of requiredHeadings) if (!hasHeading(text, heading)) errors.push(`${file}: missing heading ## ${heading}`);
@@ -228,7 +271,7 @@ function validateCardRecord(record, validationText, errors) {
   const { meta, text, file } = record;
   const cardMetaId = typeof meta.id === 'string' ? meta.id : '';
   const sourceCaseIds = Array.isArray(meta.sourceCaseIds) ? meta.sourceCaseIds : [];
-  if (meta.schemaVersion !== 1) errors.push(`${file}: schemaVersion must be 1`);
+  if (meta.schemaVersion !== 2) errors.push(`${file}: schemaVersion must be 2`);
   requireString(meta, 'id', file, errors);
   if (!/^DRAMA-(PAT|RISK)-\d{3}$/.test(meta.id ?? '')) errors.push(`${file}: id must match DRAMA-PAT-### or DRAMA-RISK-###`);
   if (!CARD_KINDS.has(meta.kind)) errors.push(`${file}: unsupported kind ${meta.kind}`);
@@ -239,6 +282,8 @@ function validateCardRecord(record, validationText, errors) {
   requireStringArray(meta, 'tags', file, errors);
   requireStringArray(meta, 'sourceCaseIds', file, errors);
   requireStringArray(meta, 'evidenceRefs', file, errors);
+  validateKnowledgeClassification(meta, file, errors);
+  validateUsageContract(meta, file, errors);
   if (!STRENGTHS.has(meta.evidenceStrength)) errors.push(`${file}: unsupported evidenceStrength ${meta.evidenceStrength}`);
   for (const key of ['sourceCount', 'ownProductionUses', 'ownAcceptedUses']) {
     if (!Number.isInteger(meta[key]) || meta[key] < 0) errors.push(`${file}: ${key} must be a non-negative integer`);
@@ -326,7 +371,7 @@ function validateCardRecord(record, validationText, errors) {
 
 function validateStandardRecord(record, errors) {
   const { meta, text, file } = record;
-  if (meta.schemaVersion !== 1) errors.push(`${file}: schemaVersion must be 1`);
+  if (meta.schemaVersion !== 2) errors.push(`${file}: schemaVersion must be 2`);
   requireString(meta, 'id', file, errors);
   if (!/^DRAMA-STD-(ASSET|SHOT|WORKFLOW)-\d{3}$/.test(meta.id ?? '')) {
     errors.push(`${file}: id must match DRAMA-STD-ASSET-###, DRAMA-STD-SHOT-###, or DRAMA-STD-WORKFLOW-###`);
@@ -344,6 +389,8 @@ function validateStandardRecord(record, errors) {
   requireStringArray(meta, 'triggerFeatures', file, errors);
   requireStringArray(meta, 'exclusionFeatures', file, errors, true);
   requireStringArray(meta, 'sourceCardIds', file, errors);
+  validateKnowledgeClassification(meta, file, errors);
+  validateUsageContract(meta, file, errors);
   if (meta.evidenceOverrides !== undefined) {
     if (!Array.isArray(meta.evidenceOverrides)) {
       errors.push(`${file}: evidenceOverrides must be an array when present`);
@@ -469,7 +516,7 @@ function readKnowledgeBase(root) {
     errors.push('.ai-director/index.json: root must be an object');
     return { errors, cases, cards, standards, counts: { cases: 0, cards: 0, standards: 0, byStatus: {}, byDomain: {}, byPolicyStatus: {} } };
   }
-  if (index.schemaVersion !== 1) errors.push('.ai-director/index.json: schemaVersion must be 1');
+  if (index.schemaVersion !== 2) errors.push('.ai-director/index.json: schemaVersion must be 2');
   if (!Array.isArray(index.cases)) errors.push('.ai-director/index.json: cases must be an array');
   if (!Array.isArray(index.cards)) errors.push('.ai-director/index.json: cards must be an array');
   if (index.standards !== undefined && !Array.isArray(index.standards)) errors.push('.ai-director/index.json: standards must be an array when present');
@@ -684,10 +731,13 @@ function searchCards(root, options, knowledge) {
       id: record.meta.id,
       status: record.meta.status,
       domain: record.meta.domain,
+      knowledgeAreas: record.meta.knowledgeAreas,
+      knowledgeAreaRole: record.meta.knowledgeAreaRole,
       title: record.meta.title,
       evidenceStrength: record.meta.evidenceStrength,
       sourceCaseIds: record.meta.sourceCaseIds,
       tags: record.meta.tags,
+      usageContract: record.meta.usageContract,
       score,
       path: relative(root, record.file),
     }));
@@ -734,11 +784,14 @@ function listStandards(root, options, knowledge) {
       version: record.meta.version,
       policyStatus: record.meta.policyStatus,
       evidenceStatus: record.meta.evidenceStatus,
+      knowledgeAreas: record.meta.knowledgeAreas,
+      knowledgeAreaRole: record.meta.knowledgeAreaRole,
       tags: record.meta.tags,
       triggerFeatures: record.meta.triggerFeatures,
       exclusionFeatures: record.meta.exclusionFeatures,
       sourceCardIds: record.meta.sourceCardIds,
       evidenceOverrides: record.meta.evidenceOverrides ?? [],
+      usageContract: record.meta.usageContract,
       path: relative(root, record.file),
     }));
 }

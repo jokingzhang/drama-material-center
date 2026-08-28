@@ -23,7 +23,7 @@ When screenplay prose, final creative prose, or generation prompts are requested
 
 - **Study** — learn from a completed work or production canvas. Read [study-mode.md](references/study-mode.md). Read [knowledge-model.md](references/knowledge-model.md) only when retrieving, comparing, persisting, or promoting knowledge.
 - **Develop/Adapt** — turn an idea, treatment, novel, outline, or non-screen-ready draft into a production-aware story package before screenplay prose. Read [develop-mode.md](references/develop-mode.md) and [creative-dialogue.md](references/creative-dialogue.md). Read [knowledge-model.md](references/knowledge-model.md) only when retrieving knowledge.
-- **Direct** — turn an approved story package, script, episode, scene, or shot goal into a scale-appropriate Director Bible or Brief before prompts or execution. Read [direct-mode.md](references/direct-mode.md), [creative-dialogue.md](references/creative-dialogue.md), and [director-rubric.md](references/director-rubric.md). For `剧本 → 图片素材 → 分镜提示词` work, also read [script-to-production.md](references/script-to-production.md). Read [knowledge-model.md](references/knowledge-model.md) when retrieving knowledge.
+- **Direct** — turn an approved story package, script, episode, scene, or shot goal into a scale-appropriate Director Bible or Brief before prompts or execution. Read [direct-mode.md](references/direct-mode.md), [creative-dialogue.md](references/creative-dialogue.md), and [director-rubric.md](references/director-rubric.md). For `剧本 → 图片素材 → 分镜提示词` work, also read [script-to-production.md](references/script-to-production.md). When that work is bound to an existing material-center project or the user asks to save/visualize its knowledge use, also read [script-production-analysis-schema.md](references/script-production-analysis-schema.md). Read [knowledge-model.md](references/knowledge-model.md) when retrieving knowledge.
 - **Review** — review actual images, dailies, cuts, or production evidence and prescribe the smallest repair. Read [review-mode.md](references/review-mode.md) and [director-rubric.md](references/director-rubric.md). Read [creative-dialogue.md](references/creative-dialogue.md) only when repair options materially diverge; read [knowledge-model.md](references/knowledge-model.md) only when recording or promoting practice knowledge.
 
 For an external completed work, Study may stand alone or inform later development and direction. For the user's own production, use Develop/Adapt when needed, Direct at the smallest useful scale, then Review actual output; only after Review may Study normalize the result as practice evidence when the user requested persistence. Stop at the level the user requested; do not reveal shot-level detail while upstream story or project-level choices remain unresolved unless a bounded test requires it.
@@ -66,9 +66,18 @@ When the user supplies a script and asks what to make, completion requires all o
 - an `AssetPlan` that specifies reusable master assets, clean generation inputs, per-shot reference responsibilities, gaps, versions, and observable image acceptance;
 - a `ShotTypePlan` that assigns each generation unit one primary shot type and explains why;
 - a `ShotPromptPlan` whose required fields come from the applicable active shot standard, whose reference mapping comes from actual or explicitly missing assets, and whose delivery total, provisional unit budget, and exact node-duration status are distinct;
+- a structured `knowledgeUsed` ledger that records each knowledge item that materially affected the analysis as adopted, rejected for a named condition, or overridden by a named higher-priority authority, with immutable snapshots and exact output locators;
 - a downstream handoff that freezes directing facts but leaves final creative prompt prose to `$doubao-creative-studio` when that prose is requested.
 
 Do not call the analysis complete if a visible story fact has no asset responsibility, a generation unit has no primary shot type, a reference role maps to the wrong actual asset, or the proposed beats cannot fit the duration.
+
+### Project analysis registration boundary
+
+A full `剧本 → 图片素材 → 分镜提示词` request for a named, existing material-center project is a durable project analysis, not ordinary conversation. Resolve the actual workspace from repository configuration, bind an existing project-relative script file and scope, state the intended project-local analysis and index paths, then produce and register a versioned `ScriptProductionAnalysis v1` using [script-production-analysis-schema.md](references/script-production-analysis-schema.md). This registration is part of the requested analysis deliverable; it is not background telemetry.
+
+Do not persist anything for conceptual advice, a comparison, a review-only request, pasted or hypothetical material with no exact project/source binding, an ambiguous project, or any request that says not to write. In those cases return a clearly non-persistent `DRAFT` in the conversation and state that it was not registered. Never invent a project, source path, hash, knowledge ID, or prior approval just to satisfy the schema.
+
+Registration means only that the local Web application can read the analysis and its `knowledgeUsed` decisions. It does not mark the analysis `APPROVED`, promote knowledge, accept an asset, authorize prompt handoff, generate media, write LibTV, spend credits, or authorize any other production action.
 
 ## Apply the evidence hierarchy
 

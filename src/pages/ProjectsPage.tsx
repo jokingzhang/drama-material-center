@@ -1,4 +1,4 @@
-import { ArrowRight, FolderKanban, ImagePlus, Plus, RefreshCw, X } from "lucide-react";
+import { ArrowRight, BrainCircuit, FolderKanban, ImagePlus, Plus, RefreshCw, X } from "lucide-react";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
@@ -130,6 +130,7 @@ export function ProjectsPage() {
         </div>
         <div className="header-actions">
           <ThemeToggle />
+          <Link className="course-link" to="/knowledge"><BrainCircuit size={18} />导演知识库</Link>
           <button className="secondary-button" type="button" disabled={loading} onClick={() => void refresh()}>
             <RefreshCw size={18} className={loading ? "spinning" : ""} />刷新
           </button>
@@ -168,6 +169,7 @@ export function ProjectsPage() {
                   {coverUploading === project.id ? <RefreshCw size={15} className="spinning" /> : <ImagePlus size={15} />}
                   <span>{project.coverUrl ? "更换封面" : "添加封面"}</span>
                   <input
+                    name={`project-cover-${project.id}`}
                     className="sr-only"
                     type="file"
                     accept="image/png,image/jpeg,image/webp,image/gif"
@@ -197,15 +199,16 @@ export function ProjectsPage() {
           <section className="project-dialog" role="dialog" aria-modal="true" aria-labelledby="create-project-title" onMouseDown={(event) => event.stopPropagation()}>
             <header><div><h2 id="create-project-title">新建短剧项目</h2><p>只创建本地目录，不会提交任何项目资源。</p></div><button type="button" aria-label="关闭" onClick={closeCreateDialog}><X size={19} /></button></header>
             <form onSubmit={(event) => void submit(event)}>
-              <label><span>项目名称</span><input autoFocus required value={name} onChange={(event) => setName(event.target.value)} placeholder="例如：长生喜宴" /></label>
-              <label><span>项目标识</span><input required pattern="[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?" value={id} onChange={(event) => setId(event.target.value.toLowerCase())} placeholder="例如：longevity-banquet" /><small>用于网址和文件夹名，只能包含小写字母、数字和连字符。</small></label>
-              <label><span>项目说明（可选）</span><textarea rows={3} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="记录当前阶段或项目简介" /></label>
+              <label><span>项目名称</span><input name="project-name" autoFocus required value={name} onChange={(event) => setName(event.target.value)} placeholder="例如：长生喜宴" /></label>
+              <label><span>项目标识</span><input name="project-id" required pattern="[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?" value={id} onChange={(event) => setId(event.target.value.toLowerCase())} placeholder="例如：longevity-banquet" /><small>用于网址和文件夹名，只能包含小写字母、数字和连字符。</small></label>
+              <label><span>项目说明（可选）</span><textarea name="project-description" rows={3} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="记录当前阶段或项目简介" /></label>
               <label className="cover-picker">
                 <span>项目封面（可选）</span>
                 <span className={`cover-picker-preview${coverPreview ? " has-image" : ""}`}>
                   {coverPreview ? <img src={coverPreview} alt="待上传的项目封面预览" /> : <><ImagePlus size={24} /><b>选择一张封面图</b><small>推荐 16:9 横图</small></>}
                 </span>
                 <input
+                  name="new-project-cover"
                   className="sr-only"
                   type="file"
                   accept="image/png,image/jpeg,image/webp,image/gif"
