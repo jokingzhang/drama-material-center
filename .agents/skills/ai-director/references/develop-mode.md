@@ -5,6 +5,7 @@ Develop/Adapt mode turns an idea or non-screen-ready source into an approved, pr
 Use it for an idea, premise, treatment, novel, outline, prose draft, or script whose screen structure is still unsettled. If the current screenplay and its production facts are already approved and the request is about staging, shots, or execution, use Direct mode instead.
 
 Use [creative-dialogue.md](creative-dialogue.md) to challenge material weaknesses and brainstorm alternatives. Resolve discoverable facts first; discuss genuine creative branches one dependency-bearing decision at a time.
+Use [script-development.md](script-development.md) for the complete retrieval, diagnosis, option, `knowledgeUsed`, and Doubao handoff contract. Do not replace that structured analysis with a generic list of screenwriting tips.
 
 ## Bind the source and authority
 
@@ -42,7 +43,7 @@ An incomplete asset, continuity, dialogue, voice, or model contract does not pre
 
 ## Produce the Development / Adaptation Brief
 
-Use the shortest structure that makes these decisions reviewable:
+First produce `ScriptDevelopmentAnalysis v1` from [script-development.md](script-development.md). Use its story engine, character engines, episode ladder, locator-based problem ledger, options, change plan, and canonical `knowledgeUsed` records to make the following brief reviewable:
 
 1. status, scope, source binding, working canon, and invalidation conditions;
 2. audience and format contract;
@@ -54,6 +55,8 @@ Use the shortest structure that makes these decisions reviewable:
 8. unknowns, blockers, user approval points, and downstream handoff.
 
 Include a compact decision map: accepted choices, rejected alternatives that affect later branches, unresolved questions, decision owner, and invalidation condition. Do not hide an unresolved creative choice inside polished prose.
+
+If the analysis is bound to a named existing material-center project and an exact project-relative source file, persist it only under [script-development-analysis-schema.md](script-development-analysis-schema.md). An idea pasted into chat, an ambiguous project, ordinary advice, or an explicit no-write request remains a non-persistent `DRAFT`.
 
 The brief remains `DRAFT` until the user approves it or explicitly authorizes autonomous development within named boundaries. Approval of a development package does not authorize prompt creation, media generation, paid work, or publication.
 

@@ -134,10 +134,27 @@ describe("director knowledge catalog", () => {
 
     expect(catalog.overview()).toEqual(expect.objectContaining({
       status: "VALID",
-      totals: { standards: 3, cards: 14, cases: 7, validatedCards: 0 },
+      totals: { standards: 4, cards: 23, cases: 19, validatedCards: 0 },
       validation: { practiceCount: 0, humanAcceptedCount: 0 },
     }));
+    expect(catalog.overview().areas.find((area) => area.id === "script")).toEqual({
+      id: "script",
+      primaryStandards: 1,
+      crossCuttingStandards: 1,
+      patterns: 6,
+      risks: 3,
+      cases: 12,
+      gaps: ["NO_VALIDATED_CARDS"],
+    });
     expect((catalog.get("CASE-20260828-NUO") as { evidenceRecords: unknown[] }).evidenceRecords.length).toBeGreaterThan(0);
+    expect((catalog.get("CASE-20260828-MATH-CULTIVATION") as { evidenceRecords: unknown[] }).evidenceRecords.length).toBeGreaterThan(0);
+    expect((catalog.get("DRAMA-PAT-001") as { evidenceRecords: unknown[] }).evidenceRecords).toHaveLength(5);
+    expect(catalog.get("DRAMA-STD-WORKFLOW-002")).toEqual(expect.objectContaining({
+      entryType: "standard",
+      policyStatus: "ACTIVE",
+      evidenceStatus: "OBSERVED",
+      knowledgeAreas: ["script"],
+    }));
     expect((catalog.get("DRAMA-PAT-101") as { evidenceRecords: unknown[] }).evidenceRecords).toHaveLength(8);
   });
 

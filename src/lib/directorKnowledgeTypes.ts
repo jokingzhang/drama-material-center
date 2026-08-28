@@ -196,12 +196,15 @@ export interface KnowledgeUse {
 
 export interface AnalysisSummary {
   analysisId: string;
+  kind: "ScriptProductionAnalysis" | "ScriptDevelopmentAnalysis";
   createdAt: string;
+  title?: string;
   knowledgeUseCounts: { adopted: number; rejected: number; overridden: number };
 }
 
 export interface AnalysisDetail {
   analysisId: string;
+  kind: "ScriptProductionAnalysis" | "ScriptDevelopmentAnalysis";
   createdAt: string;
   projectId?: string;
   title?: string;

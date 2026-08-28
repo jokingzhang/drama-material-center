@@ -78,9 +78,20 @@ interface PendingSource {
   };
 }
 
+interface ScriptStudyRecord {
+  sourceId: string;
+  researchStatus: "SOURCE_STUDIED";
+  relatedCaseIds: string[];
+  relatedKnowledgeIds: string[];
+  inspectionDepth: "METADATA_AND_EPISODE_SAMPLE";
+  studiedAt: string;
+  claimTypes: ClaimType[];
+}
+
 interface SourceRegistry {
   schemaVersion: 1;
   snapshots: SourceRegistrySnapshot[];
+  sourceStudies?: ScriptStudyRecord[];
   pendingSources: PendingSource[];
 }
 
@@ -246,7 +257,11 @@ function isExpectedCatalog(value: unknown) {
 }
 
 function parseRegistry(value: unknown): SourceRegistry {
-  if (!isObject(value) || value.schemaVersion !== 1 || !Array.isArray(value.snapshots) || !Array.isArray(value.pendingSources)) {
+  if (!isObject(value)
+    || value.schemaVersion !== 1
+    || !Array.isArray(value.snapshots)
+    || (value.sourceStudies !== undefined && !Array.isArray(value.sourceStudies))
+    || !Array.isArray(value.pendingSources)) {
     throw new SourceCatalogError("SOURCE_REGISTRY_INVALID", "导演来源登记表无效。");
   }
   const snapshotIds = new Set<string>();
@@ -264,6 +279,23 @@ function parseRegistry(value: unknown): SourceRegistry {
       throw new SourceCatalogError("SOURCE_REGISTRY_INVALID", "导演来源快照登记无效。");
     }
     snapshotIds.add(snapshot.snapshotId);
+  }
+  const studiedIds = new Set<string>();
+  for (const study of value.sourceStudies ?? []) {
+    if (!isObject(study)
+      || typeof study.sourceId !== "string"
+      || !study.sourceId.startsWith("SCRIPT-")
+      || studiedIds.has(study.sourceId)
+      || study.researchStatus !== "SOURCE_STUDIED"
+      || !isStringArray(study.relatedCaseIds)
+      || !isStringArray(study.relatedKnowledgeIds)
+      || study.inspectionDepth !== "METADATA_AND_EPISODE_SAMPLE"
+      || typeof study.studiedAt !== "string"
+      || !isIsoDate(study.studiedAt)
+      || !isClaimTypes(study.claimTypes)) {
+      throw new SourceCatalogError("SOURCE_REGISTRY_INVALID", "导演剧本研究登记无效。");
+    }
+    studiedIds.add(study.sourceId);
   }
   const pendingIds = new Set<string>();
   for (const source of value.pendingSources) {
@@ -584,8 +616,31 @@ export async function createSourceCatalog(options: { workspaceRoot: string; know
     const registry = parseRegistry(JSON.parse(await readFile(registryFile, "utf8")));
     const loadedSnapshots = await Promise.all(registry.snapshots.map((snapshot) => loadSnapshot(options.workspaceRoot, snapshot)));
     const snapshotSources = loadedSnapshots.flatMap((snapshot) => snapshot.sources);
+    const studies = new Map((registry.sourceStudies ?? []).map((study) => [study.sourceId, study]));
+    const studiedSourceIds = new Set<string>();
+    const enrichedSnapshotSources = snapshotSources.map((source) => {
+      const study = studies.get(source.sourceId);
+      if (!study) return source;
+      studiedSourceIds.add(source.sourceId);
+      return {
+        ...source,
+        researchStatus: study.researchStatus,
+        relatedCaseIds: study.relatedCaseIds,
+        relatedKnowledgeIds: study.relatedKnowledgeIds,
+        inspectionDepth: study.inspectionDepth,
+        freshness: {
+          basis: "STUDIED_AT" as const,
+          asOf: study.studiedAt,
+          revalidationStatus: "NOT_REVALIDATED" as const,
+        },
+        claimTypes: study.claimTypes,
+      };
+    });
+    if (studiedSourceIds.size !== studies.size) {
+      throw new SourceCatalogError("SOURCE_REGISTRY_INVALID", "剧本研究登记引用了不存在的快照来源。");
+    }
     const sources: SourceRecord[] = [
-      ...snapshotSources,
+      ...enrichedSnapshotSources,
       ...registry.pendingSources.map((source): SourceRecord => ({
         sourceId: source.sourceId,
         snapshotId: "NOT_IMPORTED",

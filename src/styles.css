@@ -946,6 +946,21 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
 
 .asset-card { position: relative; }
 .asset-card:focus-visible { outline: 3px solid rgb(23 111 232 / 26%); outline-offset: 2px; }
+.directory-section { display: grid; gap: 0.625rem; margin-bottom: 0.875rem; }
+.browser-section-heading { min-height: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.browser-section-heading h2 { margin: 0; color: #3b4857; font-size: 0.875rem; }
+.browser-section-heading span { color: #687584; font-size: 0.75rem; }
+.directory-list { display: grid; grid-template-columns: 1fr; gap: 0.625rem; }
+.directory-card { width: 100%; min-height: 4rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr) 1.25rem; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem; color: #3c4855; text-align: left; background: #fff; border: 1px solid #dce3ea; border-radius: 0.625rem; cursor: pointer; transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease; }
+.directory-card:hover { color: #0d5fc7; border-color: #a9cdf9; box-shadow: 0 0.4375rem 1.125rem rgb(33 75 125 / 12%); transform: translateY(-1px); }
+.directory-card:focus-visible { outline: 3px solid rgb(23 111 232 / 26%); outline-offset: 2px; }
+.directory-card-icon { width: 2.75rem; height: 2.75rem; display: grid; place-items: center; color: #176fe8; background: #eaf3ff; border-radius: 0.625rem; }
+.directory-card-copy { min-width: 0; display: grid; gap: 0.25rem; }
+.directory-card-copy b { overflow: hidden; font-size: 0.875rem; text-overflow: ellipsis; white-space: nowrap; }
+.directory-card-copy small { color: #687584; font-size: 0.75rem; }
+.directory-card > svg { color: #8a98a8; }
+.file-section-heading { margin: 0.125rem 0 0.625rem; padding-top: 0.75rem; border-top: 1px solid var(--line); }
+.directory-list + .file-section-heading { margin-top: 0; }
 .asset-text-summary { width: 100%; height: 100%; display: -webkit-box; margin: 0; padding: 34px 14px 13px; overflow: hidden; color: #4f5d6d; font-size: 11px; line-height: 1.55; background: linear-gradient(145deg, #fbfcfe, #eef3f8); -webkit-box-orient: vertical; -webkit-line-clamp: 6; }
 .asset-audio-card,
 .asset-video-card { width: 100%; height: 100%; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 34px 12px 12px; color: #627386; background: linear-gradient(145deg, #f4f7fa, #e6edf5); }
@@ -961,6 +976,12 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
 :root[data-theme="dark"] .explorer-tree-row.active { color: #8bbaff; background: #172b45; border-color: #274e7d; }
 :root[data-theme="dark"] .explorer-tree-item > svg { color: #8e9cac; }
 :root[data-theme="dark"] .explorer-tree-item small { color: #a8b4c0; background: #26313e; }
+:root[data-theme="dark"] .browser-section-heading h2 { color: #d4dde7; }
+:root[data-theme="dark"] .directory-card { color: #c7d0da; background: #18202a; border-color: var(--line); }
+:root[data-theme="dark"] .directory-card:hover { color: #8bbaff; border-color: #4d82c5; box-shadow: 0 8px 20px rgb(0 0 0 / 32%); }
+:root[data-theme="dark"] .directory-card-icon { color: #8bbaff; background: #1b304a; }
+:root[data-theme="dark"] .directory-card-copy small,
+:root[data-theme="dark"] .directory-card > svg { color: #98a6b5; }
 :root[data-theme="dark"] .asset-text-summary { color: #c1ccd7; background: linear-gradient(145deg, #1c2631, #151e28); }
 :root[data-theme="dark"] .asset-audio-card,
 :root[data-theme="dark"] .asset-video-card { color: #a8b7c7; background: linear-gradient(145deg, #202a35, #18222d); }
@@ -1003,7 +1024,16 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
   .has-selection .focus-preview-button { display: none !important; }
   .browser-heading { align-items: center; flex-wrap: wrap; }
   .browser-heading > div { min-width: 0; flex: 1; }
+  .directory-card { min-height: 3.25rem; }
   .file-grid { overflow: visible; }
+}
+
+@media (min-width: 640px) {
+  .directory-grid .directory-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .directory-grid .directory-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {

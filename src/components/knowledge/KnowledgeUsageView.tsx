@@ -58,10 +58,10 @@ export function KnowledgeUsageView({ projectId, analysisId }: { projectId?: stri
       {loading && <div className="knowledge-loading"><span className="spinning" /><p>正在读取结构化分析清单…</p></div>}
       {!loading && !projectId && <div className="usage-empty"><GitBranch size={34} /><strong>先选择一个项目</strong><p>网页不会扫描普通 Markdown；只有项目内显式登记的结构化分析 JSON 才会出现在这里。</p></div>}
       {!loading && projectId && status === "EMPTY" && <div className="usage-empty"><GitBranch size={34} /><strong>暂无结构化知识使用记录</strong><p>当前项目没有 <code>.ai-director/analysis-index.json</code>。现有文档不会被猜测或冒充为 knowledgeUsed。</p></div>}
-      {!loading && !analysisId && analyses.length > 0 && <section className="analysis-list"><h2>分析记录</h2>{analyses.map((item) => <Link to={knowledgeUsagePath(projectId, item.analysisId)} key={item.analysisId}><div><strong>{item.analysisId}</strong><span>{new Date(item.createdAt).toLocaleString("zh-CN")}</span></div><p><b>{item.knowledgeUseCounts.adopted}</b> 采用 · <b>{item.knowledgeUseCounts.rejected}</b> 拒绝 · <b>{item.knowledgeUseCounts.overridden}</b> 覆盖</p><ArrowRight size={18} /></Link>)}</section>}
+      {!loading && !analysisId && analyses.length > 0 && <section className="analysis-list"><h2>分析记录</h2>{analyses.map((item) => <Link to={knowledgeUsagePath(projectId, item.analysisId)} key={item.analysisId}><div><strong>{item.title ?? item.analysisId}</strong><span>{new Date(item.createdAt).toLocaleString("zh-CN")}</span></div><p><code>{item.kind === "ScriptDevelopmentAnalysis" ? "剧本开发" : "素材与分镜"}</code> · {item.title ? `${item.analysisId} · ` : ""}<b>{item.knowledgeUseCounts.adopted}</b> 采用 · <b>{item.knowledgeUseCounts.rejected}</b> 拒绝 · <b>{item.knowledgeUseCounts.overridden}</b> 覆盖</p><ArrowRight size={18} /></Link>)}</section>}
       {!loading && analysis && (
         <article className="analysis-detail">
-          <header><div><span>ANALYSIS</span><h2>{analysis.title ?? analysis.analysisId}</h2><code>{analysis.analysisId}</code></div><Link to={knowledgeUsagePath(projectId)}>返回记录列表</Link></header>
+          <header><div><span>{analysis.kind === "ScriptDevelopmentAnalysis" ? "SCRIPT DEVELOPMENT" : "SCRIPT PRODUCTION"}</span><h2>{analysis.title ?? analysis.analysisId}</h2><code>{analysis.analysisId}</code></div><Link to={knowledgeUsagePath(projectId)}>返回记录列表</Link></header>
           {analysis.knowledgeUsed.length === 0 ? <div className="usage-empty"><strong>该分析没有登记 knowledgeUsed</strong><p>空数组只表示无登记，不表示知识库未被隐式参考。</p></div> : (
             <div className="knowledge-use-list">
               {analysis.knowledgeUsed.map((usage, index) => {

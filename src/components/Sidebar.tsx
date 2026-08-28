@@ -29,11 +29,11 @@ interface SidebarProps {
   onSelectAsset: (asset: MaterialAsset) => void;
 }
 
-const DEFAULT_EXPANDED = ["剧情", "图片", "视频", "音频"];
+const DEFAULT_EXPANDED: string[] = [];
 const ROOT_ID = "directory:";
 
 function storageKey(projectId: string) {
-  return `material-center:explorer-expanded:${projectId}`;
+  return `material-center:explorer-expanded-v2:${projectId}`;
 }
 
 function initialExpanded(projectId: string) {

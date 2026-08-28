@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   knowledgeAreaPath,
-  knowledgeEntryPath,
-  knowledgeSourcePath,
-  knowledgeUsagePath,
   projectLibraryPath,
 } from "./routes";
 
@@ -16,14 +13,10 @@ describe("project library routes", () => {
 });
 
 describe("director knowledge routes", () => {
-  it("uses stable IDs and encodes source and analysis identifiers", () => {
+  it("encodes the area and every Markdown path segment", () => {
     expect(knowledgeAreaPath("image-asset")).toBe("/knowledge/areas/image-asset");
-    expect(knowledgeEntryPath("DRAMA-STD-ASSET-001")).toBe("/knowledge/items/DRAMA-STD-ASSET-001");
-    expect(knowledgeSourcePath("scripts", "SCRIPT-短剧库-001")).toBe(
-      "/knowledge/sources/scripts/SCRIPT-%E7%9F%AD%E5%89%A7%E5%BA%93-001",
-    );
-    expect(knowledgeUsagePath("limited-marriage-rivals", "analysis 01")).toBe(
-      "/knowledge/usage/limited-marriage-rivals/analysis%2001",
+    expect(knowledgeAreaPath("image-asset", "人物/角色 标准图.md")).toBe(
+      "/knowledge/areas/image-asset/%E4%BA%BA%E7%89%A9/%E8%A7%92%E8%89%B2%20%E6%A0%87%E5%87%86%E5%9B%BE.md",
     );
   });
 });

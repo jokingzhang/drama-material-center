@@ -20,8 +20,8 @@ function validate(root: string) {
   });
 }
 
-describe("AI Director knowledge v2 validator", () => {
-  it("accepts the repository knowledge base with three-area metadata and usage contracts", async () => {
+describe("legacy AI Director research archive validator", () => {
+  it("keeps the archived structured research readable without fixing its live counts", async () => {
     const index = JSON.parse(await readFile(join(knowledgeRoot, ".ai-director", "index.json"), "utf8")) as {
       schemaVersion: number;
       standards: Array<Record<string, unknown>>;
@@ -34,7 +34,12 @@ describe("AI Director knowledge v2 validator", () => {
     expect([...index.standards, ...index.cards].every((entry) => Boolean(entry.usageContract))).toBe(true);
     const result = validate(knowledgeRoot);
     expect(result.status, result.stdout || result.stderr).toBe(0);
-    expect(JSON.parse(result.stdout)).toEqual(expect.objectContaining({ ok: true, standards: 3, cards: 14, cases: 7 }));
+    expect(JSON.parse(result.stdout)).toEqual(expect.objectContaining({
+      ok: true,
+      standards: index.standards.length,
+      cards: index.cards.length,
+      cases: index.cases.length,
+    }));
   });
 
   it("fails closed when a v2 usage contract loses a required field", async () => {

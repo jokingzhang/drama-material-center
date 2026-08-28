@@ -8,10 +8,17 @@ export function projectLibraryPath(projectId: string, directoryPath = "") {
   return `/projects/${encodedProjectId}/library${encodedDirectory ? `/${encodedDirectory}` : ""}`;
 }
 
-export function knowledgeAreaPath(area: string) {
-  return `/knowledge/areas/${encodeURIComponent(area)}`;
+export function knowledgeAreaPath(area: string, documentPath = "") {
+  const encodedDocumentPath = documentPath
+    .split("/")
+    .filter(Boolean)
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `/knowledge/areas/${encodeURIComponent(area)}${encodedDocumentPath ? `/${encodedDocumentPath}` : ""}`;
 }
 
+// Compatibility helpers for disconnected legacy views. DirectorKnowledgePage no longer
+// routes to these locations; keeping the pure URL builders avoids rewriting paused work.
 export function knowledgeEntryPath(entryId: string) {
   return `/knowledge/items/${encodeURIComponent(entryId)}`;
 }

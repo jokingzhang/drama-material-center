@@ -1,6 +1,6 @@
 # AI 短剧素材中心
 
-一个只在本机运行的多项目短剧创作工作台。首页用封面卡片区分项目；进入项目后通过统一文件树浏览剧本、图片、音频和视频。仓库级“导演知识库”独立展示跨项目复用的标准、知识卡、案例、来源与 AI 使用记录。
+一个只在本机运行的多项目短剧创作工作台。首页用封面卡片区分项目；进入项目后通过统一文件树浏览剧本、图片、音频和视频。仓库级“导演知识库”用三组可读 Markdown 文档告诉 AI 怎样从想法或剧本继续完成故事、图片素材和分镜提示词。
 
 桌面工作台支持：
 
@@ -10,7 +10,7 @@
 - 保留真实宽高比的图片缩略图与比例标签、文本摘要、音频卡内按需试听、延迟加载的视频预览和 Markdown 大纲；
 - 沉浸阅读、文档内查找、字号调整和素材前后切换。
 - 可记忆的浅色/暗黑主题切换，首页、工作台与沉浸阅读保持一致。
-- 独立的三大核心知识地图、只读剧本样本 Catalog、来源详情与 `knowledgeUsed` 追踪。
+- 独立的剧本、图片素材、分镜提示词三类知识文档；AI 按当前任务渐进读取和维护，用户只需查看与确认。
 
 路径中的 `ACCEPTED`、`DRAFT` 等只作为文件命名提示展示，不代替实际查看、播放或人工验收。
 
@@ -51,10 +51,10 @@ workspace/<project-id>/
 - `/projects/:projectId/library/*`：指定项目及素材目录。
 - `?file=...&preview=dialog&search=...&sort=...`：选中文件、内容区弹窗展示方式、搜索词和排序方式；没有 `preview=dialog` 的文件深链使用右侧独立预览。
 - `scope=current|project`、`content=1`、`display=list|grid`：搜索范围、正文搜索和素材展示方式。旧分集台参数会自动清理。
-- `/knowledge`、`/knowledge/areas/:area`、`/knowledge/items/:id`：导演知识地图、领域和稳定 ID 详情。
-- `/knowledge/sources/:category/*`：只读来源 Catalog 和按需文档读取。
-- `/knowledge/usage/:projectId/:analysisId?`：项目结构化知识使用记录；没有 manifest 时显示真实空状态。
+- `/knowledge`：AI 导演的简单工作链路和三类知识入口。
+- `/knowledge/areas/:area`：某一类知识的 Markdown 文档列表。
+- `/knowledge/areas/:area/*`：具体知识文档，可直接刷新和复制链接。
 
-导演知识 API 只读取仓库根 `director-knowledge-base/`；工作区内同名历史目录仍只是普通项目素材，不会被自动合并。原始来源只允许从 `.ai-director/source-registry.json` 的工作区相对路径读取，网页不接受本机绝对路径。
+导演知识页面在构建时发现仓库根 `director-knowledge-base/剧本`、`图片素材`、`分镜提示词` 中的 Markdown，并在点击文档时才读取正文。它不依赖导演知识 API、JSON 索引或使用记录。工作区内同名历史目录仍只是普通项目素材，不会被自动合并。
 
 这些状态以 URL 为准，复制地址或直接刷新都不会返回项目首页。

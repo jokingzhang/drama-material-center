@@ -9,7 +9,6 @@ import {
   ProjectWorkspaceError,
   type CreateProjectInput,
 } from "./projectWorkspace.ts";
-import { createDirectorKnowledgeMiddleware } from "./directorKnowledgeApi.ts";
 
 const contentTypes: Record<string, string> = {
   ".md": "text/markdown; charset=utf-8",
@@ -43,7 +42,6 @@ interface LibraryEntries {
 
 interface MaterialLibraryPluginOptions {
   workspaceRoot?: string;
-  knowledgeRoot?: string;
 }
 
 function sendJson(response: ServerResponse, statusCode: number, value: unknown) {
@@ -169,10 +167,8 @@ function statusFor(error: ProjectWorkspaceError) {
   return 404;
 }
 
-function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspaceRoot: string, knowledgeRoot: string) {
+function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspaceRoot: string) {
   const workspace = createProjectWorkspace(workspaceRoot);
-
-  server.middlewares.use(createDirectorKnowledgeMiddleware({ workspaceRoot, knowledgeRoot }));
 
   server.middlewares.use(async (request, response, next) => {
     if (!request.url?.startsWith("/api/")) {
@@ -307,15 +303,14 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
 export function materialLibraryPlugin(options: MaterialLibraryPluginOptions = {}): Plugin {
   const siteRoot = resolve(process.cwd());
   const workspaceRoot = resolve(siteRoot, options.workspaceRoot ?? "workspace");
-  const knowledgeRoot = resolve(siteRoot, options.knowledgeRoot ?? "director-knowledge-base");
 
   return {
     name: "drama-material-workspace",
     configureServer(server) {
-      attachMaterialMiddleware(server, workspaceRoot, knowledgeRoot);
+      attachMaterialMiddleware(server, workspaceRoot);
     },
     configurePreviewServer(server) {
-      attachMaterialMiddleware(server, workspaceRoot, knowledgeRoot);
+      attachMaterialMiddleware(server, workspaceRoot);
     },
   };
 }

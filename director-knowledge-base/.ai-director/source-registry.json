@@ -38,6 +38,231 @@
       }
     }
   ],
+  "sourceStudies": [
+    {
+      "sourceId": "SCRIPT-reelmate-wondershare-1939198267519938572",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-MATH-CULTIVATION"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-006",
+        "DRAMA-RISK-001"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-reelmate-wondershare-1913607050652561427",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-PRISON-FATHER"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-reelmate-wondershare-1935913711933067343",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-FUNERAL-TRUTH"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-reelmate-wondershare-1907003429869584399",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-APOCALYPSE-KITCHEN"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-reelmate-wondershare-1918262192991633441",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-AUTUM-ECHO"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-reelmate-wondershare-1927277371704217644",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-FORTUNE-WITHDRAWAL"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-002"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-yuewen-dramabuddy-2089999365117767680",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-FORENSIC-PRINCE"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-003",
+        "DRAMA-PAT-005",
+        "DRAMA-PAT-006"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-yuewen-dramabuddy-2089986560880750592",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-OFFICE-WHISPERS"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-001"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-yuewen-dramabuddy-738309840660729856",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-RULE-EXAM"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-001",
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-yuewen-dramabuddy-2089236798527193088",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-VILLAIN-SYSTEM"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-004",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-002",
+        "DRAMA-RISK-003"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-yuewen-dramabuddy-2089547119368269824",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-SOLAR-FORTRESS"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-002",
+        "DRAMA-RISK-003"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    },
+    {
+      "sourceId": "SCRIPT-yuewen-dramabuddy-2090285244406894592",
+      "researchStatus": "SOURCE_STUDIED",
+      "relatedCaseIds": [
+        "CASE-20260828-ANTI-SCAM"
+      ],
+      "relatedKnowledgeIds": [
+        "DRAMA-PAT-002",
+        "DRAMA-PAT-005",
+        "DRAMA-RISK-003"
+      ],
+      "inspectionDepth": "METADATA_AND_EPISODE_SAMPLE",
+      "studiedAt": "2026-08-28",
+      "claimTypes": [
+        "OBSERVED_ARTIFACT",
+        "ILLUSTRATIVE_EXAMPLE"
+      ]
+    }
+  ],
   "pendingSources": [
     {
       "sourceId": "COURSE-BV1BoM76iEih",

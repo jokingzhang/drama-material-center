@@ -51,9 +51,9 @@ export interface KnowledgeEntryResolver {
   entryType(entryId: string): "standard" | "card" | "case" | undefined;
 }
 
-export interface ScriptProductionAnalysis {
+export interface DirectorAnalysis {
   schemaVersion: 1;
-  kind: "ScriptProductionAnalysis";
+  kind: "ScriptProductionAnalysis" | "ScriptDevelopmentAnalysis";
   analysisId: string;
   projectId: string;
   createdAt: string;
@@ -61,6 +61,8 @@ export interface ScriptProductionAnalysis {
   knowledgeUsed: KnowledgeUse[];
   [key: string]: unknown;
 }
+
+export type ScriptProductionAnalysis = DirectorAnalysis;
 
 export class AnalysisCatalogError extends Error {
   constructor(
@@ -163,10 +165,10 @@ function sanitizeUnknown<T>(value: T): T {
   return value;
 }
 
-function parseAnalysis(value: unknown, expectedId: string, projectId: string, knowledge: KnowledgeEntryResolver): ScriptProductionAnalysis {
+function parseAnalysis(value: unknown, expectedId: string, projectId: string, knowledge: KnowledgeEntryResolver): DirectorAnalysis {
   if (!isObject(value)
     || value.schemaVersion !== 1
-    || value.kind !== "ScriptProductionAnalysis"
+    || (value.kind !== "ScriptProductionAnalysis" && value.kind !== "ScriptDevelopmentAnalysis")
     || value.analysisId !== expectedId
     || value.projectId !== projectId
     || typeof value.createdAt !== "string"
@@ -178,7 +180,7 @@ function parseAnalysis(value: unknown, expectedId: string, projectId: string, kn
     || !Array.isArray(value.knowledgeUsed)) {
     throw new AnalysisCatalogError("ANALYSIS_INDEX_INVALID", "分析产物无效。");
   }
-  const analysis = value as unknown as ScriptProductionAnalysis;
+  const analysis = value as unknown as DirectorAnalysis;
   analysis.knowledgeUsed = analysis.knowledgeUsed.map((use) => parseKnowledgeUse(use, knowledge));
   return sanitizeUnknown(analysis);
 }
@@ -209,7 +211,7 @@ export async function createAnalysisCatalog(workspaceRoot: string, projectId: st
     if (error instanceof RegisteredReadError && error.code === "registered_file_not_found") {
       return {
         list: () => ({ status: "EMPTY" as const, analyses: [] }),
-        get: (_analysisId: string): ScriptProductionAnalysis => {
+        get: (_analysisId: string): DirectorAnalysis => {
           throw new AnalysisCatalogError("ANALYSIS_NOT_FOUND", "结构化分析产物不存在。");
         },
       };
@@ -246,6 +248,8 @@ export async function createAnalysisCatalog(workspaceRoot: string, projectId: st
         status: "AVAILABLE" as const,
         analyses: analyses.map((analysis) => ({
           analysisId: analysis.analysisId,
+          kind: analysis.kind,
+          ...(typeof analysis.title === "string" ? { title: analysis.title } : {}),
           createdAt: analysis.createdAt,
           knowledgeUseCounts: {
             adopted: analysis.knowledgeUsed.filter((use) => use.disposition === "ADOPTED").length,

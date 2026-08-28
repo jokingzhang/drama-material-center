@@ -34,8 +34,8 @@ function usage(exitCode = 0) {
   const stream = exitCode === 0 ? process.stdout : process.stderr;
   stream.write('Usage:\n');
   stream.write('  director_kb.mjs validate --root <absolute-kb-root> [--json]\n');
-  stream.write('  director_kb.mjs standards --root <absolute-kb-root> [--kind <kind>] [--domain <domain>] [--policy-status <status>] [--tag <tag>] [--query <text>] [--limit <n>] [--json]\n');
-  stream.write('  director_kb.mjs search --root <absolute-kb-root> [--domain <domain>] [--status <status>] [--tag <tag>] [--query <text>] [--limit <n>] [--json]\n');
+  stream.write('  director_kb.mjs standards --root <absolute-kb-root> [--area <knowledge-area>] [--kind <kind>] [--domain <domain>] [--policy-status <status>] [--tag <tag>] [--query <text>] [--limit <n>] [--json]\n');
+  stream.write('  director_kb.mjs search --root <absolute-kb-root> [--area <knowledge-area>] [--domain <domain>] [--status <status>] [--tag <tag>] [--query <text>] [--limit <n>] [--json]\n');
   process.exit(exitCode);
 }
 
@@ -716,10 +716,12 @@ function scoreCard(record, query) {
 function searchCards(root, options, knowledge) {
   const limit = options.limit === undefined ? 10 : Number.parseInt(options.limit, 10);
   if (!Number.isInteger(limit) || limit < 1 || limit > 100) throw new Error('--limit must be an integer from 1 to 100.');
+  if (options.area && !KNOWLEDGE_AREAS.has(options.area)) throw new Error(`Unsupported --area: ${options.area}`);
   if (options.domain && !DOMAINS.has(options.domain)) throw new Error(`Unsupported --domain: ${options.domain}`);
   if (options.status && !CARD_STATUSES.has(options.status)) throw new Error(`Unsupported --status: ${options.status}`);
   const tag = options.tag?.toLocaleLowerCase();
   return knowledge.cards
+    .filter((record) => !options.area || record.meta.knowledgeAreas.includes(options.area))
     .filter((record) => !options.domain || record.meta.domain === options.domain)
     .filter((record) => !options.status || record.meta.status === options.status)
     .filter((record) => !tag || (record.meta.tags ?? []).some((value) => value.toLocaleLowerCase() === tag))
@@ -758,6 +760,7 @@ function printSearch(results) {
 function listStandards(root, options, knowledge) {
   const limit = options.limit === undefined ? 100 : Number.parseInt(options.limit, 10);
   if (!Number.isInteger(limit) || limit < 1 || limit > 100) throw new Error('--limit must be an integer from 1 to 100.');
+  if (options.area && !KNOWLEDGE_AREAS.has(options.area)) throw new Error(`Unsupported --area: ${options.area}`);
   if (options.kind && !STANDARD_KINDS.has(options.kind)) throw new Error(`Unsupported --kind: ${options.kind}`);
   if (options.domain && !DOMAINS.has(options.domain)) throw new Error(`Unsupported --domain: ${options.domain}`);
   if (options['policy-status'] && !POLICY_STATUSES.has(options['policy-status'])) {
@@ -766,6 +769,7 @@ function listStandards(root, options, knowledge) {
   const tag = options.tag?.toLocaleLowerCase();
   const query = options.query?.toLocaleLowerCase();
   return knowledge.standards
+    .filter((record) => !options.area || record.meta.knowledgeAreas.includes(options.area))
     .filter((record) => !options.kind || record.meta.kind === options.kind)
     .filter((record) => !options.domain || record.meta.domain === options.domain)
     .filter((record) => !options['policy-status'] || record.meta.policyStatus === options['policy-status'])

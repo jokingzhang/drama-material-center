@@ -1,23 +1,19 @@
-import { ArrowLeft, BookOpenText, BrainCircuit, GitBranch, LibraryBig } from "lucide-react";
+import { ArrowLeft, BookOpenText, Clapperboard, Images, Lightbulb } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { knowledgeAreaPath } from "../../lib/routes";
 import { BrandMark } from "../BrandMark";
 import { ThemeToggle } from "../ThemeToggle";
 
 export function KnowledgeShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const section = pathname.startsWith("/knowledge/sources")
-    ? "sources"
-    : pathname.startsWith("/knowledge/usage")
-      ? "usage"
-      : "map";
 
   return (
     <div className="knowledge-shell">
       <header className="app-header knowledge-header">
         <div className="brand-block">
           <BrandMark />
-          <div><strong>导演知识库</strong><span>剧本分支 → AssetPlan + ShotTypePlan → ShotPromptPlan</span></div>
+          <div><strong>导演知识库</strong><span>AI 维护 · 你只需要查看和确认</span></div>
         </div>
         <div className="header-actions">
           <ThemeToggle />
@@ -25,10 +21,11 @@ export function KnowledgeShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <nav className="knowledge-primary-nav" aria-label="导演知识库导航">
-        <Link className={section === "map" ? "active" : ""} to="/knowledge"><BrainCircuit size={17} />知识地图</Link>
-        <Link className={section === "sources" ? "active" : ""} to="/knowledge/sources/scripts"><LibraryBig size={17} />来源与研究</Link>
-        <Link className={section === "usage" ? "active" : ""} to="/knowledge/usage"><GitBranch size={17} />知识使用追踪</Link>
-        <span><BookOpenText size={15} />只读 · 项目级事实与用户决定优先</span>
+        <Link className={pathname === "/knowledge" || pathname === "/knowledge/" ? "active" : ""} to="/knowledge"><BookOpenText size={17} />使用说明</Link>
+        <Link className={pathname.startsWith(knowledgeAreaPath("script")) ? "active" : ""} to={knowledgeAreaPath("script")}><Lightbulb size={17} />剧本</Link>
+        <Link className={pathname.startsWith(knowledgeAreaPath("image-asset")) ? "active" : ""} to={knowledgeAreaPath("image-asset")}><Images size={17} />图片素材</Link>
+        <Link className={pathname.startsWith(knowledgeAreaPath("shot-prompt")) ? "active" : ""} to={knowledgeAreaPath("shot-prompt")}><Clapperboard size={17} />分镜提示词</Link>
+        <span>只读 Markdown · 无知识接口</span>
       </nav>
       {children}
     </div>

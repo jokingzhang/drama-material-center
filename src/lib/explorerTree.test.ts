@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { MaterialAsset, MaterialDirectory } from "../types";
 import {
+  assetsAtDirectory,
+  assetsWithinDirectory,
   buildExplorerTree,
+  directoriesAtDirectory,
   flattenVisibleExplorerNodes,
   normalizeLegacyLibraryLocation,
   normalizeLegacyLibrarySearch,
@@ -53,6 +56,50 @@ describe("buildExplorerTree", () => {
       "图片",
       "图片/人物",
     ]);
+  });
+
+  it("keeps the production root order stable", () => {
+    const tree = buildExplorerTree([
+      { path: "音频", name: "音频", parentPath: "" },
+      { path: "视频", name: "视频", parentPath: "" },
+      { path: "图片", name: "图片", parentPath: "" },
+      { path: "剧情", name: "剧情", parentPath: "" },
+    ], []);
+
+    expect(tree.map((node) => node.path)).toEqual(["剧情", "图片", "视频", "音频"]);
+  });
+});
+
+describe("directory browsing", () => {
+  it("returns only immediate files and folders for the current level", () => {
+    const nestedDirectories: MaterialDirectory[] = [
+      ...directories,
+      { path: "图片/场景", name: "场景", parentPath: "图片" },
+    ];
+    const assets = [
+      asset("图片/说明.md", "story"),
+      asset("图片/人物/女主.png", "image"),
+    ];
+
+    expect(directoriesAtDirectory(nestedDirectories, "图片").map((directory) => directory.path)).toEqual([
+      "图片/场景",
+      "图片/人物",
+    ]);
+    expect(assetsAtDirectory(assets, "图片").map((item) => item.path)).toEqual(["图片/说明.md"]);
+  });
+
+  it("returns every file below the current directory for the material overview", () => {
+    const assets = [
+      asset("图片/说明.md", "story"),
+      asset("图片/人物/女主.png", "image"),
+      asset("视频/预告.mp4", "video"),
+    ];
+
+    expect(assetsWithinDirectory(assets, "图片").map((item) => item.path)).toEqual([
+      "图片/说明.md",
+      "图片/人物/女主.png",
+    ]);
+    expect(assetsWithinDirectory(assets, "")).toEqual(assets);
   });
 });
 

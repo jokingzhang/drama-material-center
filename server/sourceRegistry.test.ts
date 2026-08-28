@@ -27,6 +27,15 @@ describe("repository director source registry", () => {
           }>;
         };
       }>;
+      sourceStudies?: Array<{
+        sourceId: string;
+        researchStatus: string;
+        relatedCaseIds: string[];
+        relatedKnowledgeIds: string[];
+        inspectionDepth: string;
+        studiedAt: string;
+        claimTypes: string[];
+      }>;
       pendingSources: Array<{
         sourceId: string;
         sourceType: string;
@@ -48,6 +57,7 @@ describe("repository director source registry", () => {
     const caseById = new Map(knowledgeIndex.cases.map((caseMeta) => [caseMeta.id, caseMeta]));
     const canvases = registry.pendingSources.filter((source) => source.sourceType === "COMPLETED_WORK_CANVAS");
     const courses = registry.pendingSources.filter((source) => source.sourceType === "COURSE_MATERIAL");
+    const scriptStudies = registry.sourceStudies ?? [];
 
     const scriptSnapshots = registry.snapshots.filter((source) => source.sourceType === "SCRIPT_SAMPLE");
     expect(scriptSnapshots).toHaveLength(1);
@@ -78,6 +88,22 @@ describe("repository director source registry", () => {
     });
     expect(courses).toHaveLength(1);
     expect(canvases).toHaveLength(7);
+    expect(scriptStudies).toHaveLength(12);
+    expect(new Set(scriptStudies.map((study) => study.sourceId)).size).toBe(12);
+    for (const study of scriptStudies) {
+      expect(study).toEqual(expect.objectContaining({
+        sourceId: expect.stringMatching(/^SCRIPT-/),
+        researchStatus: "SOURCE_STUDIED",
+        relatedCaseIds: [expect.stringMatching(/^CASE-/)],
+        relatedKnowledgeIds: expect.arrayContaining([expect.stringMatching(/^DRAMA-(?:PAT|RISK)-/)]),
+        inspectionDepth: "METADATA_AND_EPISODE_SAMPLE",
+        studiedAt: "2026-08-28",
+        claimTypes: ["OBSERVED_ARTIFACT", "ILLUSTRATIVE_EXAMPLE"],
+      }));
+      const relatedCase = caseById.get(study.relatedCaseIds[0]);
+      expect(relatedCase).toBeDefined();
+      expect(study.relatedKnowledgeIds).toEqual(relatedCase?.derivedCardIds);
+    }
     expect(courses[0]).toEqual(expect.objectContaining({
       importStatus: "IMPORT_PENDING",
       researchStatus: "SELECTED",

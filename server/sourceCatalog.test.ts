@@ -168,6 +168,15 @@ describe("director source catalog", () => {
           }],
         },
       }],
+      sourceStudies: [{
+        sourceId: "SCRIPT-reelmate-wondershare-abc",
+        researchStatus: "SOURCE_STUDIED",
+        relatedCaseIds: ["CASE-20260828-EXAMPLE"],
+        relatedKnowledgeIds: ["DRAMA-PAT-001"],
+        inspectionDepth: "METADATA_AND_EPISODE_SAMPLE",
+        studiedAt: "2026-08-28",
+        claimTypes: ["OBSERVED_ARTIFACT", "ILLUSTRATIVE_EXAMPLE"],
+      }],
       pendingSources: [],
     }), "utf8");
     await writeFile(join(snapshotPath, "index.json"), JSON.stringify({
@@ -238,15 +247,17 @@ describe("director source catalog", () => {
       title: "Example",
       captureCoverage: "CAPTURED_5",
       fullWorkCompleteness: "UNKNOWN",
-      researchStatus: "UNSTUDIED",
+      researchStatus: "SOURCE_STUDIED",
       importStatus: "IMPORTED",
       inspectionDepth: "METADATA_AND_EPISODE_SAMPLE",
       freshness: {
-        basis: "CAPTURED_AT",
-        asOf: "2026-08-28T04:53:48.596Z",
+        basis: "STUDIED_AT",
+        asOf: "2026-08-28",
         revalidationStatus: "NOT_REVALIDATED",
       },
-      claimTypes: ["OBSERVED_ARTIFACT"],
+      claimTypes: ["OBSERVED_ARTIFACT", "ILLUSTRATIVE_EXAMPLE"],
+      relatedCaseIds: ["CASE-20260828-EXAMPLE"],
+      relatedKnowledgeIds: ["DRAMA-PAT-001"],
       rights: {
         accessScope: "logged-in-visible-preview",
         status: "RIGHTS_UNKNOWN",

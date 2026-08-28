@@ -12,14 +12,45 @@ export interface ExplorerNode {
   asset?: MaterialAsset;
 }
 
+const ROOT_DIRECTORY_ORDER = new Map([
+  ["剧情", 0],
+  ["图片", 1],
+  ["视频", 2],
+  ["音频", 3],
+]);
+
+function compareDirectoryNames(left: MaterialDirectory, right: MaterialDirectory) {
+  if (!left.parentPath && !right.parentPath) {
+    const leftOrder = ROOT_DIRECTORY_ORDER.get(left.name) ?? Number.MAX_SAFE_INTEGER;
+    const rightOrder = ROOT_DIRECTORY_ORDER.get(right.name) ?? Number.MAX_SAFE_INTEGER;
+    if (leftOrder !== rightOrder) return leftOrder - rightOrder;
+  }
+  return naturalProductionCompare(left.name, right.name);
+}
+
 function compareNodes(left: ExplorerNode, right: ExplorerNode) {
   if (left.type !== right.type) return left.type === "directory" ? -1 : 1;
+  if (left.type === "directory" && right.type === "directory") return compareDirectoryNames(left, right);
   return naturalProductionCompare(left.name, right.name);
 }
 
 export function assetDirectoryPath(asset: Pick<MaterialAsset, "path">) {
   const separator = asset.path.lastIndexOf("/");
   return separator < 0 ? "" : asset.path.slice(0, separator);
+}
+
+export function assetsAtDirectory(assets: MaterialAsset[], directoryPath: string) {
+  return assets.filter((asset) => assetDirectoryPath(asset) === directoryPath);
+}
+
+export function assetsWithinDirectory(assets: MaterialAsset[], directoryPath: string) {
+  return assets.filter((asset) => !directoryPath || asset.path.startsWith(`${directoryPath}/`));
+}
+
+export function directoriesAtDirectory(directories: MaterialDirectory[], directoryPath: string) {
+  return directories
+    .filter((directory) => directory.parentPath === directoryPath)
+    .sort(compareDirectoryNames);
 }
 
 export function buildExplorerTree(

@@ -12,12 +12,18 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
+import { DirectoryList } from "../components/DirectoryList";
 import { FileList, type AssetDisplay } from "../components/FileList";
 import { FilePreviewDialog } from "../components/FilePreviewDialog";
 import { PreviewPane } from "../components/PreviewPane";
 import { Sidebar } from "../components/Sidebar";
 import { ThemeToggle } from "../components/ThemeToggle";
-import { normalizeLegacyLibraryLocation, normalizeLegacyLibrarySearch } from "../lib/explorerTree";
+import {
+  assetsWithinDirectory,
+  directoriesAtDirectory,
+  normalizeLegacyLibraryLocation,
+  normalizeLegacyLibrarySearch,
+} from "../lib/explorerTree";
 import { getMaterials, getProjects, revealMaterial, searchMaterialText } from "../lib/materials";
 import { naturalProductionCompare, productionMetaFor, productionStageIndex } from "../lib/production";
 import { projectLibraryPath } from "../lib/routes";
@@ -30,10 +36,6 @@ const DEFAULT_SIDEBAR_WIDTH = 284;
 const MIN_SIDEBAR_WIDTH = 238;
 const MAX_SIDEBAR_WIDTH = 410;
 const RESIZE_STEP = 24;
-
-function belongsToDirectory(asset: MaterialAsset, directoryPath: string) {
-  return !directoryPath || asset.path.startsWith(`${directoryPath}/`);
-}
 
 function storedWidth(key: string, fallback: number) {
   const value = Number(window.localStorage.getItem(key));
@@ -63,6 +65,7 @@ export function ProjectLibraryPage() {
   const searchScope: SearchScope = requestedScope === "project" ? "project" : "current";
   const includeContent = searchParams.get("content") === "1";
   const requestedDisplay = searchParams.get("display");
+  const searching = Boolean(query.trim());
 
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [assets, setAssets] = useState<MaterialAsset[]>([]);
@@ -172,9 +175,17 @@ export function ProjectLibraryPage() {
     };
   }, [includeContent, projectId, query]);
 
+  const currentDirectories = useMemo(() => {
+    if (searching) return [];
+    return directoriesAtDirectory(directories, selectedPath).map((directory) => ({
+      ...directory,
+      fileCount: assetsWithinDirectory(assets, directory.path).length,
+    }));
+  }, [assets, directories, searching, selectedPath]);
+
   const scopedAssets = useMemo(() => {
     if (searchScope === "project") return assets;
-    return assets.filter((asset) => belongsToDirectory(asset, selectedPath));
+    return assetsWithinDirectory(assets, selectedPath);
   }, [assets, searchScope, selectedPath]);
 
   const visibleAssets = useMemo(() => {
@@ -289,9 +300,13 @@ export function ProjectLibraryPage() {
   const selectedDirectory = directories.find((directory) => directory.path === selectedPath);
   const directoryMissing = !loading && Boolean(selectedPath) && !selectedDirectory;
   const title = selectedDirectory?.name ?? (selectedPath.split("/").at(-1) || "全部素材");
-  const description = selectedPath
-    ? `以缩略图查看“${selectedPath.replaceAll("/", " / ")}”及其子目录中的全部文件`
-    : "以缩略图查看项目中的剧情、图片、音频、视频和生产资料";
+  const description = searching
+    ? `在${searchScope === "project" ? "全项目" : "当前目录及子目录"}中查找匹配文件`
+    : searchScope === "project"
+      ? "显示全项目中的文件，同时保留当前目录的子文件夹入口"
+      : selectedPath
+        ? `显示“${selectedPath.replaceAll("/", " / ")}”中的子文件夹和全部文件`
+        : "显示项目中的子文件夹和全部剧情、图片、视频及音频素材";
   const breadcrumbParts = selectedPath ? selectedPath.split("/") : [];
 
   return (
@@ -376,7 +391,9 @@ export function ProjectLibraryPage() {
             <header className="browser-heading">
               <button className="tree-drawer-trigger" type="button" onClick={() => setTreeDrawerOpen(true)}><PanelLeftOpen size={18} />文件树</button>
               <div><h1>{title}</h1><p title={description}>{description}</p></div>
-              <span>{query ? `${visibleAssets.length} / ${scopedAssets.length}` : visibleAssets.length} 个文件</span>
+              <span>{searching
+                ? `${visibleAssets.length} / ${scopedAssets.length} 个文件`
+                : `${currentDirectories.length} 个文件夹 · ${visibleAssets.length} 个文件`}</span>
             </header>
 
             <div className="browser-toolbar">
@@ -388,7 +405,7 @@ export function ProjectLibraryPage() {
               </label>
               <label className="scope-control"><span>范围</span>
                 <select name="material-scope" value={searchScope} onChange={(event) => updateSearchParam("scope", event.target.value === "current" ? undefined : event.target.value)}>
-                  <option value="current">当前目录</option>
+                  <option value="current">当前目录下</option>
                   <option value="project">全项目</option>
                 </select>
               </label>
@@ -413,16 +430,28 @@ export function ProjectLibraryPage() {
             {(error || directoryMissing) && <div className="library-error" role="alert">{error || `目录“${selectedPath}”不存在。`}</div>}
             {loading && !assets.length
               ? <div className="loading-state"><RefreshCw size={24} className="spinning" />正在扫描本地文件夹…</div>
-              : <FileList
-                  assets={directoryMissing ? [] : visibleAssets}
-                  selectedId={dialogAsset?.id}
-                  display={display}
-                  snippets={textMatches}
-                  emptySearch={Boolean(query)}
-                  directoryPath={selectedPath}
-                  projectId={projectId}
-                  onSelect={(asset) => selectAsset(asset, "dialog")}
-                />}
+              : (
+                <>
+                  {!directoryMissing && (
+                    <DirectoryList directories={currentDirectories} display={display} onSelect={selectDirectory} />
+                  )}
+                  {!directoryMissing && currentDirectories.length > 0 && visibleAssets.length > 0 && (
+                    <div className="browser-section-heading file-section-heading"><h2>文件</h2><span>{visibleAssets.length} 个</span></div>
+                  )}
+                  {(directoryMissing || visibleAssets.length > 0 || currentDirectories.length === 0) && (
+                    <FileList
+                      assets={directoryMissing ? [] : visibleAssets}
+                      selectedId={dialogAsset?.id}
+                      display={display}
+                      snippets={textMatches}
+                      emptySearch={searching}
+                      directoryPath={selectedPath}
+                      projectId={projectId}
+                      onSelect={(asset) => selectAsset(asset, "dialog")}
+                    />
+                  )}
+                </>
+              )}
           </section>
         ) : (
           <PreviewPane
