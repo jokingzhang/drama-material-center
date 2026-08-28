@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目 AI 导演"
+  short_description: "把剧本转成世界类型、图片素材与分镜提示词合同"
+  default_prompt: "Use $ai-director in this repository to analyze my script into a WorldGenreProfile, AssetPlan, ShotTypePlan, and ShotPromptPlan using the project director knowledge base; preserve unknowns and stop before media generation."
