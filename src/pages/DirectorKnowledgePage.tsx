@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   KnowledgeAreaDocumentsView,
+  KnowledgeCaseView,
   KnowledgeDocumentView,
   KnowledgeHomeView,
 } from "../components/knowledge/KnowledgeDocumentsView";
@@ -15,6 +16,8 @@ export function DirectorKnowledgePage() {
 
   if (segments.length === 0) {
     content = <KnowledgeHomeView />;
+  } else if (segments[0] === "cases" && segments.length === 2) {
+    content = <KnowledgeCaseView caseId={segments[1]} />;
   } else if (segments[0] === "areas" && segments[1]) {
     const area = getKnowledgeArea(segments[1]);
     if (!area) {

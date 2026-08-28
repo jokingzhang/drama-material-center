@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   getKnowledgeArea,
+  getKnowledgeCase,
   getKnowledgeDocument,
   knowledgeAreas,
+  listKnowledgeCases,
   listKnowledgeDocuments,
   normalizeKnowledgeDocumentPath,
+  splitKnowledgeCaseMarkdown,
+  summarizeKnowledgeCaseMarkdown,
 } from "./knowledgeDocuments";
 
 describe("director knowledge Markdown catalog", () => {
@@ -25,5 +29,23 @@ describe("director knowledge Markdown catalog", () => {
     expect(normalizeKnowledgeDocumentPath("主题/说明.md", "../README.md#开始")).toEqual({ path: "README.md", hash: "开始" });
     expect(normalizeKnowledgeDocumentPath("README.md", "../案例/案例.md")).toBeUndefined();
     expect(normalizeKnowledgeDocumentPath("README.md", "https://example.com/a.md")).toBeUndefined();
+  });
+
+  it("discovers the seven complete LibTV shot cases from one Markdown source", async () => {
+    const cases = listKnowledgeCases();
+    expect(cases).toHaveLength(7);
+    expect(getKnowledgeCase("猫爪挡脸接触喜剧")?.title).toBe("猫爪挡脸接触喜剧");
+
+    for (const knowledgeCase of cases) {
+      const markdown = await knowledgeCase.load();
+      const sections = splitKnowledgeCaseMarkdown(markdown);
+      const preview = summarizeKnowledgeCaseMarkdown(markdown);
+      expect(sections?.inputs).toContain("![");
+      expect(sections?.prompt).toContain("```text");
+      expect(sections?.result).toContain("/knowledge-media/LibTV/");
+      expect(preview?.imageUrl).toMatch(/^https:\/\//);
+      expect(preview?.videoUrl).toMatch(/^\/knowledge-media\/LibTV\//);
+      expect(preview?.promptExcerpt.length).toBeGreaterThan(20);
+    }
   });
 });

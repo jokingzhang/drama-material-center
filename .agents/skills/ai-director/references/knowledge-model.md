@@ -1,209 +1,83 @@
 # Director knowledge model
 
-The skill is stable methodology. The knowledge base is the growing body of cases, evidence, cards, and practice records.
+The current knowledge source is the Markdown tree under `<repo-root>/director-knowledge-base`. The Web UI is a local read-only view of those files. Do not introduce a JSON index, maturity registry, knowledge API, usage ledger, or project registration as a prerequisite for retrieval.
 
-## Storage layout
+## Current layout
 
 ```text
 <kb-root>/
-├── .ai-director/
-│   └── index.json
 ├── README.md
-├── 标准/
-│   ├── 图片素材/
-│   ├── 分镜提示词/
-│   └── 工作流/
-├── 知识卡索引.md
+├── 剧本/
+├── 图片素材/
+│   └── 真实案例与可复用做法.md
+├── 分镜提示词/
+│   └── LibTV案例模板.md
 ├── 案例/
-│   └── <case-id>/
-│       ├── 案例档案.md
-│       └── 证据账本.md
-├── 知识卡/
-│   ├── 剧情/
-│   ├── 画面与素材/
-│   ├── 分镜与运镜/
-│   └── 工作流/
-└── 验证/
-    └── 验证记录.md
+│   ├── 可复用镜头/
+│   │   ├── README.md
+│   │   └── <完整镜头案例>.md
+│   └── CASE-*/                 # detailed research dossiers retained as evidence
+└── 来源/                       # source reports retained as evidence
 ```
 
-Study reports use five evidence layers: narrative, visual/material, cinematography, prompt translation, and workflow. The stable card model keeps four domains. Prompt wording is model- and version-sensitive evidence; normalize only durable directing-to-prompt mechanisms into `cinematography` or `workflow` cards.
+The three problem domains are the working entrances:
 
-Keep the original long-form case report as a source document. The case dossier indexes it and records only normalized conclusions and limitations. Do not delete, move, or overwrite source reports or media. Machine metadata lives in the hidden `.ai-director/index.json` so the material-center Markdown preview stays clean.
+- `剧本/`: story design and revision;
+- `图片素材/`: which images are required and what each one must guarantee;
+- `分镜提示词/`: shot-task selection, decomposition, and prompt writing.
 
-## Project standard contract
+Cases and source reports support those domains. They do not override current project facts or explicit user decisions.
 
-Standards and evidence cards are separate layers. A standard answers “what this project currently requires”; a card answers “how mature the supporting evidence is.” Register standards in `.ai-director/index.json` under `standards`:
+## One complete case, two entrances
 
-```json
-{
-  "schemaVersion": 1,
-  "id": "DRAMA-STD-ASSET-001",
-  "kind": "standard",
-  "title": "Standard title",
-  "path": "标准/图片素材/DRAMA-STD-ASSET-001-title.md",
-  "domain": "visual-material",
-  "policyStatus": "ACTIVE",
-  "evidenceStatus": "REUSABLE",
-  "version": "0.1.0",
-  "sourceCardIds": ["DRAMA-PAT-101"],
-  "evidenceOverrides": [
-    {
-      "feature": "A_NEW_SUBTYPE",
-      "evidenceStatus": "OBSERVED",
-      "reason": "The subtype boundary currently comes from one external case.",
-      "representativeTestRequired": true,
-      "sourceCardIds": ["DRAMA-PAT-101"]
-    }
-  ],
-  "createdAt": "YYYY-MM-DD",
-  "updatedAt": "YYYY-MM-DD"
-}
-```
+`图片素材/真实案例与可复用做法.md` and `分镜提示词/LibTV案例模板.md` expose the same cases from different angles. Do not copy a case into both folders.
 
-Allowed `policyStatus` values are `DRAFT`, `ACTIVE`, and `RETIRED`. `evidenceStatus` uses `OBSERVED`, `REUSABLE`, or `VALIDATED` and cannot exceed the strongest defensible supporting evidence. Use these required headings:
+The physical source lives once in `案例/可复用镜头/<title>.md` and must contain:
 
-- `## 适用范围`
-- `## 输入`
-- `## 决策规则`
-- `## 输出合同`
-- `## 验收`
-- `## 停止条件`
-- `## 证据与成熟度`
+- source canvas, node, model, mode, duration, aspect ratio, and inspection boundary;
+- `## 输入图片`: each actual input image, its node or source locator, and its one clear responsibility;
+- `## 原始提示词`: the exact prompt used by the representative source node, including its redundancies and contradictions;
+- `## 实际视频`: a playable local link when downloaded, a remote source locator, hash when available, and only the result that was actually observed;
+- reusable action skeleton;
+- replacement checks;
+- limits and things that must not be copied.
 
-An `ACTIVE` standard is mandatory for project planning unless current explicit user decisions or project facts conflict. It is not a quality guarantee. When a standard contains a feature or subtype whose evidence is weaker than the aggregate standard, register it in `evidenceOverrides`; retrieval must surface the override beside the standard instead of letting the aggregate maturity hide it. If an active standard or feature has only `OBSERVED` evidence, apply it as an explicit project policy and schedule representative testing; do not describe it as proven.
+The image entrance emphasizes image responsibilities. The shot-prompt entrance emphasizes action structure and substitution. Both still show the complete bundle because an image or prompt cannot be evaluated without the actual result.
 
-## Case contract
+## Admission rule
 
-Register every `案例档案.md` in `.ai-director/index.json` under `cases`. New or materially revised dossiers use case schema v2:
+A chain enters `案例/可复用镜头/` only when the actual input images, exact source prompt, and actual result video can all be traced to the same result node. A canvas name, thumbnail, disconnected prompt, or isolated image is not a complete reusable case.
 
-```json
-{
-  "schemaVersion": 2,
-  "id": "CASE-YYYYMMDD-SHORT-NAME",
-  "kind": "case",
-  "origin": "external-work",
-  "title": "Case title",
-  "path": "案例/CASE-.../案例档案.md",
-  "studiedAt": "YYYY-MM-DD",
-  "sourceUrl": "https://example.com",
-  "sourceMedia": "/absolute/read-only/source/path.mp4",
-  "sourceMediaSha256": "optional sha256",
-  "sourceDocument": "relative/path/from/kb/root.md",
-  "evidenceDocument": "案例/CASE-.../证据账本.md",
-  "domains": ["narrative", "visual-material", "cinematography", "workflow"],
-  "derivedCardIds": ["DRAMA-PAT-001"]
-}
-```
+Incomplete or failed chains remain useful in detailed case dossiers or source reports as evidence and counterexamples. Do not hide them, but do not market them as templates.
 
-Allowed `origin` values are `external-work` and `own-production`.
+## Local media
 
-Schema v2 requires:
+Downloaded case videos live under `<repo-root>/director-knowledge-base/.media/`, which is ignored by Git. The local Web route may stream those files, while the Markdown keeps the remote source and node for traceability.
 
-- `## 案例定位`
-- `## 证据状态`
-- `## 五层结论`, with `### 剧情`, `### 画面与素材`, `### 分镜、景别与运镜`, `### 提示词转译`, and `### 工作流`
-- `## 知识增量`, with `### 新发现`, `### 重复验证`, and `### 相互冲突`; state `无` when a category is empty
-- `## 未确认`
-- `## 原始拆解`
+- Download only when the source allows it and the user has authorized the work.
+- Never run a generation node merely to complete a case.
+- Record the local filename and SHA-256 when downloaded.
+- If download fails, keep the canvas, node, and remote locator and continue. Do not fabricate a local file.
+- A successful download or full decode is technical evidence, not continuous playback, sound review, creator selection, or human acceptance.
 
-Legacy schema v1 dossiers with `## 四领域结论` and `## 知识卡` remain valid and do not need a forced migration. Their evidence ledgers must still contain at least one entry, the five core evidence fields, valid types, unique IDs, and a global read date. Use v2 for the next case and migrate an old dossier only when it is materially revised for another reason.
+## Retrieval
 
-Keep `evidenceDocument`, case dossiers, and cards inside the resolved knowledge-base root; symbolic links or relative traversal must not escape it. `sourceDocument` may point to the original report inside the knowledge root or its immediate parent library root, but not beyond that boundary. In `证据账本.md`, give each item a globally unique heading such as `### EV-<CASE-SHORT>-FILM-001`; include a case prefix so two ledgers cannot create an ambiguous card reference. Record type (`DIRECT_FACT`, `ANALYTICAL_INFERENCE`, or `UNKNOWN`), source locator or timecode, inspection method, observation, confidence, and read date. A mutable online canvas always needs an item-level read date. Prompt evidence also records the target model/version, mode, duration, aspect ratio, and reference responsibilities when known; missing fields remain `UNKNOWN`, not guessed.
+1. Read the root README and the current problem-domain README.
+2. Read the one or two relevant topic documents.
+3. If an example would help, search complete cases by the visible directing problem and open at most three.
+4. Compare image responsibilities, source prompt, and actual video before recommending reuse.
+5. Return a current-project substitution table; never carry source node IDs into a new project.
 
-## Knowledge-card contract
+Retrieve by mechanism and condition, not title similarity. Useful mechanisms include a visible state ladder, a precise contact point, a before/after machine state, a role-to-node mapping, a spatial route, or a single physical consequence.
 
-Register every card in `.ai-director/index.json` under `cards`:
+## Maintenance
 
-```json
-{
-  "schemaVersion": 1,
-  "id": "DRAMA-PAT-001",
-  "kind": "pattern",
-  "title": "Card title",
-  "path": "知识卡/剧情/DRAMA-PAT-001-title.md",
-  "domain": "narrative",
-  "status": "OBSERVED",
-  "tags": ["tag"],
-  "sourceCaseIds": ["CASE-YYYYMMDD-SHORT-NAME"],
-  "evidenceRefs": ["EV-FILM-001"],
-  "evidenceStrength": "HIGH",
-  "sourceCount": 1,
-  "ownProductionUses": 0,
-  "ownAcceptedUses": 0,
-  "createdAt": "YYYY-MM-DD",
-  "updatedAt": "YYYY-MM-DD"
-}
-```
+When studying a new source:
 
-Allowed values:
+1. preserve source facts, observations, inferences, failures, and unknowns in a readable dossier or report;
+2. select representative complete chains rather than treating an entire mutable canvas as one answer;
+3. create or update a complete case only when the three-part admission rule is met;
+4. change a domain topic document only when the evidence changes a practical production decision;
+5. keep old dossiers, ledgers, cards, and standards as research history unless the user explicitly authorizes migration or cleanup.
 
-- `kind`: `pattern` or `risk`.
-- `domain`: `narrative`, `visual-material`, `cinematography`, or `workflow`.
-- `status`: `OBSERVED`, `REUSABLE`, `VALIDATED`, or `RETIRED`.
-- `evidenceStrength`: `LOW`, `MEDIUM`, or `HIGH`.
-
-Use these required headings:
-
-- `## 问题`
-- `## 银幕事实`
-- `## 机制`
-- `## 适用条件`
-- `## 不适用条件`
-- `## AI 制作转译`
-- `## 验收`
-- `## 失败信号`
-- `## 证据`
-- `## 实践记录`
-
-Write the mechanism as an inference, not a fact. Name the condition that would falsify the card. A card without an inapplicable condition or observable acceptance test is only a note, not reusable directing knowledge.
-
-## Knowledge delta
-
-Compare every studied case with current cards before creating or editing cards:
-
-- `新发现`: no current card expresses the mechanism under the observed conditions; create the smallest atomic `OBSERVED` card.
-- `重复验证`: append the new case and evidence to the existing card; do not create a synonym card or automatically promote it.
-- `相互冲突`: preserve both observations, name the conflicting card IDs and evidence, and state the condition or missing evidence that may decide between them.
-
-Do not call title similarity repeated validation. The mechanism, applicable conditions, and observable effect must match.
-
-## Maturity and promotion
-
-- `OBSERVED`: direct evidence from at least one inspected external work or own-production artifact. It may inspire a choice but cannot overrule current project facts. An unexecuted Director decision is not observed evidence.
-- `REUSABLE`: the same mechanism appears in at least two independent cases, or one own-production controlled use passed its intended acceptance test.
-- `VALIDATED`: at least two own-production uses passed actual human viewing or listening acceptance, with acceptable cost and side effects.
-- `RETIRED`: evidence contradicts the mechanism or its cost exceeds its value. Preserve it for audit.
-
-Never promote on Agent judgment alone. Append the same structured record to `验证/验证记录.md` and the card's `## 实践记录`:
-
-```text
-### PRACTICE-YYYYMMDD-PROJECT-SHOT
-- 日期：
-- 项目 / 集数 / 镜头：
-- 决策 ID：
-- 知识卡 ID 与版本：
-- 预期观众效果：
-- 实际执行与结果：
-- 实际播放 / 试听证据：
-- 人工结论：
-- 确认人：
-- 计入人工接受：`YES` / `NO`
-- 成本与副作用：
-- 状态决定：
-- 证据路径：
-```
-
-All fields must be non-empty. The practice ID uses `PRACTICE-YYYYMMDD-PROJECT-SHOT`; its date segment matches a real `日期` in `YYYY-MM-DD`. `决策 ID` exactly binds a real `DEV-<scope>-###` or `DIR-<scope>-###` decision. `知识卡 ID 与版本` exactly names the current card as `<card-id> v<number>` or `<card-id>@v<number>`. `确认人` identifies a human, never an Agent or automation. The same practice ID and identical fields must appear once in both places; the validation ledger must not contain an orphan practice. A card cannot count the same project/episode/shot twice as independent use.
-
-Update counters and dates only after that record exists. `ownProductionUses` equals the number of structured practice records for the card; `ownAcceptedUses` equals the number explicitly marked `YES`. A `YES` record requires explicit actual playback, viewing, or listening evidence and a non-pending human conclusion. “待人工播放”, “待人工验收”, a machine pass, task success, or Agent-only judgment must be marked `NO`.
-
-## Retrieval rules
-
-- Read applicable `ACTIVE` standards before searching cards. Use cards to understand evidence, conditions, exceptions, conflicts, and tests behind the standard.
-- Retrieve by the current directing problem, not by title similarity alone.
-- Prefer domain and condition matches; reject cards whose `不适用条件` match the project.
-- Show card ID and status beside every recommendation.
-- A collection of `OBSERVED` cards is a hypothesis set, not consensus.
-- Contradictions are useful. Keep both cards and state the condition deciding between them.
-- Keep untested `DEV-*` and `DIR-*` choices in project artifacts; do not use the knowledge base as a storage place for speculative decisions.
+Legacy references that describe `.ai-director/index.json`, mandatory schemas, status promotion, validation registries, or knowledge-use tracking are historical research machinery, not the current retrieval path. Do not load or rebuild them for ordinary AI Director work.

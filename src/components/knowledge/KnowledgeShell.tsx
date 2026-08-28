@@ -6,7 +6,8 @@ import { BrandMark } from "../BrandMark";
 import { ThemeToggle } from "../ThemeToggle";
 
 export function KnowledgeShell({ children }: { children: ReactNode }) {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const caseEntry = pathname.startsWith("/knowledge/cases/") ? new URLSearchParams(search).get("from") : undefined;
 
   return (
     <div className="knowledge-shell">
@@ -23,8 +24,8 @@ export function KnowledgeShell({ children }: { children: ReactNode }) {
       <nav className="knowledge-primary-nav" aria-label="导演知识库导航">
         <Link className={pathname === "/knowledge" || pathname === "/knowledge/" ? "active" : ""} to="/knowledge"><BookOpenText size={17} />使用说明</Link>
         <Link className={pathname.startsWith(knowledgeAreaPath("script")) ? "active" : ""} to={knowledgeAreaPath("script")}><Lightbulb size={17} />剧本</Link>
-        <Link className={pathname.startsWith(knowledgeAreaPath("image-asset")) ? "active" : ""} to={knowledgeAreaPath("image-asset")}><Images size={17} />图片素材</Link>
-        <Link className={pathname.startsWith(knowledgeAreaPath("shot-prompt")) ? "active" : ""} to={knowledgeAreaPath("shot-prompt")}><Clapperboard size={17} />分镜提示词</Link>
+        <Link className={pathname.startsWith(knowledgeAreaPath("image-asset")) || caseEntry === "image-asset" ? "active" : ""} to={knowledgeAreaPath("image-asset")}><Images size={17} />图片素材</Link>
+        <Link className={pathname.startsWith(knowledgeAreaPath("shot-prompt")) || caseEntry === "shot-prompt" ? "active" : ""} to={knowledgeAreaPath("shot-prompt")}><Clapperboard size={17} />分镜提示词</Link>
         <span>只读 Markdown · 无知识接口</span>
       </nav>
       {children}

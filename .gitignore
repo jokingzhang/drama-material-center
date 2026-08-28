@@ -18,5 +18,8 @@ workspace/*
 .playwright-cli/
 output/
 
+# Downloaded evidence media for the local-only director case viewer.
+director-knowledge-base/.media/
+
 # Local LibTV CLI canvas binding.
 .libtv/
