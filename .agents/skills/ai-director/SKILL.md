@@ -26,7 +26,7 @@ Complete reusable LibTV shots have one physical source under `director-knowledge
 ### Idea, premise, outline, novel excerpt, or unsettled script
 
 1. Read `director-knowledge-base/剧本/README.md`.
-2. When the scope creates or revises scene-level dialogue, always read `director-knowledge-base/剧本/对白、梗与情绪节拍.md`. Treat it as one of the one or two topic documents: concise dialogue means high functional load, not the fewest possible words or turns.
+2. When the scope creates or revises scene-level dialogue, always read `director-knowledge-base/剧本/对白、梗与情绪节拍.md`. Treat it as one of the one or two topic documents: concise dialogue means high functional load, not the fewest possible words or turns. Do not replace scene judgment with a global character limit, fixed joke or emotion quota, or percentage slider unless the current project supplies a measured production constraint.
 3. Read only one or two topic documents in total. If the dialogue document was required, open at most one additional topic document that best matches the problem.
 4. If a useful example or counterexample is needed, search `director-knowledge-base/案例/` and open at most three relevant case files. Do not load every evidence ledger.
 5. Produce an understandable 《故事方案》 before planning the whole production.
