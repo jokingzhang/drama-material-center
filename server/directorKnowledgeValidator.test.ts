@@ -45,7 +45,10 @@ describe("legacy AI Director research archive validator", () => {
   it("fails closed when a v2 usage contract loses a required field", async () => {
     const root = await mkdtemp(join(tmpdir(), "director-validator-"));
     temporaryRoots.push(root);
-    await cp(knowledgeRoot, root, { recursive: true });
+    await cp(knowledgeRoot, root, {
+      recursive: true,
+      filter: (source) => source !== join(knowledgeRoot, ".media"),
+    });
     const indexPath = join(root, ".ai-director", "index.json");
     const index = JSON.parse(await readFile(indexPath, "utf8")) as {
       standards: Array<{ usageContract: Record<string, unknown> }>;
