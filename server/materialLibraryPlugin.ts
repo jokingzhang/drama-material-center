@@ -9,6 +9,7 @@ import {
   ProjectWorkspaceError,
   type CreateProjectInput,
 } from "./projectWorkspace.ts";
+import { createProjectStoryCatalog } from "./projectStoryCatalog.ts";
 
 const contentTypes: Record<string, string> = {
   ".md": "text/markdown; charset=utf-8",
@@ -110,6 +111,16 @@ function folderLabel(path: string) {
 }
 
 function projectRoute(pathname: string) {
+  const episodeMatch = pathname.match(/^\/api\/projects\/([^/]+)\/story\/episodes\/([^/]+)$/);
+  if (episodeMatch) {
+    return {
+      projectId: decodeURIComponent(episodeMatch[1]),
+      action: "story" as const,
+      episodeId: decodeURIComponent(episodeMatch[2]),
+    };
+  }
+  const storyMatch = pathname.match(/^\/api\/projects\/([^/]+)\/story$/);
+  if (storyMatch) return { projectId: decodeURIComponent(storyMatch[1]), action: "story" as const };
   const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal|search|summary)$/);
   if (!match) return undefined;
   return { projectId: decodeURIComponent(match[1]), action: match[2] };
@@ -163,12 +174,14 @@ async function searchTextFiles(libraryRoot: string, query: string) {
 
 function statusFor(error: ProjectWorkspaceError) {
   if (error.code === "invalid_project" || error.code === "invalid_cover") return 400;
+  if (error.code === "invalid_index") return 422;
   if (error.code === "project_exists") return 409;
   return 404;
 }
 
 function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspaceRoot: string) {
   const workspace = createProjectWorkspace(workspaceRoot);
+  const storyCatalog = createProjectStoryCatalog(workspaceRoot);
 
   server.middlewares.use(async (request, response, next) => {
     if (!request.url?.startsWith("/api/")) {
@@ -198,6 +211,13 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
       const route = projectRoute(url.pathname);
       if (!route) {
         sendJson(response, 404, { error: "接口不存在" });
+        return;
+      }
+
+      if (request.method === "GET" && route.action === "story") {
+        sendJson(response, 200, await storyCatalog.readProjectStory(route.projectId, {
+          ...(route.episodeId ? { episodeId: route.episodeId } : {}),
+        }));
         return;
       }
 
@@ -294,8 +314,7 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
         sendJson(response, statusFor(error), { error: error.message, code: error.code });
         return;
       }
-      const message = error instanceof Error ? error.message : "读取本地素材失败";
-      sendJson(response, 500, { error: message });
+      sendJson(response, 500, { error: "读取本地素材失败", code: "MATERIAL_READ_FAILED" });
     }
   });
 }

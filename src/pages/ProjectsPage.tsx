@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { createProject, getProjects, uploadProjectCover } from "../lib/materials";
-import { projectLibraryPath } from "../lib/routes";
+import { projectStoryPath } from "../lib/routes";
 import type { ProjectSummary } from "../types";
 
 export function ProjectsPage() {
@@ -114,7 +114,7 @@ export function ProjectsPage() {
           return;
         }
       }
-      navigate(projectLibraryPath(project.id));
+      navigate(projectStoryPath(project.id));
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "无法创建项目");
       setSubmitting(false);
@@ -151,7 +151,7 @@ export function ProjectsPage() {
           <div className="project-grid" aria-label="短剧项目">
             {projects.map((project) => (
               <article className="project-card" key={project.id}>
-                <Link className="project-card-link" to={projectLibraryPath(project.id)} aria-label={`打开项目：${project.name}`}>
+                <Link className="project-card-link" to={projectStoryPath(project.id)} aria-label={`打开项目：${project.name}`}>
                   <div className="project-cover">
                     {project.coverUrl ? (
                       <img src={project.coverUrl} alt={`${project.name}封面`} />

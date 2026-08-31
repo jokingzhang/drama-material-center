@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   knowledgeAreaPath,
   knowledgeCasePath,
+  projectCharacterPath,
+  projectEpisodePath,
   projectLibraryPath,
+  projectScenePath,
+  projectStoryPath,
 } from "./routes";
 
 describe("project library routes", () => {
@@ -10,6 +14,15 @@ describe("project library routes", () => {
     expect(projectLibraryPath("zero-boundary", "剧情/第一集")).toBe(
       "/projects/zero-boundary/library/%E5%89%A7%E6%83%85/%E7%AC%AC%E4%B8%80%E9%9B%86",
     );
+  });
+});
+
+describe("project story routes", () => {
+  it("builds stable story, character, episode and scene deep links", () => {
+    expect(projectStoryPath("story-demo")).toBe("/projects/story-demo/story");
+    expect(projectCharacterPath("story-demo", "CHAR 江")).toBe("/projects/story-demo/story/characters/CHAR%20%E6%B1%9F");
+    expect(projectEpisodePath("story-demo", "EP01")).toBe("/projects/story-demo/story/episodes/EP01");
+    expect(projectScenePath("story-demo", "EP01", "EP01-S 01")).toBe("/projects/story-demo/story/episodes/EP01/scenes/EP01-S%2001");
   });
 });
 

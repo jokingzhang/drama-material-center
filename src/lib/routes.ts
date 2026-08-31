@@ -8,6 +8,22 @@ export function projectLibraryPath(projectId: string, directoryPath = "") {
   return `/projects/${encodedProjectId}/library${encodedDirectory ? `/${encodedDirectory}` : ""}`;
 }
 
+export function projectStoryPath(projectId: string) {
+  return `/projects/${encodeURIComponent(projectId)}/story`;
+}
+
+export function projectCharacterPath(projectId: string, characterId: string) {
+  return `${projectStoryPath(projectId)}/characters/${encodeURIComponent(characterId)}`;
+}
+
+export function projectEpisodePath(projectId: string, episodeId: string) {
+  return `${projectStoryPath(projectId)}/episodes/${encodeURIComponent(episodeId)}`;
+}
+
+export function projectScenePath(projectId: string, episodeId: string, sceneId: string) {
+  return `${projectEpisodePath(projectId, episodeId)}/scenes/${encodeURIComponent(sceneId)}`;
+}
+
 export function knowledgeAreaPath(area: string, documentPath = "") {
   const encodedDocumentPath = documentPath
     .split("/")

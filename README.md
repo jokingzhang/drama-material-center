@@ -1,6 +1,6 @@
 # AI 短剧素材中心
 
-一个只在本机运行的多项目短剧创作工作台。首页用封面卡片区分项目；进入项目后通过统一文件树浏览剧本、图片、音频和视频。仓库级“导演知识库”用三组可读 Markdown 文档告诉 AI 怎样从想法或剧本继续完成故事、图片素材和分镜提示词。
+一个只在本机运行的多项目短剧创作工作台。首页用封面卡片区分项目；进入项目后先按故事大概、角色设定、分集和场次理解剧本，再通过保留的统一文件树浏览真实剧本、图片、音频和视频。仓库级“导演知识库”用三组可读 Markdown 文档告诉 AI 怎样从想法或剧本继续完成故事、图片素材和分镜提示词。
 
 桌面工作台支持：
 
@@ -37,6 +37,9 @@ npm run dev
 workspace/<project-id>/
 ├── project.json        # 名称、说明和当前封面文件名
 ├── cover.png           # 可选；也支持 jpg、webp、gif
+├── production/
+│   ├── story-index.v1.json      # 故事、角色、分集、场次和明确需求
+│   └── asset-bindings.v1.json   # 本地素材与稳定业务 ID 的关联
 └── library/
     ├── 剧情/
     ├── 图片/人物/
@@ -48,6 +51,10 @@ workspace/<project-id>/
 ## 路由
 
 - `/`：所有项目的封面卡片。
+- `/projects/:projectId/story`：剧本抬头、故事大概、角色卡和分集索引；项目默认入口。
+- `/projects/:projectId/story/characters/:characterId`：角色设定、主/备选造型和素材缺口。
+- `/projects/:projectId/story/episodes/:episodeId`：按需读取一集的场次和相关素材。
+- `/projects/:projectId/story/episodes/:episodeId/scenes/:sceneId`：指定场次的稳定深链。
 - `/projects/:projectId/library/*`：指定项目及素材目录。
 - `?file=...&preview=dialog&search=...&sort=...`：选中文件、内容区弹窗展示方式、搜索词和排序方式；没有 `preview=dialog` 的文件深链使用右侧独立预览。
 - `scope=current|project`、`content=1`、`display=list|grid`：搜索范围、正文搜索和素材展示方式。旧分集台参数会自动清理。

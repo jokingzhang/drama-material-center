@@ -41,6 +41,118 @@
 
 项目可以在 `library/` 之外保存本地生产资料，例如参考资料、实验包、提示词或第三方工具状态；它们仍受 Git 忽略规则保护，但不会出现在素材中心页面。除非用户明确要求迁移或重构，不要把这些既有目录强行并入 `library/`。
 
+### 3.1 项目素材 schema（创建前必读）
+
+根 `AGENTS.md` 是所有短剧项目共用的素材 schema；项目 `PRODUCTION_RULES.md` 只补当前剧的事实、选择、特例和验收状态，Skill 只说明怎样创作、生成或验收。三者不得各自发明一套目录。
+
+Agent 创建任何项目文件前，必须先列出并确认下面五个字段：
+
+```text
+materialType  产物类型
+subject       项目 / characterId / lookId / episodeId / sceneId / shotId / locationId / propId
+targetDir     按下表得到的唯一默认目录
+version       本次新版本，使用 vNN 且不覆盖旧版
+storyBinding  是否以及挂到哪个剧本、角色、分集或场次对象
+```
+
+如果产物不属于任何已知 `materialType`，先提出 schema 增补建议；不得临时创建新的顶层目录或“其他 / 杂项 / 暂存 / final-final”等同义目录。
+
+项目根目录职责固定为：
+
+```text
+<workspace-root>/<project-id>/
+├── project.json
+├── cover.png | cover.jpg | cover.webp | cover.gif
+├── PRODUCTION_RULES.md             # 可选；当前项目事实和特例
+├── production/                     # 只放剧本业务索引和可重建报告
+│   ├── story-index.v1.json
+│   └── asset-bindings.v1.json
+├── library/                        # 正式人读文档与可浏览、复用的项目素材
+├── 创作记录/                       # prompt、job、raw response、selected run 等创作证据
+├── 生产记录/                       # 媒体任务、下载、解码、抽帧和 QA 证据
+├── 交付包/                         # 经明确交付动作形成的副本和 manifest
+└── 回收站/                         # 获得整理授权后的可恢复旧文件；日常不向这里生成
+```
+
+新的真实项目成果不得写入仓库 `docs/projects/<project-id>/`；仓库 `docs/` 只放产品 PRD、架构和程序维护文档。原始响应、抽帧和 QA 证据不得进入剧本阅读主线，参考媒体默认不满足正式业务需求。
+
+| `materialType` | 业务主体 | 默认目录 | 是否进入剧本视图 |
+| --- | --- | --- | --- |
+| `story.source` | 全项目 | `library/剧情/统一/` | 是，作为当前剧本或大纲来源 |
+| `story.summary` | 全项目 | `library/剧情/统一/` | 是，展示故事大概和确认状态 |
+| `story.character-setting` | `characterId` | `library/剧情/角色/<CHAR-ID-姓名>/` | 是，与角色图一起展示 |
+| `story.episode-script` | `episodeId` | `library/剧情/分集/<EP>/剧本/` | 是，作为分集正文或原文定位 |
+| `plan.asset-project` | 全项目 | `library/剧情/统一/素材计划/` | 是，用于全剧素材计划和缺口 |
+| `plan.asset-episode` | `episodeId`，可选 `sceneId` | `library/剧情/分集/<EP>/素材计划/` | 是，用于解释当集需求和缺口 |
+| `plan.shot` | `episodeId / sceneId` | `library/剧情/分集/<EP>/分镜/` | 是，作为场次上下文，不抢阅读主线 |
+| `contract.dialogue` | `episodeId / sceneId / characterId` | `library/剧情/分集/<EP>/分镜/` | 是，在场次和声音缺口中展示 |
+| `prompt.image` | 角色、场景或道具主体 | 与目标图片相同的业务目录 | 从素材来源打开，不当作图片 |
+| `prompt.video` | `episodeId / sceneId / shotId` | `library/剧情/分集/<EP>/分镜/` | 是，与镜头上下文展示 |
+| `prompt.voice` | `characterId` | `library/音频/人物/<CHAR>/` | 从声音来源打开，不当作声音本身 |
+| `image.character` | `characterId + lookId` | `library/图片/人物/<CHAR>/<LOOK>/` | 是，挂主造型、备选或剧情必需造型 |
+| `image.scene` | `locationId` | `library/图片/场景/<LOC>/` | 是，挂场次场景素材 |
+| `image.prop` | `propId` | `library/图片/道具/<PROP>/` | 是，挂角色或场次道具 |
+| `image.derived` | `sceneId` 或 `shotId` | `library/图片/剧情/<EP>/<SCENE>/` | 默认折叠，不进基础完成度 |
+| `audio.voice` | `characterId` | `library/音频/人物/<CHAR>/` | 是，挂角色声音 |
+| `audio.scene` | `sceneId` | `library/音频/剧情/<EP>/<SCENE>/` | 是，挂对白或时间轴音频 |
+| `audio.ambient` | `locationId` | `library/音频/环境/<LOC>/` | 是，在场次素材中展示 |
+| `audio.bgm` | 全项目或 `episodeId` | `library/音频/BGM/` | 是，在项目或分集声音区展示 |
+| `video.shot` | `sceneId + shotId` | `library/视频/剧情/<EP>/<SCENE>/` | 是，作为二级镜头素材 |
+| `video.final` | `episodeId` | `library/视频/成片/<EP>/` | 是，验收状态与基础素材齐套分开计算 |
+| `media.reference` | 可选业务主体 | 对应 `library/图片/参考/`、`音频/参考/` 或 `视频/参考/` | 否，默认不满足正式需求 |
+| `record.creative` | workflow / run | `创作记录/<agent>/<workflow>/<run-id>/` | 否，只从来源追溯中打开 |
+| `record.production` | media job / QA | `生产记录/<purpose>/<scope>/<job-id>/` | 否，只从验收证据中打开 |
+| `delivery.package` | delivery ID | `交付包/<delivery-id>/` | 否，只在交付记录中展示 |
+
+标准 `library/` 下级目录为：
+
+```text
+library/
+├── 剧情/
+│   ├── 统一/素材计划/
+│   ├── 角色/<CHAR-ID-姓名>/
+│   └── 分集/<EP>/
+│       ├── 剧本/
+│       ├── 素材计划/
+│       └── 分镜/
+├── 图片/
+│   ├── 人物/<CHAR>/<LOOK>/
+│   ├── 场景/<LOC>/
+│   ├── 道具/<PROP>/
+│   ├── 剧情/<EP>/<SCENE>/
+│   └── 参考/
+├── 音频/
+│   ├── 人物/<CHAR>/
+│   ├── 剧情/<EP>/<SCENE>/
+│   ├── 环境/<LOC>/
+│   └── BGM/
+└── 视频/
+    ├── 剧情/<EP>/<SCENE>/
+    ├── 参考/
+    └── 成片/<EP>/
+```
+
+命名使用“稳定主体 + 产物职责 + `vNN`”，例如：
+
+```text
+STORY-SCRIPT-红果32集-v01.md
+CHAR-001-SETTING-v01.md
+EP01-SCRIPT-红毯成空-v01.md
+EP01-S03-SHOT-PLAN-v01.md
+CHAR-001-LOOK-JQ-EP01-PLANNER-STANDARD-v01.png
+LOC-WEDDING-BACKSTAGE-MASTER-FRONT-v01.png
+PROP-ART-PORTFOLIO-STANDARD-v01.png
+EP01-S03-U04-KF-v01.png
+EP01-S03-U04-VIDEO-v01.mp4
+EP01-FINAL-v01.mp4
+```
+
+- `DRAFT / ACCEPTED / REJECTED / SUPERSEDED` 等可变状态写入业务索引，不写入新文件名；状态变化不得靠重命名或再复制一份表达。
+- 新版本永不覆盖旧文件；当前版本由索引中的稳定 `assetId` 或文档绑定指向，不创建 `final`、`最终版2` 等名称。
+- 能出现在剧本、角色、分集或场次页的成果必须绑定稳定业务 ID；物理目录和中文标题都不是业务主键。
+- 历史非标准路径先在 `story-index.v1.json` 或 `asset-bindings.v1.json` 中以 `legacyPath: true` 原地映射。页面上线不授权移动、改名或删除；实体迁移必须另开任务，先复制校验，默认保留源文件。
+- 任务结束时分开报告正式成果、运行证据和索引更新，不能用一句“文件已生成”混合三种状态。
+
 导演知识库是独立的仓库级空间，网页只读，事实源固定为仓库根 `director-knowledge-base/` 下的 Markdown 文档。它只按 `剧本/`、`图片素材/`、`分镜提示词/` 三个问题域组织，由项目级 AI Director Skill 按当前任务渐进读取和维护；不要求 JSON 索引、知识 API、成熟度系统或 AI 使用流水账才能工作。案例和来源只作为需要时查阅的研究材料，不能覆盖当前项目事实与用户决定。不得扫描、合并或删除工作区里同名的历史素材目录；它们继续按普通项目文件处理。
 
 `project.json` 的有效格式为：
@@ -67,11 +179,7 @@
 
 1. 启动 `npm run dev`，优先从首页“新建项目”创建标准骨架。
 2. 选择稳定的英文 kebab-case 项目标识；项目名称和说明可使用中文。
-3. 根据实际制作需要在 `library/` 下补充分类，例如：
-   - `剧情/第NN集/`
-   - `图片/人物/`、`图片/场景/`、`图片/怪物/`、`图片/剧情/`
-   - `音频/剧情/`、`音频/参考/`
-   - `视频/剧情/`、`视频/参考/`、`视频/成片/`
+3. 只按 3.1 节的素材 schema 补充目录，不另建同义分类。例如分集文档进入 `剧情/分集/<EP>/`，角色或具名怪物都以稳定 `characterId + lookId` 进入 `图片/人物/<CHAR>/<LOOK>/`，场次声音进入 `音频/剧情/<EP>/<SCENE>/`，分镜视频进入 `视频/剧情/<EP>/<SCENE>/`。找不到 `materialType` 时先提 schema 增补建议。
 4. 上传封面后刷新首页，确认封面、名称和项目链接都正确。
 5. 立即运行 `npm run audit:git-boundary`，确认新项目完全处于 Git 忽略范围。
 

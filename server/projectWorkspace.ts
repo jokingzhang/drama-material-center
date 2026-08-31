@@ -29,7 +29,7 @@ export interface SetProjectCoverInput {
 
 export class ProjectWorkspaceError extends Error {
   constructor(
-    readonly code: "invalid_project" | "invalid_cover" | "project_exists" | "project_not_found" | "material_not_found" | "invalid_path",
+    readonly code: "invalid_project" | "invalid_cover" | "invalid_index" | "project_exists" | "project_not_found" | "material_not_found" | "invalid_path",
     message: string,
   ) {
     super(message);
@@ -148,11 +148,48 @@ export function createProjectWorkspace(root: string) {
         ...(description ? { description } : {}),
       };
       await writeAtomic(join(projectRoot, "project.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+      const standardDirectories = [
+        ["production"],
+        ["library", "剧情", "统一", "素材计划"],
+        ["library", "剧情", "角色"],
+        ["library", "剧情", "分集"],
+        ["library", "图片", "人物"],
+        ["library", "图片", "场景"],
+        ["library", "图片", "道具"],
+        ["library", "图片", "剧情"],
+        ["library", "图片", "参考"],
+        ["library", "音频", "人物"],
+        ["library", "音频", "剧情"],
+        ["library", "音频", "环境"],
+        ["library", "音频", "BGM"],
+        ["library", "视频", "剧情"],
+        ["library", "视频", "参考"],
+        ["library", "视频", "成片"],
+        ["创作记录"],
+        ["生产记录"],
+        ["交付包"],
+        ["回收站"],
+      ];
+      await Promise.all(standardDirectories.map((segments) => mkdir(join(projectRoot, ...segments), { recursive: true })));
       await Promise.all([
-        mkdir(join(projectRoot, "library", "剧情"), { recursive: true }),
-        mkdir(join(projectRoot, "library", "图片", "人物"), { recursive: true }),
-        mkdir(join(projectRoot, "library", "图片", "场景"), { recursive: true }),
-        mkdir(join(projectRoot, "library", "视频", "成片"), { recursive: true }),
+        writeAtomic(join(projectRoot, "production", "story-index.v1.json"), `${JSON.stringify({
+          schemaVersion: 1,
+          sourceBindings: [],
+          documentBindings: [],
+          story: {
+            title: name,
+            genre: [],
+            totalEpisodes: 0,
+            logline: "尚未建立故事梗概。",
+            synopsis: "尚未建立故事大概。",
+            summaryStatus: "DRAFT_SUMMARY",
+          },
+          currentMilestone: { id: "UNSPECIFIED", episodeIds: [] },
+          requirements: [],
+          characters: [],
+          episodes: [],
+        }, null, 2)}\n`),
+        writeAtomic(join(projectRoot, "production", "asset-bindings.v1.json"), `${JSON.stringify({ schemaVersion: 1, assets: [] }, null, 2)}\n`),
       ]);
 
       return { id, name, ...(description ? { description } : {}) };

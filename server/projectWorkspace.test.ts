@@ -58,14 +58,25 @@ describe("project workspace", () => {
     });
 
     const createdDirectories = await readdir(join(root, "new-drama", "library"), { recursive: true });
-    expect(createdDirectories.sort()).toEqual([
-      "剧情",
-      "图片",
-      "视频",
+    expect(createdDirectories).toEqual(expect.arrayContaining([
+      "剧情/统一/素材计划",
+      "剧情/角色",
+      "剧情/分集",
       "图片/人物",
       "图片/场景",
+      "图片/道具",
+      "图片/剧情",
+      "图片/参考",
+      "音频/人物",
+      "音频/剧情",
+      "音频/环境",
+      "音频/BGM",
+      "视频/剧情",
+      "视频/参考",
       "视频/成片",
-    ].sort());
+    ]));
+    await expect(readFile(join(root, "new-drama", "production", "story-index.v1.json"), "utf8")).resolves.toContain('"title": "我的新短剧"');
+    await expect(readFile(join(root, "new-drama", "production", "asset-bindings.v1.json"), "utf8")).resolves.toContain('"assets": []');
     await expect(workspace.listProjects()).resolves.toEqual([
       { id: "new-drama", name: "我的新短剧", description: "筹备中" },
     ]);

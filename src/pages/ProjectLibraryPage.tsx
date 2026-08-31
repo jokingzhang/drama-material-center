@@ -16,6 +16,7 @@ import { DirectoryList } from "../components/DirectoryList";
 import { FileList, type AssetDisplay } from "../components/FileList";
 import { FilePreviewDialog } from "../components/FilePreviewDialog";
 import { PreviewPane } from "../components/PreviewPane";
+import { ProjectViewTabs } from "../components/ProjectViewTabs";
 import { Sidebar } from "../components/Sidebar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import {
@@ -331,6 +332,8 @@ export function ProjectLibraryPage() {
           </button>
         </div>
       </header>
+
+      <ProjectViewTabs projectId={projectId} active="library" />
 
       <div className="path-bar" aria-label="当前位置">
         <div className="breadcrumbs">
