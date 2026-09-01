@@ -1,5 +1,5 @@
 import { Check, ChevronDown, ChevronUp, Copy, List, Maximize2, Search, Type, X } from "lucide-react";
-import { Children, isValidElement, type ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Children, isValidElement, memo, type ReactNode, type RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
@@ -223,6 +223,26 @@ const markdownComponents: Components = {
     return <CopyableCodeBlock>{children}</CopyableCodeBlock>;
   },
 };
+
+const markdownRemarkPlugins = [remarkGfm, remarkBreaks, remarkImageGalleries];
+
+const MarkdownDocument = memo(function MarkdownDocument({
+  articleRef,
+  components,
+  source,
+}: {
+  articleRef: RefObject<HTMLElement | null>;
+  components: Components;
+  source: string;
+}) {
+  return (
+    <article ref={articleRef} className="markdown-preview">
+      <ReactMarkdown remarkPlugins={markdownRemarkPlugins} components={components}>
+        {source}
+      </ReactMarkdown>
+    </article>
+  );
+});
 
 export function MarkdownPreview({ source, projectId, assetPath, expanded = false, onOpenMaterial }: MarkdownPreviewProps) {
   const [previewImage, setPreviewImage] = useState<PreviewImage | null>(null);
@@ -508,11 +528,7 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
             aria-label={expanded ? "文档正文（独立滚动）" : undefined}
             tabIndex={expanded ? 0 : undefined}
           >
-            <article ref={articleRef} className="markdown-preview">
-              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks, remarkImageGalleries]} components={components}>
-                {source}
-              </ReactMarkdown>
-            </article>
+            <MarkdownDocument articleRef={articleRef} components={components} source={source} />
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "audit:git-boundary": "node scripts/audit-git-boundary.mjs",
+    "audit:story-assets": "node scripts/audit-story-asset-integration.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -80,6 +80,9 @@ afterEach(async () => {
 describe("project story catalog", () => {
   it("reads story, character and episode order through one public interface", async () => {
     const root = await seedStoryProject();
+    const voiceDirectory = join(root, "story-demo", "library", "音频", "人物", "CHAR-001");
+    await mkdir(voiceDirectory, { recursive: true });
+    await writeFile(join(voiceDirectory, "CHAR-001-VOICE-v01.wav"), "voice-fixture");
     const assetIndexPath = join(root, "story-demo", "production", "asset-bindings.v1.json");
     const assetIndex = JSON.parse(await readFile(assetIndexPath, "utf8"));
     assetIndex.assets.unshift({
@@ -89,6 +92,22 @@ describe("project story catalog", () => {
       role: "character-standard",
       subject: { characterId: "CHAR-001", lookId: "LOOK-001" },
       status: "DRAFT",
+    });
+    assetIndex.assets.push({
+      assetId: "ASSET-VOICE-001",
+      materialType: "audio.voice",
+      path: "音频/人物/CHAR-001/CHAR-001-VOICE-v01.wav",
+      role: "voice-anchor",
+      subject: { characterId: "CHAR-001" },
+      status: "ACCEPTED",
+    });
+    assetIndex.assets.push({
+      assetId: "ASSET-VOICE-SOURCE-001",
+      materialType: "audio.voice",
+      path: "音频/人物/CHAR-001/CHAR-001-VOICE-v01.wav",
+      role: "voice-source",
+      subject: { characterId: "CHAR-001" },
+      status: "REFERENCE",
     });
     await writeFile(assetIndexPath, JSON.stringify(assetIndex));
 
@@ -112,6 +131,8 @@ describe("project story catalog", () => {
     expect(story.characters[0]?.cardImageStatus).toBe("READY");
     expect(story.characters[0]?.looks[0]?.status).toBe("READY");
     expect(story.characters[0]?.looks[0]?.preferredAsset?.assetId).toBe("ASSET-CHAR-001");
+    expect(story.characters[0]?.voiceAssets.map(({ assetId }) => assetId)).toEqual(["ASSET-VOICE-001"]);
+    expect(story.characters[0]?.preferredVoice?.assetId).toBe("ASSET-VOICE-001");
     expect(story.episodes.map((episode) => episode.id)).toEqual(["EP01", "EP02"]);
   });
 
@@ -168,6 +189,22 @@ describe("project story catalog", () => {
     expect(story.characters[0]?.cardImage).toBeUndefined();
     expect(story.characters[0]?.cardImageStatus).toBe("BLOCKED");
     expect(story.characters[0]?.cardImageReason).toContain("角色");
+  });
+
+  it("does not expose a reference-only asset through an explicit character card binding", async () => {
+    const root = await seedStoryProject();
+    const assetIndexPath = join(root, "story-demo", "production", "asset-bindings.v1.json");
+    const assetIndex = JSON.parse(await readFile(assetIndexPath, "utf8"));
+    assetIndex.assets[0].status = "REFERENCE";
+    await writeFile(assetIndexPath, JSON.stringify(assetIndex));
+
+    const story = await createProjectStoryCatalog(root).readProjectStory("story-demo");
+
+    expect(story.characters[0]?.cardImage).toBeUndefined();
+    expect(story.characters[0]?.cardImageStatus).toBe("BLOCKED");
+    expect(story.characters[0]?.cardImageReason).toContain("参考");
+    expect(story.characters[0]?.looks[0]?.assets).toEqual([]);
+    expect(story.assets.map(({ assetId }) => assetId)).not.toContain("ASSET-CHAR-001");
   });
 
   it("uses the accepted default look when no explicit character card is configured", async () => {
@@ -283,6 +320,7 @@ describe("project story catalog", () => {
       inProgress: 1,
       blocked: 1,
     });
+    expect(story.currentMilestoneCompletion).toEqual(scene?.completion);
   });
 
   it("blocks wrong-look and unsafe bindings without returning an absolute path", async () => {
@@ -345,6 +383,7 @@ describe("project story catalog", () => {
     await Promise.all([
       writeFile(join(derivedRoot, "EP01", "EP01-S01", "EP01-S01-U01-KF-v01.png"), "fixture"),
       writeFile(join(derivedRoot, "EP01", "EP01-S01", "EP01-S01-U01-ACTIONBOARD-v01.png"), "fixture"),
+      writeFile(join(derivedRoot, "EP01", "EP01-S01", "EP01-S01-U01-REJECTED-v00.png"), "fixture"),
       writeFile(join(derivedRoot, "EP02", "EP02-S01", "EP02-S01-U01-KF-v01.png"), "fixture"),
       ...Array.from({ length: 100 }, (_, index) => writeFile(join(unregisteredRoot, `UNREGISTERED-${String(index + 1).padStart(3, "0")}.png`), "fixture")),
     ]);
@@ -376,6 +415,8 @@ describe("project story catalog", () => {
         { assetId: "ASSET-CHAR-001", materialType: "image.character", path: "图片/人物/旧目录/CHAR-001-v01.png", role: "character-standard", subject: { characterId: "CHAR-001", lookId: "LOOK-001" }, status: "ACCEPTED", legacyPath: true },
         { assetId: "ASSET-KF-EP01", materialType: "image.derived", path: "图片/剧情/EP01/EP01-S01/EP01-S01-U01-KF-v01.png", role: "keyframe", subject: { episodeId: "EP01", sceneId: "EP01-S01", shotId: "U01" }, status: "DRAFT" },
         { assetId: "ASSET-BOARD-EP01", materialType: "image.derived", path: "图片/剧情/EP01/EP01-S01/EP01-S01-U01-ACTIONBOARD-v01.png", role: "action-board", subject: { episodeId: "EP01", sceneId: "EP01-S01", shotId: "U01" }, status: "INTERNAL" },
+        { assetId: "ASSET-REJECTED-EP01", materialType: "image.derived", path: "图片/剧情/EP01/EP01-S01/EP01-S01-U01-REJECTED-v00.png", role: "keyframe", subject: { episodeId: "EP01", sceneId: "EP01-S01", shotId: "U01" }, status: "REJECTED_WATERMARKED" },
+        { assetId: "ASSET-REFERENCE-EP01", materialType: "media.reference", path: "图片/剧情/EP01/EP01-S01/EP01-S01-U01-REJECTED-v00.png", role: "trial", subject: { episodeId: "EP01", sceneId: "EP01-S01", shotId: "U01" }, status: "ACCEPTED" },
         { assetId: "ASSET-KF-EP02", materialType: "image.derived", path: "图片/剧情/EP02/EP02-S01/EP02-S01-U01-KF-v01.png", role: "keyframe", subject: { episodeId: "EP02", sceneId: "EP02-S01", shotId: "U01" }, status: "DRAFT" },
       ],
     }));
@@ -386,6 +427,9 @@ describe("project story catalog", () => {
     expect(story.episodes.map(({ id }) => id)).toEqual(["EP01", "EP02"]);
     expect(story.episode?.id).toBe("EP01");
     expect(scene?.derivedAssets.map(({ assetId }) => assetId)).toEqual(["ASSET-KF-EP01", "ASSET-BOARD-EP01"]);
+    expect(scene?.assets.map(({ assetId }) => assetId)).toEqual(["ASSET-KF-EP01", "ASSET-BOARD-EP01"]);
+    expect(story.assets.map(({ assetId }) => assetId)).not.toContain("ASSET-REJECTED-EP01");
+    expect(story.assets.map(({ assetId }) => assetId)).not.toContain("ASSET-REFERENCE-EP01");
     expect(scene?.completion).toEqual({ status: "READY", ready: 1, required: 1, missing: 0, inProgress: 0, blocked: 0 });
     expect(story.unregisteredAssets).toHaveLength(100);
     expect(story.unregisteredAssets[0]).toEqual(expect.objectContaining({ status: "UNREGISTERED" }));
@@ -635,6 +679,10 @@ describe("project story catalog", () => {
     const story = await createProjectStoryCatalog(root).readProjectStory("story-demo", { episodeId: "EP01" });
     const scene = story.episode?.scenes[0];
 
+    expect(story.locations.map(({ id, name, sceneCount }) => ({ id, name, sceneCount }))).toEqual([
+      { id: "LOC-001", name: "化妆间", sceneCount: 1 },
+      { id: "LOC-002", name: "办公室", sceneCount: 1 },
+    ]);
     expect(scene?.requirements.map(({ role, status }) => ({ role, status }))).toEqual([
       { role: "scene-master", status: "MISSING" },
       { role: "character-standard", status: "MISSING" },
@@ -644,6 +692,7 @@ describe("project story catalog", () => {
     expect(scene?.completion).toEqual({ status: "MISSING", ready: 0, required: 4, missing: 4, inProgress: 0, blocked: 0 });
     expect(story.episodes.find(({ id }) => id === "EP01")?.completion).toEqual(scene?.completion);
     expect(story.episodes.find(({ id }) => id === "EP02")?.completion).toEqual({ status: "NOT_DUE", ready: 0, required: 0, missing: 0, inProgress: 0, blocked: 0 });
+    expect(story.currentMilestoneCompletion).toEqual({ status: "MISSING", ready: 0, required: 4, missing: 4, inProgress: 0, blocked: 0 });
     expect(story.characters[0]?.requirements.map(({ role, status }) => ({ role, status }))).toEqual([
       { role: "character-standard", status: "MISSING" },
       { role: "voice-anchor", status: "MISSING" },
@@ -670,6 +719,164 @@ describe("project story catalog", () => {
 
     expect(story.episode?.scenes[0]?.requirements).toEqual([
       expect.objectContaining({ id: "REQ-CURRENT", status: "READY" }),
+    ]);
+  });
+
+  it("reports full-series progress from formal evidence without counting references or technical checks", async () => {
+    const root = await seedStoryProject();
+    const projectRoot = join(root, "story-demo");
+    await Promise.all([
+      mkdir(join(projectRoot, "library", "剧情", "分集"), { recursive: true }),
+      mkdir(join(projectRoot, "library", "视频", "剧情", "EP03"), { recursive: true }),
+      mkdir(join(projectRoot, "library", "视频", "参考"), { recursive: true }),
+      mkdir(join(projectRoot, "library", "视频", "成片", "EP04"), { recursive: true }),
+      mkdir(join(projectRoot, "library", "视频", "成片", "EP05"), { recursive: true }),
+    ]);
+    for (const episodeId of ["EP01", "EP02", "EP03", "EP04", "EP05"]) {
+      await mkdir(join(projectRoot, "library", "剧情", "分集", episodeId), { recursive: true });
+      await writeFile(join(projectRoot, "library", "剧情", "分集", episodeId, `${episodeId}-SCRIPT-v01.md`), `# ${episodeId}`);
+    }
+    await mkdir(join(projectRoot, "library", "剧情", "分集", "EP06"), { recursive: true });
+    await Promise.all([
+      writeFile(join(projectRoot, "library", "剧情", "分集", "EP02", "EP02-SHOTS-v01.md"), "# EP02 分镜"),
+      writeFile(join(projectRoot, "library", "剧情", "分集", "EP06", "EP06-S01-SHOT-v01.md"), "# EP06 单镜头提示词"),
+      writeFile(join(projectRoot, "library", "视频", "剧情", "EP03", "EP03-S01-U01-VIDEO-v01.mp4"), "shot"),
+      writeFile(join(projectRoot, "library", "视频", "参考", "EP06-REFERENCE-v01.mp4"), "reference-only"),
+      writeFile(join(projectRoot, "library", "视频", "成片", "EP04", "EP04-FINAL-v01.mp4"), "draft-final"),
+      writeFile(join(projectRoot, "library", "视频", "成片", "EP05", "EP05-FINAL-v01.mp4"), "accepted-final"),
+    ]);
+    await writeFile(join(projectRoot, "production", "story-index.v1.json"), JSON.stringify({
+      schemaVersion: 1,
+      story: { title: "全剧进度", genre: [], totalEpisodes: 6, logline: "按正式证据统计。", synopsis: "不能用局部素材冒充全剧完成。", summaryStatus: "ACCEPTED" },
+      currentMilestone: { id: "EP01_PREPRODUCTION", episodeIds: ["EP01"] },
+      requirements: [],
+      characters: [],
+      episodes: Array.from({ length: 6 }, (_, index) => ({ id: `EP0${index + 1}`, title: `第${index + 1}集`, summary: "进度测试。", scenes: [] })),
+      documentBindings: [
+        ...["EP01", "EP02", "EP03", "EP04", "EP05"].map((episodeId) => ({ materialType: "story.episode-script", decisionStatus: "ACCEPTED", path: `剧情/分集/${episodeId}/${episodeId}-SCRIPT-v01.md`, subject: { episodeId } })),
+        { materialType: "prompt.video", decisionStatus: "DRAFT", path: "剧情/分集/EP02/EP02-SHOTS-v01.md", subject: { episodeId: "EP02" } },
+        { materialType: "prompt.video", decisionStatus: "READY", path: "剧情/分集/EP06/EP06-S01-SHOT-v01.md", subject: { episodeId: "EP06", sceneId: "EP06-S01", shotId: "U01" } },
+      ],
+    }));
+    await writeFile(join(projectRoot, "production", "asset-bindings.v1.json"), JSON.stringify({
+      schemaVersion: 1,
+      assets: [
+        { assetId: "SHOT-EP03", materialType: "video.shot", path: "视频/剧情/EP03/EP03-S01-U01-VIDEO-v01.mp4", role: "shot", subject: { episodeId: "EP03", sceneId: "EP03-S01", shotId: "U01" }, status: "DRAFT" },
+        { assetId: "FINAL-EP04", materialType: "video.final", path: "视频/成片/EP04/EP04-FINAL-v01.mp4", role: "episode-final", subject: { episodeId: "EP04" }, status: "ACCEPTED", verification: { kind: "technical-decode", verifiedAt: "2026-09-01" } },
+        { assetId: "FINAL-EP05", materialType: "video.final", path: "视频/成片/EP05/EP05-FINAL-v01.mp4", role: "episode-final", subject: { episodeId: "EP05" }, status: "ACCEPTED", verification: { kind: "human-playback", verifiedAt: "2026-09-01" } },
+        { assetId: "REFERENCE-EP06", materialType: "media.reference", path: "视频/参考/EP06-REFERENCE-v01.mp4", role: "reference", subject: { episodeId: "EP06" }, status: "ACCEPTED", verification: { kind: "technical-decode", verifiedAt: "2026-09-01" } },
+      ],
+    }));
+
+    const story = await createProjectStoryCatalog(root).readProjectStory("story-demo");
+
+    expect(story.production).toEqual({
+      completedEpisodes: 1,
+      totalEpisodes: 6,
+      percentage: 17,
+      pipeline: { scriptReady: 5, storyboardReady: 1, shotProduced: 1, finalAccepted: 1 },
+      stageCounts: {
+        NOT_STARTED: 1,
+        SCRIPT_READY: 0,
+        STORYBOARD_DRAFT: 1,
+        PREPRODUCTION: 1,
+        SHOT_PRODUCTION: 1,
+        FINAL_REVIEW: 1,
+        COMPLETED: 1,
+      },
+      episodes: [
+        { id: "EP01", title: "第1集", stage: "PREPRODUCTION", current: true },
+        { id: "EP02", title: "第2集", stage: "STORYBOARD_DRAFT", current: false },
+        { id: "EP03", title: "第3集", stage: "SHOT_PRODUCTION", current: false },
+        { id: "EP04", title: "第4集", stage: "FINAL_REVIEW", current: false },
+        { id: "EP05", title: "第5集", stage: "COMPLETED", current: false },
+        { id: "EP06", title: "第6集", stage: "NOT_STARTED", current: false },
+      ],
+    });
+  });
+
+  it("resolves a scene location alias to one reusable location family", async () => {
+    const root = await seedStoryProject();
+    const projectRoot = join(root, "story-demo");
+    const sceneDirectory = join(projectRoot, "library", "图片", "场景", "LOC-FAMILY");
+    await mkdir(sceneDirectory, { recursive: true });
+    await writeFile(join(sceneDirectory, "LOC-FAMILY-FRONT-v01.png"), "scene-family");
+    await writeFile(join(projectRoot, "production", "story-index.v1.json"), JSON.stringify({
+      schemaVersion: 1,
+      story: { title: "地点家族", genre: [], totalEpisodes: 1, logline: "别名仍引用同一母版。", synopsis: "场次保留原地点 ID，读模型归一到地点家族。", summaryStatus: "ACCEPTED" },
+      currentMilestone: { id: "EP01", episodeIds: ["EP01"] },
+      requirements: [],
+      characters: [],
+      locations: [{ id: "LOC-FAMILY", name: "酒店宴会空间家族", aliasLocationIds: ["LOC-SIDE-HALL"] }],
+      episodes: [{ id: "EP01", title: "第一集", summary: "侧厅场次。", scenes: [{ id: "EP01-S01", heading: "内·侧厅·日", locationId: "LOC-SIDE-HALL", locationName: "酒店侧厅", cast: [] }] }],
+    }));
+    await writeFile(join(projectRoot, "production", "asset-bindings.v1.json"), JSON.stringify({
+      schemaVersion: 1,
+      assets: [{
+        assetId: "ASSET-SCENE-FAMILY",
+        materialType: "image.scene",
+        path: "图片/场景/LOC-FAMILY/LOC-FAMILY-FRONT-v01.png",
+        role: "scene-master",
+        subject: { locationId: "LOC-FAMILY" },
+        status: "DRAFT",
+        sha256: sha256("scene-family"),
+      }],
+    }));
+
+    const story = await createProjectStoryCatalog(root).readProjectStory("story-demo", { episodeId: "EP01" });
+
+    expect(story.locations.map(({ id, sceneCount, images }) => ({ id, sceneCount, assets: images.map(({ assetId }) => assetId) }))).toEqual([
+      { id: "LOC-FAMILY", sceneCount: 1, assets: ["ASSET-SCENE-FAMILY"] },
+    ]);
+    expect(story.episodes[0]?.locationIds).toEqual(["LOC-FAMILY"]);
+    expect(story.episode?.scenes[0]?.locationId).toBe("LOC-SIDE-HALL");
+    expect(story.episode?.scenes[0]?.requirements).toEqual([
+      expect.objectContaining({ role: "scene-master", status: "IN_PROGRESS", asset: expect.objectContaining({ assetId: "ASSET-SCENE-FAMILY" }) }),
+    ]);
+  });
+
+  it("limits reusable prop states to their declared episodes", async () => {
+    const root = await seedStoryProject();
+    const projectRoot = join(root, "story-demo");
+    const propDirectory = join(projectRoot, "library", "图片", "道具", "PROP-PORTFOLIO");
+    await mkdir(propDirectory, { recursive: true });
+    await Promise.all([
+      writeFile(join(propDirectory, "PROP-GLOBAL-v01.png"), "global"),
+      writeFile(join(propDirectory, "PROP-EP01-v01.png"), "ep01"),
+      writeFile(join(propDirectory, "PROP-EP02-v01.png"), "ep02"),
+    ]);
+    await writeFile(join(projectRoot, "production", "story-index.v1.json"), JSON.stringify({
+      schemaVersion: 1,
+      story: { title: "道具分集作用域", genre: [], totalEpisodes: 2, logline: "同一物理道具按剧情状态分集展示。", synopsis: "EP01 与 EP02 不串入对方状态。", summaryStatus: "ACCEPTED" },
+      currentMilestone: { id: "EP01", episodeIds: ["EP01", "EP02"] },
+      requirements: [],
+      characters: [],
+      episodes: [
+        { id: "EP01", title: "第一集", summary: "封面状态。", scenes: [{ id: "EP01-S01", heading: "内·工作室·日", propIds: ["PROP-PORTFOLIO"], cast: [] }] },
+        { id: "EP02", title: "第二集", summary: "打开状态。", scenes: [{ id: "EP02-S01", heading: "内·后台·日", propIds: ["PROP-PORTFOLIO"], cast: [] }] },
+      ],
+    }));
+    await writeFile(join(projectRoot, "production", "asset-bindings.v1.json"), JSON.stringify({
+      schemaVersion: 1,
+      assets: [
+        { assetId: "ASSET-PROP-GLOBAL", materialType: "image.prop", path: "图片/道具/PROP-PORTFOLIO/PROP-GLOBAL-v01.png", role: "prop-standard", subject: { propId: "PROP-PORTFOLIO" }, status: "DRAFT", sha256: sha256("global") },
+        { assetId: "ASSET-PROP-EP01", materialType: "image.prop", path: "图片/道具/PROP-PORTFOLIO/PROP-EP01-v01.png", role: "prop-standard", subject: { propId: "PROP-PORTFOLIO", episodeIds: ["EP01"] }, status: "DRAFT", sha256: sha256("ep01") },
+        { assetId: "ASSET-PROP-EP02", materialType: "image.prop", path: "图片/道具/PROP-PORTFOLIO/PROP-EP02-v01.png", role: "prop-standard", subject: { propId: "PROP-PORTFOLIO", episodeIds: ["EP02"] }, status: "DRAFT", sha256: sha256("ep02") },
+      ],
+    }));
+
+    const [ep01, ep02] = await Promise.all([
+      createProjectStoryCatalog(root).readProjectStory("story-demo", { episodeId: "EP01" }),
+      createProjectStoryCatalog(root).readProjectStory("story-demo", { episodeId: "EP02" }),
+    ]);
+
+    expect(ep01.episode?.scenes[0]?.props[0]?.assets.map(({ assetId }) => assetId)).toEqual([
+      "ASSET-PROP-GLOBAL",
+      "ASSET-PROP-EP01",
+    ]);
+    expect(ep02.episode?.scenes[0]?.props[0]?.assets.map(({ assetId }) => assetId)).toEqual([
+      "ASSET-PROP-GLOBAL",
+      "ASSET-PROP-EP02",
     ]);
   });
 

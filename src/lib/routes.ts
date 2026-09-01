@@ -12,8 +12,22 @@ export function projectStoryPath(projectId: string) {
   return `/projects/${encodeURIComponent(projectId)}/story`;
 }
 
+export type ProjectStorySection = "overview" | "characters" | "locations" | "episodes";
+
+export function projectStorySectionPath(projectId: string, section: ProjectStorySection) {
+  return `${projectStoryPath(projectId)}?section=${section}`;
+}
+
+export function projectStoryOverviewPath(projectId: string) {
+  return projectStorySectionPath(projectId, "overview");
+}
+
 export function projectCharacterPath(projectId: string, characterId: string) {
   return `${projectStoryPath(projectId)}/characters/${encodeURIComponent(characterId)}`;
+}
+
+export function projectLocationPath(projectId: string, locationId: string) {
+  return `${projectStoryPath(projectId)}/locations/${encodeURIComponent(locationId)}`;
 }
 
 export function projectEpisodePath(projectId: string, episodeId: string) {

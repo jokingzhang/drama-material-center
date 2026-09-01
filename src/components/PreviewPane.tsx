@@ -54,11 +54,13 @@ export function PreviewPane({
   useEffect(() => {
     if (asset.mimeType.startsWith("text/") && !text) return;
     const frame = window.requestAnimationFrame(() => {
-      const stored = window.sessionStorage.getItem(scrollStorageKey(projectId, asset.path));
+      const stored = presentation === "workspace"
+        ? window.sessionStorage.getItem(scrollStorageKey(projectId, asset.path))
+        : undefined;
       if (bodyRef.current) bodyRef.current.scrollTop = stored ? Number(stored) : 0;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [asset, projectId, text]);
+  }, [asset.mimeType, asset.path, presentation, projectId, text]);
 
   async function reveal() {
     try {
@@ -92,8 +94,8 @@ export function PreviewPane({
         </div>
         <div className="preview-actions">
           <span className="preview-sequence-actions">
-            <button type="button" disabled={!hasPrevious} onClick={onPrevious} title="上一个文件"><ChevronLeft size={16} />上一项</button>
-            <button type="button" disabled={!hasNext} onClick={onNext} title="下一个文件">下一项<ChevronRight size={16} /></button>
+            <button type="button" disabled={!hasPrevious} onClick={onPrevious} title="上一个同级内容"><ChevronLeft size={16} />上一项</button>
+            <button type="button" disabled={!hasNext} onClick={onNext} title="下一个同级内容">下一项<ChevronRight size={16} /></button>
           </span>
           <button type="button" onClick={reveal}>在 Finder 中查看 <ExternalLink size={14} /></button>
         </div>
@@ -103,7 +105,9 @@ export function PreviewPane({
         ref={bodyRef}
         className="preview-body"
         onScroll={(event) => {
-          window.sessionStorage.setItem(scrollStorageKey(projectId, asset.path), String(event.currentTarget.scrollTop));
+          if (presentation === "workspace") {
+            window.sessionStorage.setItem(scrollStorageKey(projectId, asset.path), String(event.currentTarget.scrollTop));
+          }
         }}
       >
         {asset.kind === "image" && <img src={asset.url} alt={asset.name} />}

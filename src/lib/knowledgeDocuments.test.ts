@@ -21,6 +21,7 @@ describe("director knowledge Markdown catalog", () => {
       expect(listKnowledgeDocuments(area.id).some((document) => document.path === "README.md")).toBe(true);
     }
     expect(getKnowledgeDocument("image-asset", "人物标准图.md")?.title).toBe("人物标准图");
+    expect(getKnowledgeDocument("shot-prompt", "对白、梗与情绪的分镜写法.md")?.title).toBe("对白、梗与情绪的分镜写法");
     expect(getKnowledgeArea("unknown")).toBeUndefined();
   });
 
@@ -31,10 +32,11 @@ describe("director knowledge Markdown catalog", () => {
     expect(normalizeKnowledgeDocumentPath("README.md", "https://example.com/a.md")).toBeUndefined();
   });
 
-  it("discovers the seven complete LibTV shot cases from one Markdown source", async () => {
+  it("discovers the eight complete LibTV shot cases from one Markdown source", async () => {
     const cases = listKnowledgeCases();
-    expect(cases).toHaveLength(7);
+    expect(cases).toHaveLength(8);
     expect(getKnowledgeCase("猫爪挡脸接触喜剧")?.title).toBe("猫爪挡脸接触喜剧");
+    expect(getKnowledgeCase("四人依次入镜到战术集结")?.title).toBe("四人依次入镜到战术集结");
 
     for (const knowledgeCase of cases) {
       const markdown = await knowledgeCase.load();

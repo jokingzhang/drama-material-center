@@ -5,7 +5,10 @@ import {
   projectCharacterPath,
   projectEpisodePath,
   projectLibraryPath,
+  projectLocationPath,
   projectScenePath,
+  projectStoryOverviewPath,
+  projectStorySectionPath,
   projectStoryPath,
 } from "./routes";
 
@@ -18,9 +21,12 @@ describe("project library routes", () => {
 });
 
 describe("project story routes", () => {
-  it("builds stable story, character, episode and scene deep links", () => {
+  it("builds stable story, character, location, episode and scene deep links", () => {
     expect(projectStoryPath("story-demo")).toBe("/projects/story-demo/story");
+    expect(projectStoryOverviewPath("story-demo")).toBe("/projects/story-demo/story?section=overview");
+    expect(projectStorySectionPath("story-demo", "characters")).toBe("/projects/story-demo/story?section=characters");
     expect(projectCharacterPath("story-demo", "CHAR 江")).toBe("/projects/story-demo/story/characters/CHAR%20%E6%B1%9F");
+    expect(projectLocationPath("story-demo", "LOC 化妆间")).toBe("/projects/story-demo/story/locations/LOC%20%E5%8C%96%E5%A6%86%E9%97%B4");
     expect(projectEpisodePath("story-demo", "EP01")).toBe("/projects/story-demo/story/episodes/EP01");
     expect(projectScenePath("story-demo", "EP01", "EP01-S 01")).toBe("/projects/story-demo/story/episodes/EP01/scenes/EP01-S%2001");
   });

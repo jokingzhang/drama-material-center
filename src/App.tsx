@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
-import { projectStoryPath } from "./lib/routes";
+import { projectStoryOverviewPath } from "./lib/routes";
 import { ProjectLibraryPage } from "./pages/ProjectLibraryPage";
 import { ProjectStoryPage } from "./pages/ProjectStoryPage";
 import { NotFoundPage, ProjectsPage } from "./pages/ProjectsPage";
@@ -9,7 +9,7 @@ const DirectorKnowledgePage = lazy(() => import("./pages/DirectorKnowledgePage")
 
 function ProjectRedirect() {
   const { projectId = "" } = useParams();
-  return <Navigate to={projectStoryPath(projectId)} replace />;
+  return <Navigate to={projectStoryOverviewPath(projectId)} replace />;
 }
 
 export default function App() {
@@ -20,6 +20,7 @@ export default function App() {
       <Route path="/projects/:projectId" element={<ProjectRedirect />} />
       <Route path="/projects/:projectId/story" element={<ProjectStoryPage />} />
       <Route path="/projects/:projectId/story/characters/:characterId" element={<ProjectStoryPage />} />
+      <Route path="/projects/:projectId/story/locations/:locationId" element={<ProjectStoryPage />} />
       <Route path="/projects/:projectId/story/episodes/:episodeId" element={<ProjectStoryPage />} />
       <Route path="/projects/:projectId/story/episodes/:episodeId/scenes/:sceneId" element={<ProjectStoryPage />} />
       <Route path="/projects/:projectId/library/*" element={<ProjectLibraryPage />} />

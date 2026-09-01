@@ -37,10 +37,11 @@ Fill reasonable local gaps yourself. Ask the user only about choices that would 
 
 1. Read `director-knowledge-base/图片素材/README.md`.
 2. Always read `director-knowledge-base/图片素材/人物标准图.md` when a visible named character exists.
-3. Read the scene/prop/state or keyframe/continuity document only when those assets appear in the requested scope.
+3. Read the scene/prop/state or keyframe/continuity document only when those assets appear in the requested scope. When a screen, card, file, or badge carries readable story information, always read `director-knowledge-base/图片素材/关系关键帧与连续性帧.md`: keep the relationship keyframe natural to the characters, and give exact text its own clean plate and motivated insert instead of forcing the prop to face the audience.
 4. If the user asks for a similar visual setup or wants examples, read `图片素材/真实案例与可复用做法.md`, then open at most three matching complete cases. Judge the image by its declared responsibility and by what actually appears in the result video.
 5. Inspect actual project files before calling an asset existing, accepted, or reusable.
 6. Produce a plain 《图片素材清单》.
+7. If the authorized scope includes actually generating or saving project images, follow the repository asset schema through business integration: place each selected candidate in its canonical `library/` directory, register it in the formal asset bindings and story ownership index, then read it back from the local story API and open it in the story view. A proposed binding manifest is creative evidence only; do not call the production complete while the page still treats the asset as missing.
 
 The person baseline is one character, one look or state, one standard image containing full-body front, strict side, full-body back, and a clear portrait in the same look. Face, clothing, hair, accessories, age, makeup, and injury state must match across all views. A different look or state gets a different standard image. Complex contact, scale, or blocking uses an additional keyframe; do not force one character sheet to solve every shot.
 
@@ -48,12 +49,23 @@ The person baseline is one character, one look or state, one standard image cont
 
 1. Read `director-knowledge-base/分镜提示词/README.md`.
 2. Read `镜头类型索引.md`, choose the primary visible task for each segment, then read only the relevant prompt guidance or case.
-3. If the user asks for an effect similar to an existing LibTV shot, read `分镜提示词/LibTV案例模板.md`, then open at most three matching complete cases and compare the source prompt with the actual result.
-4. Split overloaded segments instead of producing a longer prompt.
-5. Map every referenced image to an actual file or mark it missing; never invent an asset, node ID, model capability, or acceptance result.
-6. Produce a plain 《分镜执行表》 with the final prompt text.
+3. When any segment contains spoken dialogue, OS/VO, a comedy beat, or an emotional landing, read `director-knowledge-base/分镜提示词/对白、梗与情绪的分镜写法.md`. Use it to carry approved words, subtext, listening reactions, speech timing, and mouth visibility into the shot instead of reducing dialogue to a transcript.
+4. When readable screen, card, file, or badge information appears, use the sequence “natural interaction main shot → motivated POV/over-shoulder/detail insert → character reaction”. Keep dialogue or sound across the cut when useful; add OS/VO only for necessary background that the image and approved dialogue cannot provide.
+5. If the user asks for an effect similar to an existing LibTV shot, read `分镜提示词/LibTV案例模板.md`, then open at most three matching complete cases and compare the source prompt with the actual result.
+6. Prefer splitting an overloaded segment when one clip cannot visibly hold all required beats. Treat it as a blocker only when a measured model, audio, or duration limit cannot fit approved content without changing its meaning.
+7. Map every referenced image to an actual file or mark it missing; never invent an asset, node ID, model capability, or acceptance result.
+8. Produce a plain 《分镜执行表》 with the final prompt text.
 
 When project rules require another prompt-authoring skill, use it after story, asset, and shot decisions are frozen, then return one coherent final result to the user. Do not expose internal handoffs as work the user must manage.
+
+### Creative stop conditions
+
+Story, dialogue, and storyboard checklists are guidance and review aids, not permission gates. Continue with a reasonable recommendation unless one of these two conditions applies:
+
+1. current facts or user decisions conflict, or the missing choice would change genre, protagonist function, core relationship, ending, world rules, or production scale;
+2. a measured output, audio, model, or duration limit cannot hold approved story or dialogue without changing its meaning, and no in-scope split resolves it.
+
+When a quality check is weak but neither condition applies, revise locally or report the risk; do not stop merely because every suggested beat, pass, or checklist item is not present.
 
 ## Reuse a complete shot case
 

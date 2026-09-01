@@ -38,6 +38,36 @@ export interface StoryCompletion {
   blocked: number;
 }
 
+export type EpisodeProductionStage =
+  | "NOT_STARTED"
+  | "SCRIPT_READY"
+  | "STORYBOARD_DRAFT"
+  | "PREPRODUCTION"
+  | "SHOT_PRODUCTION"
+  | "FINAL_REVIEW"
+  | "COMPLETED";
+
+export interface EpisodeProductionReadModel {
+  id: string;
+  title: string;
+  stage: EpisodeProductionStage;
+  current: boolean;
+}
+
+export interface StoryProductionOverview {
+  completedEpisodes: number;
+  totalEpisodes: number;
+  percentage: number;
+  pipeline: {
+    scriptReady: number;
+    storyboardReady: number;
+    shotProduced: number;
+    finalAccepted: number;
+  };
+  stageCounts: Record<EpisodeProductionStage, number>;
+  episodes: EpisodeProductionReadModel[];
+}
+
 export interface CharacterLookReadModel {
   id: string;
   name: string;
@@ -61,11 +91,29 @@ export interface CharacterReadModel {
   cardImageStatus: StoryObjectStatus;
   cardImageReason: string;
   looks: CharacterLookReadModel[];
+  voiceAssets: StoryAssetLink[];
+  preferredVoice?: StoryAssetLink;
   episodeIds: string[];
   sceneCount: number;
   relatedFiles: StoryAssetLink[];
   requirements: StoryRequirementResult[];
   completion: StoryCompletion;
+}
+
+export interface LocationReadModel {
+  id: string;
+  name: string;
+  oneLineSetting?: string;
+  description?: string;
+  cardImage?: StoryAssetLink;
+  cardImageStatus: StoryObjectStatus;
+  cardImageReason: string;
+  images: StoryAssetLink[];
+  ambientAudio: StoryAssetLink[];
+  preferredAmbientAudio?: StoryAssetLink;
+  relatedFiles: StoryAssetLink[];
+  episodeIds: string[];
+  sceneCount: number;
 }
 
 export interface EpisodeSummaryReadModel {
@@ -91,6 +139,7 @@ export interface SceneCastReadModel {
 export interface ScenePropReadModel {
   id: string;
   status: StoryObjectStatus;
+  assets: StoryAssetLink[];
   asset?: StoryAssetLink;
 }
 
@@ -106,6 +155,7 @@ export interface SceneReadModel {
   props: ScenePropReadModel[];
   requirements: StoryRequirementResult[];
   completion: StoryCompletion;
+  assets: StoryAssetLink[];
   derivedAssets: StoryAssetLink[];
   relatedFiles: StoryAssetLink[];
 }
@@ -113,6 +163,7 @@ export interface SceneReadModel {
 export interface EpisodeDetailReadModel extends EpisodeSummaryReadModel {
   script?: StoryAssetLink;
   relatedFiles: StoryAssetLink[];
+  assets: StoryAssetLink[];
   scenes: SceneReadModel[];
 }
 
@@ -140,9 +191,13 @@ export interface ProjectStoryReadModel {
     name?: string;
     episodeIds: string[];
   };
+  currentMilestoneCompletion: StoryCompletion;
+  production: StoryProductionOverview;
   characters: CharacterReadModel[];
+  locations: LocationReadModel[];
   episodes: EpisodeSummaryReadModel[];
   episode?: EpisodeDetailReadModel;
   relatedFiles: StoryAssetLink[];
   unregisteredAssets: StoryAssetLink[];
+  assets: StoryAssetLink[];
 }

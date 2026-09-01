@@ -4,8 +4,10 @@ import { lstat, readFile, readdir, realpath } from "node:fs/promises";
 import { basename, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import type {
   CharacterReadModel,
+  EpisodeProductionStage,
   EpisodeDetailReadModel,
   EpisodeSummaryReadModel,
+  LocationReadModel,
   ProjectStoryReadModel,
   SceneReadModel,
   StoryAssetKind,
@@ -20,9 +22,11 @@ interface RawSubject {
   characterId?: string;
   lookId?: string;
   episodeId?: string;
+  episodeIds?: string[];
   sceneId?: string;
   locationId?: string;
   propId?: string;
+  state?: string;
   shotId?: string;
 }
 
@@ -69,6 +73,15 @@ interface RawCharacter {
   looks?: RawLook[];
 }
 
+interface RawLocation {
+  id: string;
+  name: string;
+  oneLineSetting?: string;
+  description?: string;
+  cardImageAssetId?: string;
+  aliasLocationIds?: string[];
+}
+
 interface RawScene {
   id: string;
   heading: string;
@@ -97,6 +110,7 @@ interface RawStoryIndex {
   currentMilestone?: ProjectStoryReadModel["currentMilestone"];
   requirements?: RawRequirement[];
   characters?: RawCharacter[];
+  locations?: RawLocation[];
   episodes?: RawEpisode[];
 }
 
@@ -119,13 +133,21 @@ const subjectKeysByRole: Record<string, Array<keyof RawSubject>> = {
   "character-standard": ["characterId", "lookId"],
   "voice-anchor": ["characterId"],
   "scene-master": ["locationId"],
-  "prop-standard": ["propId"],
+  "prop-standard": ["propId", "state"],
 };
 
 function subjectMatches(requirement: RawRequirement, asset: RawAssetBinding) {
   const keys = subjectKeysByRole[requirement.role]
     ?? (["characterId", "lookId", "episodeId", "sceneId", "locationId", "propId", "shotId"] satisfies Array<keyof RawSubject>);
   return keys.every((key) => requirement.subject?.[key] === undefined || requirement.subject?.[key] === asset.subject?.[key]);
+}
+
+function assetAppliesToEpisodeScene(asset: RawAssetBinding, episodeId: string, sceneId: string) {
+  const subject = asset.subject;
+  if (subject?.episodeId && subject.episodeId !== episodeId) return false;
+  if (subject?.episodeIds?.length && !subject.episodeIds.includes(episodeId)) return false;
+  if (subject?.sceneId && subject.sceneId !== sceneId) return false;
+  return true;
 }
 
 type AssetProblem = "INVALID_PATH" | "MISSING_FILE" | "HASH_MISMATCH";
@@ -172,6 +194,17 @@ function kindForPath(path: string): StoryAssetKind {
   if ([".mp3", ".wav", ".m4a", ".aac", ".ogg", ".flac"].includes(extension)) return "audio";
   if ([".md", ".txt"].includes(extension)) return "story";
   return "other";
+}
+
+function isDiscardedStatus(status: string) {
+  return status === "SUPERSEDED" || status.startsWith("REJECTED");
+}
+
+function isCurrentStoryAsset(asset: StoryAssetLink | undefined): asset is StoryAssetLink {
+  return asset !== undefined
+    && asset.materialType !== "media.reference"
+    && asset.status !== "REFERENCE"
+    && !isDiscardedStatus(asset.status);
 }
 
 function publicStoryMetadata(raw: ProjectStoryReadModel["story"]): Omit<ProjectStoryReadModel["story"], "source"> {
@@ -306,7 +339,9 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
     }
     const bindingState = asset.bindingState
       ?? (assetProblems.get(asset.assetId) === "HASH_MISMATCH" ? "CONFLICT" : undefined);
-    const status = assetProblems.has(asset.assetId) ? "BLOCKED" : asset.status;
+    const status = isDiscardedStatus(asset.status)
+      ? asset.status
+      : assetProblems.has(asset.assetId) ? "BLOCKED" : asset.status;
     return {
       assetId: asset.assetId,
       materialType: asset.materialType,
@@ -337,15 +372,38 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       const rawAssets = assetIndex.assets ?? [];
       const requirements = storyIndex.requirements ?? [];
       const rawCharacters = storyIndex.characters ?? [];
+      const rawLocations = storyIndex.locations ?? [];
       const rawEpisodes = storyIndex.episodes ?? [];
       assertUniqueStableIds("assetId", rawAssets.map((asset) => asset.assetId));
       assertUniqueStableIds("requirement id", requirements.map((requirement) => requirement.id));
       assertUniqueStableIds("character id", rawCharacters.map((character) => character.id));
+      assertUniqueStableIds("location id", rawLocations.map((location) => location.id));
       assertUniqueStableIds("episode id", rawEpisodes.map((episode) => episode.id));
       assertUniqueStableIds("scene id", rawEpisodes.flatMap((episode) => (episode.scenes ?? []).map((scene) => scene.id)));
+      const episodeIds = new Set(rawEpisodes.map((episode) => episode.id));
+      for (const asset of rawAssets) {
+        assertUniqueStableIds("asset subject episode id", asset.subject?.episodeIds ?? []);
+        for (const episodeId of asset.subject?.episodeIds ?? []) {
+          if (!episodeIds.has(episodeId)) {
+            throw new ProjectWorkspaceError("invalid_index", `素材 ${asset.assetId} 绑定了不存在的分集 ${episodeId}。`);
+          }
+        }
+      }
       for (const character of rawCharacters) {
         assertUniqueStableIds("look id", (character.looks ?? []).map((look) => look.id));
       }
+      const canonicalLocationIdByAlias = new Map(rawLocations.map((location) => [location.id, location.id] as const));
+      for (const location of rawLocations) {
+        assertUniqueStableIds("location alias id", location.aliasLocationIds ?? []);
+        for (const aliasLocationId of location.aliasLocationIds ?? []) {
+          const existing = canonicalLocationIdByAlias.get(aliasLocationId);
+          if (existing && existing !== location.id) {
+            throw new ProjectWorkspaceError("invalid_index", `地点别名 ${aliasLocationId} 同时指向多个地点家族。`);
+          }
+          canonicalLocationIdByAlias.set(aliasLocationId, location.id);
+        }
+      }
+      const canonicalLocationId = (locationId: string) => canonicalLocationIdByAlias.get(locationId) ?? locationId;
       const linkedAssets = new Map<string, StoryAssetLink>();
       const assetProblems = new Map<string, AssetProblem>();
       await Promise.all(rawAssets.map(async (asset) => linkedAssets.set(asset.assetId, await assetLink(projectId, asset, assetProblems))));
@@ -476,7 +534,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
             reasonCode,
           };
         }
-        const rejected = sortedAssets(candidates).find((asset) => asset.status === "REJECTED" || asset.status === "SUPERSEDED");
+        const rejected = sortedAssets(candidates).find((asset) => isDiscardedStatus(asset.status));
         if (rejected) {
           const asset = linkedAssets.get(rejected.assetId);
           return { ...resultBase, ...(asset ? { asset } : {}), status: "BLOCKED", reason: `绑定素材状态为 ${rejected.status}。`, reasonCode: "STATUS_CONFLICT" };
@@ -526,7 +584,8 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         };
 
         if (scene.locationId) {
-          addExpected(`LOCATION:${scene.locationId}`, "scene-master", `${scene.locationName ?? scene.locationId}场景母版`, { locationId: scene.locationId });
+          const locationId = canonicalLocationId(scene.locationId);
+          addExpected(`LOCATION:${locationId}`, "scene-master", `${scene.locationName ?? scene.locationId}场景母版`, { locationId });
         }
         for (const member of scene.cast ?? []) {
           const characterName = rawCharacters.find((character) => character.id === member.characterId)?.name ?? member.characterId;
@@ -595,28 +654,31 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         if (binding.subject?.sceneId) return { kind: "scene" as const, id: binding.subject.sceneId };
         if (binding.subject?.episodeId) return { kind: "episode" as const, id: binding.subject.episodeId };
         if (binding.subject?.characterId) return { kind: "character" as const, id: binding.subject.characterId };
+        if (binding.subject?.locationId) return { kind: "location" as const, id: binding.subject.locationId };
         return { kind: "project" as const, id: undefined };
       }
-      function documentsFor(kind: "project" | "character" | "episode" | "scene", id?: string) {
+      function documentsFor(kind: "project" | "character" | "location" | "episode" | "scene", id?: string) {
         return documentEntries
           .filter(({ binding }) => {
             const scope = documentScope(binding);
             return scope.kind === kind && (id === undefined || scope.id === id);
           })
           .map(({ link }) => link)
-          .filter((link): link is StoryAssetLink => Boolean(link));
+          .filter((link): link is StoryAssetLink => Boolean(link) && isCurrentStoryAsset(link));
       }
 
       function assetCollectionStatus(assets: StoryAssetLink[]): StoryObjectStatus {
         if (assets.some((asset) => asset.status === "ACCEPTED" && asset.url && !asset.bindingState)) return "READY";
-        if (assets.some((asset) => asset.bindingState || !asset.url || ["REJECTED", "SUPERSEDED"].includes(asset.status))) return "BLOCKED";
+        if (assets.some((asset) => asset.bindingState || !asset.url || isDiscardedStatus(asset.status))) return "BLOCKED";
         return assets.length ? "IN_PROGRESS" : "MISSING";
       }
 
       function preferredRawAsset(assets: RawAssetBinding[]) {
-        const ordered = sortedAssets(assets);
+        const ordered = sortedAssets(assets).filter((asset) => asset.materialType !== "media.reference"
+          && asset.status !== "REFERENCE"
+          && !isDiscardedStatus(asset.status));
         return ordered.find(isReadyAsset)
-          ?? ordered.find((asset) => linkedAssets.get(asset.assetId)?.url && !linkedAssets.get(asset.assetId)?.bindingState && !["REJECTED", "SUPERSEDED"].includes(asset.status))
+          ?? ordered.find((asset) => linkedAssets.get(asset.assetId)?.url && !linkedAssets.get(asset.assetId)?.bindingState)
           ?? ordered[0];
       }
 
@@ -653,6 +715,12 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
           && rawCardImage.subject?.characterId === character.id);
         const linkedCardImage = rawCardImage ? linkedAssets.get(rawCardImage.assetId) : undefined;
         const cardImageProblem = rawCardImage ? assetProblems.get(rawCardImage.assetId) : undefined;
+        const rawVoiceAssets = rawAssets.filter((asset) => asset.materialType === "audio.voice"
+          && asset.subject?.characterId === character.id);
+        const voiceAssets = rawVoiceAssets
+          .map((asset) => linkedAssets.get(asset.assetId))
+          .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset));
+        const selectedVoice = preferredAsset(rawVoiceAssets);
         const characterRequirements = new Map<string, RawRequirement>();
         for (const requirement of requirements) {
           if (requirement.subject?.characterId === character.id) characterRequirements.set(requirement.id, requirement);
@@ -663,7 +731,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         const evaluatedCharacterRequirements = [...characterRequirements.values()].map(evaluateRequirement);
         const cardImageStatus: StoryObjectStatus = !rawCardImage
           ? hasExplicitCardImage ? "BLOCKED" : "MISSING"
-          : !cardMatchesCharacter || linkedCardImage?.bindingState || ["REJECTED", "SUPERSEDED"].includes(rawCardImage.status) || !linkedCardImage?.url
+          : !cardMatchesCharacter || linkedCardImage?.bindingState || !isCurrentStoryAsset(linkedCardImage) || !linkedCardImage.url
             ? "BLOCKED"
             : rawCardImage.status === "ACCEPTED"
               ? "READY"
@@ -678,13 +746,15 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
               ? "角色卡绑定与当前角色或人物图片职责不匹配。"
               : linkedCardImage?.bindingState
                 ? cardImageProblem === "HASH_MISMATCH" ? "角色卡图片内容与登记的 SHA-256 不一致。" : "角色卡图片绑定存在冲突。"
-                : ["REJECTED", "SUPERSEDED"].includes(rawCardImage.status)
-                  ? `角色卡图片状态为 ${rawCardImage.status}。`
-                  : !linkedCardImage?.url
-                    ? "角色卡图片路径不可用。"
-                    : rawCardImage.status === "ACCEPTED"
-                      ? hasExplicitCardImage ? "角色卡图片已验收。" : "已从默认主造型选择验收图片。"
-                      : hasExplicitCardImage ? `角色卡图片状态为 ${rawCardImage.status}。` : `默认主造型候选状态为 ${rawCardImage.status}。`;
+                : rawCardImage.status === "REFERENCE"
+                  ? "角色卡图片仅为参考，不作为当前人物图。"
+                  : isDiscardedStatus(rawCardImage.status)
+                    ? `角色卡图片状态为 ${rawCardImage.status}。`
+                    : !linkedCardImage?.url
+                      ? "角色卡图片路径不可用。"
+                      : rawCardImage.status === "ACCEPTED"
+                        ? hasExplicitCardImage ? "角色卡图片已验收。" : "已从默认主造型选择验收图片。"
+                        : hasExplicitCardImage ? `角色卡图片状态为 ${rawCardImage.status}。` : `默认主造型候选状态为 ${rawCardImage.status}。`;
         return {
           id: character.id,
           name: character.name,
@@ -694,8 +764,8 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
           personality: character.personality,
           biography: character.biography,
           ...(character.defaultLookId ? { defaultLookId: character.defaultLookId } : {}),
-          ...(rawCardImage && cardMatchesCharacter && !linkedCardImage?.bindingState && linkedCardImage
-            && !["REJECTED", "SUPERSEDED"].includes(rawCardImage.status)
+          ...(rawCardImage && cardMatchesCharacter && !linkedCardImage?.bindingState
+            && isCurrentStoryAsset(linkedCardImage)
             ? { cardImage: linkedCardImage }
             : {}),
           cardImageStatus,
@@ -708,7 +778,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
                 && asset.subject.lookId === look.id);
             const assets = rawLookAssets
               .map((asset) => linkedAssets.get(asset.assetId))
-              .filter((asset): asset is StoryAssetLink => Boolean(asset));
+              .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset));
             const selectedAsset = preferredAsset(rawLookAssets);
             return {
               id: look.id,
@@ -720,11 +790,97 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
               status: lookStatus(look, assets),
             };
           }),
+          voiceAssets,
+          ...(selectedVoice ? { preferredVoice: selectedVoice } : {}),
           episodeIds: [...new Set(appearances.map((appearance) => appearance.episodeId))],
           sceneCount: appearances.length,
           relatedFiles: documentsFor("character", character.id),
           requirements: evaluatedCharacterRequirements,
           completion: aggregateCompletion(evaluatedCharacterRequirements),
+        };
+      });
+
+      const locationSeeds = new Map<string, RawLocation>();
+      for (const location of rawLocations) locationSeeds.set(location.id, location);
+      for (const episode of rawEpisodes) {
+        for (const scene of episode.scenes ?? []) {
+          if (!scene.locationId) continue;
+          const locationId = canonicalLocationId(scene.locationId);
+          if (locationSeeds.has(locationId)) continue;
+          locationSeeds.set(locationId, {
+            id: locationId,
+            name: scene.locationName ?? scene.locationId,
+          });
+        }
+      }
+      for (const asset of rawAssets) {
+        const locationId = asset.subject?.locationId ? canonicalLocationId(asset.subject.locationId) : undefined;
+        if (locationId && !locationSeeds.has(locationId)) locationSeeds.set(locationId, { id: locationId, name: locationId });
+      }
+      for (const binding of storyIndex.documentBindings ?? []) {
+        const locationId = binding.subject?.locationId ? canonicalLocationId(binding.subject.locationId) : undefined;
+        if (locationId && !locationSeeds.has(locationId)) locationSeeds.set(locationId, { id: locationId, name: locationId });
+      }
+
+      const locations: LocationReadModel[] = [...locationSeeds.values()].map((location) => {
+        const appearances = rawEpisodes.flatMap((episode) => (episode.scenes ?? [])
+          .filter((scene) => scene.locationId && canonicalLocationId(scene.locationId) === location.id)
+          .map((scene) => ({ episodeId: episode.id, sceneId: scene.id })));
+        const rawImages = rawAssets.filter((asset) => asset.materialType === "image.scene"
+          && asset.subject?.locationId === location.id);
+        const images = rawImages
+          .map((asset) => linkedAssets.get(asset.assetId))
+          .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset));
+        const hasExplicitCardImage = Boolean(location.cardImageAssetId);
+        const rawCardImage = hasExplicitCardImage
+          ? rawAssets.find((asset) => asset.assetId === location.cardImageAssetId)
+          : preferredRawAsset(rawImages);
+        const linkedCardImage = rawCardImage ? linkedAssets.get(rawCardImage.assetId) : undefined;
+        const cardMatchesLocation = Boolean(rawCardImage
+          && rawCardImage.materialType === "image.scene"
+          && rawCardImage.subject?.locationId === location.id);
+        const rawAmbientAudio = rawAssets.filter((asset) => asset.materialType === "audio.ambient"
+          && asset.subject?.locationId === location.id);
+        const ambientAudio = rawAmbientAudio
+          .map((asset) => linkedAssets.get(asset.assetId))
+          .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset));
+        const selectedAmbientAudio = preferredAsset(rawAmbientAudio);
+        const cardImageStatus: StoryObjectStatus = !rawCardImage
+          ? hasExplicitCardImage ? "BLOCKED" : "MISSING"
+          : !cardMatchesLocation || linkedCardImage?.bindingState || !linkedCardImage?.url
+              || !isCurrentStoryAsset(linkedCardImage)
+            ? "BLOCKED"
+            : rawCardImage.status === "ACCEPTED" ? "READY" : "IN_PROGRESS";
+        const cardImageReason = !rawCardImage
+          ? hasExplicitCardImage ? "场景卡绑定的素材登记不存在。" : "尚未登记场景母版图片。"
+          : !cardMatchesLocation
+            ? "场景卡绑定与当前场景或场景图片职责不匹配。"
+            : linkedCardImage?.bindingState
+              ? "场景卡图片绑定存在冲突。"
+              : rawCardImage.status === "REFERENCE"
+                ? "场景卡图片仅为参考，不作为当前场景图。"
+                : isDiscardedStatus(rawCardImage.status)
+                  ? `场景卡图片状态为 ${rawCardImage.status}。`
+                  : !linkedCardImage?.url
+                    ? "场景卡图片路径不可用。"
+                    : rawCardImage.status === "ACCEPTED" ? "场景母版图片已验收。" : `场景母版图片状态为 ${rawCardImage.status}。`;
+        return {
+          id: location.id,
+          name: location.name,
+          ...(location.oneLineSetting ? { oneLineSetting: location.oneLineSetting } : {}),
+          ...(location.description ? { description: location.description } : {}),
+          ...(rawCardImage && cardMatchesLocation && !linkedCardImage?.bindingState
+            && isCurrentStoryAsset(linkedCardImage)
+            ? { cardImage: linkedCardImage }
+            : {}),
+          cardImageStatus,
+          cardImageReason,
+          images,
+          ambientAudio,
+          ...(selectedAmbientAudio ? { preferredAmbientAudio: selectedAmbientAudio } : {}),
+          relatedFiles: documentsFor("location", location.id),
+          episodeIds: [...new Set(appearances.map((appearance) => appearance.episodeId))],
+          sceneCount: appearances.length,
         };
       });
 
@@ -750,11 +906,107 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
           summaryStatus: episode.summaryStatus ?? "DRAFT_SUMMARY",
           sceneCount: episode.scenes?.length ?? 0,
           characterIds: [...new Set((episode.scenes ?? []).flatMap((scene) => scene.cast?.map((member) => member.characterId) ?? []))],
-          locationIds: [...new Set((episode.scenes ?? []).flatMap((scene) => scene.locationId ? [scene.locationId] : []))],
+          locationIds: [...new Set((episode.scenes ?? []).flatMap((scene) => scene.locationId ? [canonicalLocationId(scene.locationId)] : []))],
           requirements: evaluated,
           completion: aggregateCompletion(evaluated),
         };
       });
+      const projectRequirements = new Map<string, RawRequirement>();
+      for (const requirement of requirements) projectRequirements.set(requirement.id, requirement);
+      for (const requirement of allSceneRequirements.values()) projectRequirements.set(requirement.id, requirement);
+      const currentMilestoneCompletion = aggregateCompletion([...projectRequirements.values()].map(evaluateRequirement));
+
+      const usableDocument = (
+        episodeId: string,
+        materialType: string,
+        options: { acceptedOnly?: boolean; episodeLevelOnly?: boolean } = {},
+      ) => documentEntries.some(({ binding, link }) =>
+        binding.materialType === materialType
+        && binding.subject?.episodeId === episodeId
+        && (!options.episodeLevelOnly || (!binding.subject?.sceneId && !binding.subject?.shotId))
+        && Boolean(link?.url)
+        && !link?.bindingState
+        && link?.status !== "BLOCKED"
+        && !isDiscardedStatus(link?.status ?? "")
+        && (!options.acceptedOnly || link?.status === "ACCEPTED"));
+      const usableEpisodeAssets = (episodeId: string, materialType: string) => rawAssets.filter((asset) => {
+        const linked = linkedAssets.get(asset.assetId);
+        const boundEpisodeId = asset.subject?.episodeId
+          ?? (asset.subject?.sceneId ? episodeIdBySceneId.get(asset.subject.sceneId) : undefined);
+        return boundEpisodeId === episodeId
+          && asset.materialType === materialType
+          && Boolean(linked?.url)
+          && !linked?.bindingState
+          && !["BLOCKED", "REFERENCE"].includes(linked?.status ?? "")
+          && !isDiscardedStatus(linked?.status ?? "");
+      });
+      const productionEpisodes = rawEpisodes.map((rawEpisode) => {
+        const scriptReady = usableDocument(rawEpisode.id, "story.episode-script", { acceptedOnly: true });
+        const storyboardReady = usableDocument(rawEpisode.id, "prompt.video", { episodeLevelOnly: true });
+        const shotAssets = usableEpisodeAssets(rawEpisode.id, "video.shot");
+        const finalAssets = usableEpisodeAssets(rawEpisode.id, "video.final");
+        const finalAccepted = finalAssets.some((asset) => {
+          const linked = linkedAssets.get(asset.assetId);
+          return asset.status === "ACCEPTED" && linked?.verification?.kind === "human-playback";
+        });
+        const stage: EpisodeProductionStage = finalAccepted
+          ? "COMPLETED"
+          : finalAssets.length > 0
+            ? "FINAL_REVIEW"
+            : shotAssets.length > 0
+              ? "SHOT_PRODUCTION"
+              : currentMilestoneEpisodeIds.has(rawEpisode.id)
+                ? "PREPRODUCTION"
+                : storyboardReady
+                  ? "STORYBOARD_DRAFT"
+                  : scriptReady
+                    ? "SCRIPT_READY"
+                    : "NOT_STARTED";
+        return {
+          id: rawEpisode.id,
+          title: rawEpisode.title,
+          stage,
+          current: currentMilestoneEpisodeIds.has(rawEpisode.id),
+          scriptReady,
+          storyboardReady,
+          shotProduced: shotAssets.length > 0,
+          finalAccepted,
+        };
+      });
+      const stageCounts: Record<EpisodeProductionStage, number> = {
+        NOT_STARTED: Math.max(storyIndex.story.totalEpisodes - productionEpisodes.length, 0),
+        SCRIPT_READY: 0,
+        STORYBOARD_DRAFT: 0,
+        PREPRODUCTION: 0,
+        SHOT_PRODUCTION: 0,
+        FINAL_REVIEW: 0,
+        COMPLETED: 0,
+      };
+      for (const episodeProgress of productionEpisodes) stageCounts[episodeProgress.stage] += 1;
+      const completedEpisodes = stageCounts.COMPLETED;
+      const production = {
+        completedEpisodes,
+        totalEpisodes: storyIndex.story.totalEpisodes,
+        percentage: storyIndex.story.totalEpisodes > 0
+          ? Math.round((completedEpisodes / storyIndex.story.totalEpisodes) * 100)
+          : 0,
+        pipeline: {
+          scriptReady: productionEpisodes.filter((episodeProgress) => episodeProgress.scriptReady).length,
+          storyboardReady: productionEpisodes.filter((episodeProgress) => episodeProgress.storyboardReady).length,
+          shotProduced: productionEpisodes.filter((episodeProgress) => episodeProgress.shotProduced).length,
+          finalAccepted: productionEpisodes.filter((episodeProgress) => episodeProgress.finalAccepted).length,
+        },
+        stageCounts,
+        episodes: productionEpisodes.map(({ id, title, stage, current }) => ({ id, title, stage, current })),
+      };
+
+      const reusableMaterialTypes = new Set([
+        "image.character",
+        "audio.voice",
+        "image.scene",
+        "audio.ambient",
+        "image.prop",
+      ]);
 
       let episode: EpisodeDetailReadModel | undefined;
       if (selection?.episodeId) {
@@ -785,23 +1037,29 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
             props: (scene.propIds ?? []).map((propId) => {
               const candidates = rawAssets.filter((asset) => asset.materialType === "image.prop"
                 && asset.role === "prop-standard"
-                && asset.subject?.propId === propId);
+                && asset.subject?.propId === propId
+                && assetAppliesToEpisodeScene(asset, rawEpisode.id, scene.id));
               const assets = candidates
                 .map((asset) => linkedAssets.get(asset.assetId))
-                .filter((asset): asset is StoryAssetLink => Boolean(asset));
+                .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset));
               const asset = preferredAsset(candidates);
               return {
                 id: propId,
                 status: assetCollectionStatus(assets),
+                assets,
                 ...(asset ? { asset } : {}),
               };
             }),
             requirements: sceneRequirements,
             completion: aggregateCompletion(sceneRequirements),
+            assets: rawAssets
+              .filter((asset) => asset.subject?.sceneId === scene.id && !reusableMaterialTypes.has(asset.materialType))
+              .map((asset) => linkedAssets.get(asset.assetId))
+              .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset)),
             derivedAssets: rawAssets
               .filter((asset) => asset.subject?.sceneId === scene.id && (asset.materialType === "image.derived" || asset.materialType === "video.shot"))
               .map((asset) => linkedAssets.get(asset.assetId))
-              .filter((asset): asset is StoryAssetLink => Boolean(asset?.url)),
+              .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset)),
             relatedFiles: documentsFor("scene", scene.id),
           };
         });
@@ -811,15 +1069,25 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         const script = scriptIndex >= 0 ? linkedDocuments.get(`DOCUMENT:${scriptIndex + 1}`) : undefined;
         episode = {
           ...summary,
-          ...(script?.url ? { script } : {}),
+          ...(script?.url && isCurrentStoryAsset(script) ? { script } : {}),
           relatedFiles: documentsFor("episode", rawEpisode.id)
             .filter((file) => file.materialType !== "story.episode-script" || !file.url),
+          assets: rawAssets
+            .filter((asset) => asset.subject?.episodeId === rawEpisode.id
+              && !asset.subject?.sceneId
+              && !reusableMaterialTypes.has(asset.materialType))
+            .map((asset) => linkedAssets.get(asset.assetId))
+            .filter((asset): asset is StoryAssetLink => Boolean(asset) && isCurrentStoryAsset(asset)),
           scenes,
         };
       }
 
       const sourceIndex = (storyIndex.sourceBindings ?? []).findIndex((binding) => binding.materialType === "story.source");
       const source = sourceIndex >= 0 ? linkedDocuments.get(`SOURCE:${sourceIndex + 1}`) : undefined;
+      const allAssets = [
+        ...linkedAssets.values(),
+        ...linkedDocuments.values(),
+      ].filter(isCurrentStoryAsset);
 
       return {
         project: {
@@ -827,7 +1095,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
           name: project.name,
           ...(project.description ? { description: project.description } : {}),
         },
-        story: { ...publicStoryMetadata(storyIndex.story), ...(source?.url ? { source } : {}) },
+        story: { ...publicStoryMetadata(storyIndex.story), ...(source?.url && isCurrentStoryAsset(source) ? { source } : {}) },
         currentMilestone: storyIndex.currentMilestone
           ? {
               id: storyIndex.currentMilestone.id,
@@ -835,11 +1103,15 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
               episodeIds: storyIndex.currentMilestone.episodeIds,
             }
           : { id: "UNSPECIFIED", episodeIds: [] },
+        currentMilestoneCompletion,
+        production,
         characters,
+        locations,
         episodes,
         ...(episode ? { episode } : {}),
         relatedFiles: documentsFor("project"),
         unregisteredAssets,
+        assets: allAssets,
       };
     },
   };
