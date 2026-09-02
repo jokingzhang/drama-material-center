@@ -574,6 +574,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid rgba(23, 111, 232, 0.
 .asset-card-copy { min-width: 0; display: grid; align-content: start; gap: 6px; padding: 9px 10px 10px; }
 .asset-card-copy > b { display: -webkit-box; overflow: hidden; font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .asset-card-copy > small { overflow: hidden; color: #647283; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.asset-modified-time { min-width: 0; display: inline-flex; align-items: center; gap: 4px; color: var(--faint); font-size: 10px; font-variant-numeric: tabular-nums; line-height: 1.4; overflow-wrap: anywhere; }
+.asset-modified-time svg { flex: 0 0 auto; }
 @container (min-width: 650px) {
   .file-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .file-table-head, .file-row { grid-template-columns: minmax(260px, 1.5fr) minmax(145px, 1fr) 92px; }

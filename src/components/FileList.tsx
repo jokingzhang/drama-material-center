@@ -5,6 +5,7 @@ import { assetDirectoryPath } from "../lib/explorerTree";
 import { formatAspectRatio } from "../lib/mediaDimensions";
 import { episodeLabel, kindLabel, productionMetaFor, productionStageLabel } from "../lib/production";
 import type { MaterialAsset } from "../types";
+import { AssetModifiedTime } from "./AssetModifiedTime";
 
 export type AssetDisplay = "list" | "grid";
 
@@ -275,6 +276,7 @@ export function FileList({ assets, selectedId, display, snippets = new Map(), em
               <AssetTags asset={asset} />
               {snippets.get(asset.path) && <mark className="search-snippet">{snippets.get(asset.path)}</mark>}
               <small title={asset.folder}>{relativeFolder(asset, directoryPath)}</small>
+              <AssetModifiedTime updatedAt={asset.updatedAt} />
             </span>
           </article>
         ))}

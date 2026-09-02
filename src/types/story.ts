@@ -9,6 +9,7 @@ export interface StoryAssetLink {
   name: string;
   kind: StoryAssetKind;
   url?: string;
+  updatedAt?: string;
   status: string;
   legacyPath: boolean;
   bindingState?: "STALE_BINDING" | "CONFLICT";

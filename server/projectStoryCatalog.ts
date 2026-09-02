@@ -297,6 +297,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
     }
 
     let cursor = libraryRoot;
+    let updatedAt: string | undefined;
     const segments = relativeCandidate.split(sep);
     for (const [index, segment] of segments.entries()) {
       cursor = join(cursor, segment);
@@ -308,8 +309,10 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       if ((isLast && !entryStat.isFile()) || (!isLast && !entryStat.isDirectory())) {
         throw new ProjectWorkspaceError("invalid_path", "素材绑定必须指向普通文件。");
       }
+      if (isLast) updatedAt = entryStat.mtime.toISOString();
     }
-    return resolvedPath;
+    if (!updatedAt) throw new ProjectWorkspaceError("invalid_path", "素材绑定必须指向普通文件。");
+    return { resolvedPath, updatedAt };
   }
 
   async function assetLink(
@@ -318,6 +321,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
     assetProblems: Map<string, AssetProblem>,
   ): Promise<StoryAssetLink> {
     let url: string | undefined;
+    let updatedAt: string | undefined;
     let safePath = asset.path;
     const verification = publicVerification(asset.verification);
     const expectedSha256 = asset.sha256?.toLowerCase();
@@ -325,9 +329,10 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       throw new ProjectWorkspaceError("invalid_index", `素材 ${asset.assetId} 的 sha256 格式无效。`);
     }
     try {
-      const resolvedPath = await resolveStrictMaterialFile(projectId, asset.path);
+      const resolvedFile = await resolveStrictMaterialFile(projectId, asset.path);
       url = `/api/projects/${encodeURIComponent(projectId)}/file?path=${encodeURIComponent(asset.path)}`;
-      if (expectedSha256 !== undefined && await sha256File(resolvedPath) !== expectedSha256) {
+      updatedAt = resolvedFile.updatedAt;
+      if (expectedSha256 !== undefined && await sha256File(resolvedFile.resolvedPath) !== expectedSha256) {
         assetProblems.set(asset.assetId, "HASH_MISMATCH");
       }
     } catch (error) {
@@ -349,6 +354,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       name: basename(asset.path),
       kind: kindForMaterialType(asset.materialType),
       ...(url ? { url } : {}),
+      ...(updatedAt ? { updatedAt } : {}),
       status,
       legacyPath: asset.legacyPath === true,
       ...(bindingState ? { bindingState } : {}),
@@ -631,17 +637,22 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         ...rawDocuments.map(({ binding }) => binding.path),
       ]);
       const libraryRoot = await workspace.resolveMaterialPath(projectId);
-      const unregisteredAssets: StoryAssetLink[] = (await walkFiles(libraryRoot))
-        .map((filePath) => relative(libraryRoot, filePath).split(sep).join("/"))
-        .filter((path) => !registeredPaths.has(path))
-        .sort((left, right) => left.localeCompare(right, "zh-CN", { numeric: true }))
-        .map((path) => ({
+      const unregisteredFiles = (await walkFiles(libraryRoot))
+        .map((filePath) => ({ filePath, path: relative(libraryRoot, filePath).split(sep).join("/") }))
+        .filter(({ path }) => !registeredPaths.has(path));
+      const unregisteredAssets: StoryAssetLink[] = (await Promise.all(unregisteredFiles.map(async ({ filePath, path }) => ({
+        path,
+        updatedAt: (await lstat(filePath)).mtime.toISOString(),
+      }))))
+        .sort((left, right) => left.path.localeCompare(right.path, "zh-CN", { numeric: true }))
+        .map(({ path, updatedAt }) => ({
           assetId: `UNREGISTERED:${path}`,
           materialType: "unregistered",
           path,
           name: basename(path),
           kind: kindForPath(path),
           url: `/api/projects/${encodeURIComponent(projectId)}/file?path=${encodeURIComponent(path)}`,
+          updatedAt,
           status: "UNREGISTERED",
           legacyPath: false,
         }));

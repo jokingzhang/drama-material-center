@@ -34,7 +34,7 @@
 .story-page { width: 100%; max-width: 100rem; margin: 0 auto; padding: 1rem; }
 .story-layout, .story-main-content { min-width: 0; }
 .story-main-content { display: grid; align-content: start; gap: 1rem; }
-.story-outline, .story-context { display: none; }
+.story-outline { display: none; }
 
 .story-mobile-sections {
   position: sticky;
@@ -449,8 +449,8 @@
   .project-view-tabs { padding-right: 1.875rem; padding-left: 1.875rem; }
   .story-mobile-sections { display: none; }
   .story-page { padding: 1.75rem 2rem 3rem; }
-  .story-layout { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr) 15rem; align-items: start; gap: 1rem; }
-  .story-outline, .story-context { position: sticky; top: 1.5rem; display: grid; align-content: start; min-width: 0; max-height: calc(100dvh - 12rem); overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 0.8rem; box-shadow: var(--shadow); }
+  .story-layout { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); align-items: start; gap: 1rem; }
+  .story-outline { position: sticky; top: 1.5rem; display: grid; align-content: start; min-width: 0; max-height: calc(100dvh - 12rem); overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 0.8rem; box-shadow: var(--shadow); }
   .story-outline { gap: 0.2rem; padding: 0.7rem; }
   .story-outline > strong { padding: 0.55rem 0.65rem; font-size: 0.875rem; }
   .story-outline > span { margin-top: 0.45rem; padding: 0.4rem 0.65rem 0.15rem; color: var(--faint); font-size: 0.875rem; font-weight: 760; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -458,12 +458,6 @@
   .story-outline a:hover { color: var(--blue); background: var(--blue-soft); }
   .story-outline a.active { color: var(--blue); background: var(--blue-soft); }
   .story-outline a b { color: var(--blue); font-size: 0.875rem; }
-  .story-context { gap: 0; overflow: hidden; }
-  .story-context section { display: grid; gap: 0.35rem; padding: 1rem; border-bottom: 1px solid var(--line); }
-  .story-context section:last-child { border-bottom: 0; }
-  .story-context-label { color: var(--muted); font-size: 0.875rem; font-weight: 720; letter-spacing: 0.04em; }
-  .story-context strong { overflow-wrap: anywhere; font-size: 1rem; }
-  .story-context p { margin: 0; color: var(--muted); font-size: 0.875rem; line-height: 1.55; }
 }
 
 /* Generic story entity and material-card system. */
@@ -613,6 +607,7 @@
 .story-asset-copy small { min-width: 0; line-height: 1.45; overflow-wrap: anywhere; }
 .story-asset-copy strong { font-size: 0.85rem; }
 .story-asset-copy small { color: var(--faint); font-size: 0.72rem; }
+.story-asset-copy .asset-modified-time { font-size: 0.7rem; }
 .story-asset-state {
   position: absolute;
   top: 0.5rem;
@@ -774,11 +769,6 @@
   .story-audio-card > button { grid-template-columns: 3.6rem minmax(0, 1fr); min-height: 7rem; }
   .story-audio-visual { min-height: 7rem; }
   .scene-production-state > summary { align-items: flex-start; flex-direction: column; }
-}
-
-@media (min-width: 1180px) {
-  .story-layout { grid-template-columns: 11.5rem minmax(0, 1fr); }
-  .story-layout.with-context { grid-template-columns: 11.5rem minmax(0, 1fr) 15rem; }
 }
 
 @media (max-width: 1179px) {

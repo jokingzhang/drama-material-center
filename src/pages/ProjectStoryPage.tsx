@@ -270,19 +270,6 @@ function StoryContentTabs({ projectId, activeSection }: { projectId: string; act
   );
 }
 
-function StoryContext({ story }: { story: ProjectStoryReadModel }) {
-  const dueEpisodes = new Set(story.currentMilestone.episodeIds);
-  const dueRequirements = story.episodes.filter((episode) => dueEpisodes.has(episode.id)).flatMap((episode) => episode.requirements);
-  const missing = dueRequirements.filter((requirement) => requirement.status === "MISSING" || requirement.status === "BLOCKED");
-  return (
-    <aside className="story-context" aria-label="当前里程碑和缺口">
-      <section><span className="story-context-label">当前里程碑</span><strong>{story.currentMilestone.name ?? story.currentMilestone.id}</strong><p>{story.currentMilestone.episodeIds.length ? story.currentMilestone.episodeIds.join("、") : "尚未指定制作分集"}</p></section>
-      <section><span className="story-context-label">明确缺口</span><strong>{missing.length} 项</strong><p>{missing.length ? missing.slice(0, 3).map((requirement) => requirement.label).join("、") : "当前索引未发现阻塞项"}</p></section>
-      <section><span className="story-context-label">待归档文件</span><strong>{story.unregisteredAssets.length} 个</strong><p>只增加待归档，不改变故事结构或基础完成度。</p></section>
-    </aside>
-  );
-}
-
 function CharacterCard({ projectId, character }: { projectId: string; character: CharacterReadModel }) {
   const imageCount = character.looks.reduce((count, look) => count + look.assets.length, 0);
   return (
@@ -498,11 +485,11 @@ function EpisodeDetail({ story, sceneId, onOpen }: { story: ProjectStoryReadMode
       <Link className="story-back-link" to={sceneId ? projectEpisodePath(story.project.id, episode.id) : projectStorySectionPath(story.project.id, "episodes")}><ArrowLeft size={16} />{sceneId ? `返回 ${episode.id}` : "返回分集"}</Link>
       <header className="detail-heading"><div><span className="story-eyebrow">{episode.id}</span><h1>{sceneId ? selectedScene?.heading ?? "场次不存在" : episode.title}</h1><p>{sceneId ? selectedScene?.summary ?? "这个场次不在当前分集索引中。" : episode.summary}</p></div>{sceneId && selectedScene && <CompletionLine completion={selectedScene.completion} />}</header>
       {!sceneId && <div className="episode-fact-row"><span><Users size={16} />{episode.characterIds.length} 位人物</span><span><MapPin size={16} />{episode.locationIds.length} 个场景</span><span><BookOpenText size={16} />{episode.sceneCount} 场</span></div>}
+      {!sceneId && <EpisodeReusableAssets story={story} groups={reusableGroups} onOpen={onOpen} />}
       {!sceneId && <EpisodeAcceptanceSummary episode={episode} assets={acceptanceAssets} />}
       {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="COPY" title="本集文案" description="卡片显示摘要；点击后在同页弹窗查看剧本与素材计划全文。" assets={documents} onOpen={onOpen} showEmpty emptyCopy="本集还没有绑定文案文件。" />}
-      {!sceneId && <EpisodeReusableAssets story={story} groups={reusableGroups} onOpen={onOpen} />}
+      <section className="episode-scenes-section"><header><div><span className="story-eyebrow">SCENES</span><h2>{sceneId ? "场次详情" : "场次与逐镜提示词"}</h2><p>{sceneId ? "查看本场剧本、人物和专属制作资源。" : "已按场次自动关联分镜提示词；每场依次展示当前有效的 U01、U02…，再展示关键帧与道具。"}</p></div></header><div className="scene-list">{scenes.map((scene) => <SceneCard key={scene.id} story={story} episodeId={episode.id} scene={scene} focused={Boolean(sceneId)} onOpen={onOpen} />)}</div></section>
       {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="EPISODE OUTPUT" title="本集成片与声音" description="本集级成片、BGM 与其他直接绑定到分集的产物。" assets={episode.assets} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记分集级成片或声音。" />}
-      <section className="episode-scenes-section"><header><div><span className="story-eyebrow">SCENES</span><h2>{sceneId ? "场次详情" : "场次与专属资源"}</h2><p>每场按文本类和图片类验收专属资源；通用人物、声音和场景在上方统一查看。</p></div></header><div className="scene-list">{scenes.map((scene) => <SceneCard key={scene.id} story={story} episodeId={episode.id} scene={scene} focused={Boolean(sceneId)} onOpen={onOpen} />)}</div></section>
       {sceneId && !selectedScene && <div className="story-inline-error" role="alert">场次 {sceneId} 不存在。<Link to={projectEpisodePath(story.project.id, episode.id)}>查看本集全部场次</Link></div>}
     </article>
   );
@@ -576,14 +563,13 @@ export function ProjectStoryPage() {
   if (!story && !error) return <div className="app-shell story-shell"><StoryHeader projects={projects} projectId={projectId} /><div className="story-loading"><RefreshCw size={24} className="spinning" />正在读取剧本业务索引…</div></div>;
   if (!story || error) return <div className="app-shell story-shell"><StoryHeader projects={projects} projectId={projectId} /><main className="story-unavailable"><PackageSearch size={38} /><h1>剧本业务索引尚不可用</h1><p>{error || "当前项目还没有 story-index.v1.json。"}</p><Link className="primary-button" to={projectLibraryPath(projectId)}>继续查看素材文件</Link></main></div>;
 
-  const showContext = !characterId && !locationId && !episodeId;
   return (
     <div className="app-shell story-shell">
       <StoryHeader story={story} projects={projects} projectId={projectId} />
       <div className="story-scroll">
         <MobileStorySections projectId={projectId} activeSection={activeSection} />
         <main className="story-page">
-          <div className={`story-layout${showContext ? " with-context" : ""}`}>
+          <div className="story-layout">
             <StoryOutline story={story} activeSection={activeSection} activeEpisodeId={episodeId} />
             <div className="story-main-content">
               {characterId
@@ -598,7 +584,6 @@ export function ProjectStoryPage() {
                     ? <EpisodeDetail story={story} sceneId={sceneId} onOpen={(asset, siblingAssets) => setPreview(asset, false, siblingAssets)} />
                     : <StoryOverview story={story} activeSection={activeSection} onOpen={(asset, siblingAssets) => setPreview(asset, false, siblingAssets)} />}
             </div>
-            {showContext && <StoryContext story={story} />}
           </div>
         </main>
       </div>

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, utimes, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createProjectStoryCatalog } from "./projectStoryCatalog";
@@ -22,7 +22,9 @@ async function seedStoryProject() {
     name: "索引样板剧",
     description: "只读 fixture",
   }));
-  await writeFile(join(projectRoot, "library", "图片", "人物", "旧目录", "CHAR-001-v01.png"), "fixture");
+  const characterAssetPath = join(projectRoot, "library", "图片", "人物", "旧目录", "CHAR-001-v01.png");
+  await writeFile(characterAssetPath, "fixture");
+  await utimes(characterAssetPath, new Date("2026-08-15T01:02:03.000Z"), new Date("2026-08-15T01:02:03.000Z"));
   await writeFile(join(projectRoot, "production", "story-index.v1.json"), JSON.stringify({
     schemaVersion: 1,
     story: {
@@ -127,6 +129,7 @@ describe("project story catalog", () => {
       assetId: "ASSET-CHAR-001",
       legacyPath: true,
       status: "ACCEPTED",
+      updatedAt: "2026-08-15T01:02:03.000Z",
     }));
     expect(story.characters[0]?.cardImageStatus).toBe("READY");
     expect(story.characters[0]?.looks[0]?.status).toBe("READY");
@@ -387,6 +390,7 @@ describe("project story catalog", () => {
       writeFile(join(derivedRoot, "EP02", "EP02-S01", "EP02-S01-U01-KF-v01.png"), "fixture"),
       ...Array.from({ length: 100 }, (_, index) => writeFile(join(unregisteredRoot, `UNREGISTERED-${String(index + 1).padStart(3, "0")}.png`), "fixture")),
     ]);
+    await utimes(join(unregisteredRoot, "UNREGISTERED-001.png"), new Date("2026-08-16T02:03:04.000Z"), new Date("2026-08-16T02:03:04.000Z"));
     await writeFile(join(projectRoot, "production", "story-index.v1.json"), JSON.stringify({
       schemaVersion: 1,
       story: {
@@ -432,7 +436,10 @@ describe("project story catalog", () => {
     expect(story.assets.map(({ assetId }) => assetId)).not.toContain("ASSET-REFERENCE-EP01");
     expect(scene?.completion).toEqual({ status: "READY", ready: 1, required: 1, missing: 0, inProgress: 0, blocked: 0 });
     expect(story.unregisteredAssets).toHaveLength(100);
-    expect(story.unregisteredAssets[0]).toEqual(expect.objectContaining({ status: "UNREGISTERED" }));
+    expect(story.unregisteredAssets[0]).toEqual(expect.objectContaining({
+      status: "UNREGISTERED",
+      updatedAt: "2026-08-16T02:03:04.000Z",
+    }));
   });
 
   it("binds story source and related documents without treating them as unregistered files", async () => {

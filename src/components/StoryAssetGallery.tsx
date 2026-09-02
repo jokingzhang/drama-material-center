@@ -11,6 +11,7 @@ import { getMaterialSummary } from "../lib/materials";
 import { deduplicateCurrentStoryAssets } from "../lib/storyAssets";
 import type { MaterialAsset } from "../types";
 import type { StoryAssetLink } from "../types/story";
+import { AssetModifiedTime } from "./AssetModifiedTime";
 import { FilePreviewDialog } from "./FilePreviewDialog";
 import { PreviewPane } from "./PreviewPane";
 
@@ -130,6 +131,7 @@ function StoryAudioCard({ asset, label }: { asset: StoryAssetLink; label?: strin
           <span className="story-asset-type">{materialTypeCopy[asset.materialType] ?? asset.materialType}</span>
           <strong title={label ?? asset.name}>{label ?? asset.name}</strong>
           <small>{playing ? "播放中，再次点击暂停" : asset.url ? "点击卡片直接播放" : "文件不可用"} · {formatDuration(duration)}</small>
+          <AssetModifiedTime updatedAt={asset.updatedAt} />
         </span>
         <span className={`story-asset-state state-${asset.status.toLowerCase()}`}>{assetStatusCopy[asset.status] ?? asset.status}</span>
       </button>
@@ -168,6 +170,7 @@ function StoryPreviewCard({
           <span className="story-asset-type">{materialTypeCopy[asset.materialType] ?? asset.materialType}</span>
           <strong title={label ?? asset.name}>{label ?? asset.name}</strong>
           <small title={asset.name}>{asset.name}</small>
+          <AssetModifiedTime updatedAt={asset.updatedAt} />
         </span>
         <span className={`story-asset-state state-${asset.status.toLowerCase()}`}>{assetStatusCopy[asset.status] ?? asset.status}</span>
       </button>
@@ -240,7 +243,7 @@ export function storyAssetToMaterialAsset(asset: StoryAssetLink): MaterialAsset 
     folder: separator >= 0 ? asset.path.slice(0, separator) : "",
     kind: asset.kind,
     size: 0,
-    updatedAt: "",
+    updatedAt: asset.updatedAt ?? "",
     mimeType: mimeTypeFor(asset),
     url: asset.url,
   };
