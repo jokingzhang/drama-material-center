@@ -32,12 +32,13 @@ describe("director knowledge Markdown catalog", () => {
     expect(normalizeKnowledgeDocumentPath("README.md", "https://example.com/a.md")).toBeUndefined();
   });
 
-  it("discovers the nine complete LibTV shot cases from one Markdown source", async () => {
+  it("discovers the ten complete LibTV shot cases from one Markdown source", async () => {
     const cases = listKnowledgeCases();
-    expect(cases).toHaveLength(9);
+    expect(cases).toHaveLength(10);
     expect(getKnowledgeCase("猫爪挡脸接触喜剧")?.title).toBe("猫爪挡脸接触喜剧");
     expect(getKnowledgeCase("四人依次入镜到战术集结")?.title).toBe("四人依次入镜到战术集结");
     expect(getKnowledgeCase("雨中重逢到告别的分段切镜")?.title).toBe("雨中重逢到告别的分段切镜");
+    expect(getKnowledgeCase("门槛进出的双状态关系帧补片")?.title).toBe("门槛进出的双状态关系帧补片");
 
     for (const knowledgeCase of cases) {
       const markdown = await knowledgeCase.load();

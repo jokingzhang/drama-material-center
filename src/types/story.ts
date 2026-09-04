@@ -48,11 +48,18 @@ export type EpisodeProductionStage =
   | "FINAL_REVIEW"
   | "COMPLETED";
 
+export interface EpisodeCompletionEvidence {
+  kind: "human-playback" | "user-confirmation";
+  verifiedAt?: string;
+  note?: string;
+}
+
 export interface EpisodeProductionReadModel {
   id: string;
   title: string;
   stage: EpisodeProductionStage;
   current: boolean;
+  completionEvidence?: EpisodeCompletionEvidence;
 }
 
 export interface StoryProductionOverview {
@@ -67,6 +74,20 @@ export interface StoryProductionOverview {
   };
   stageCounts: Record<EpisodeProductionStage, number>;
   episodes: EpisodeProductionReadModel[];
+}
+
+export interface ProductionSchedulePhase {
+  id: string;
+  startDate: string;
+  endDate: string;
+  title: string;
+  items: string[];
+}
+
+export interface ProductionScheduleReadModel {
+  title: string;
+  timezone: string;
+  phases: ProductionSchedulePhase[];
 }
 
 export interface CharacterLookReadModel {
@@ -178,6 +199,7 @@ export interface ProjectStoryReadModel {
     title: string;
     genre: string[];
     totalEpisodes: number;
+    aspectRatio?: string;
     productionScope?: string;
     logline: string;
     synopsis: string;
@@ -192,6 +214,7 @@ export interface ProjectStoryReadModel {
     name?: string;
     episodeIds: string[];
   };
+  productionSchedule?: ProductionScheduleReadModel;
   currentMilestoneCompletion: StoryCompletion;
   production: StoryProductionOverview;
   characters: CharacterReadModel[];

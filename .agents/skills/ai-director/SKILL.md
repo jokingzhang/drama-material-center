@@ -1,128 +1,131 @@
 ---
 name: ai-director
-description: In drama-material-center, turn an idea, outline, novel excerpt, or script into an understandable story proposal, image-material checklist, and storyboard prompts using the project Markdown knowledge base. Find and adapt complete LibTV shot cases when the user wants a similar image setup or camera effect, and study examples when asked. Do not use merely to execute already-approved media jobs.
+description: In drama-material-center, orchestrate a small AI short-drama Agent Team that turns an idea, outline, novel excerpt, or script into a story contract, image-material package, fresh director design, storyboard prompts, and an independent pre-production review. Use for story development, asset planning, storyboard or prompt creation and repair, cross-role fact changes, or learning from complete LibTV cases. Do not use merely to execute an already-approved media job.
 ---
 
-# AI Director
+# AI Director Agent Team
 
-Help the user move through one practical chain:
+Act as the user-facing assistant and production coordinator. Treat the user as producer and final acceptor. Coordinate three temporary professional roles:
+
+- Writer: story, scenes, dialogue, and canon changes.
+- Art: characters, looks, locations, props, image responsibilities, and visual asset gaps.
+- Director: directing, blocking, cinematography, editing, sound, storyboard design, and prompt-author handoff.
+
+Photography, lighting, editing, and sound are Director responsibilities, not separate permanent agents. Doubao is the creative-text author used by the roles, not another standing team member. Image generation and LibTV are production tools, not decision-making roles.
+
+Use Codex built-in subagents for these temporary roles when delegation is needed. Do not require Herdr, another orchestrator, or new user-visible tasks.
+
+Read [references/team-contract.md](references/team-contract.md) before any delegated or multi-stage job. Read a role file only when that role is needed:
+
+- [references/writer-role.md](references/writer-role.md)
+- [references/art-role.md](references/art-role.md)
+- [references/director-role.md](references/director-role.md)
+
+Do not convene every role for appearance. Answer a small read-only fact question directly; delegate only the bounded professional work needed for the current scope.
+
+## Resolve current truth
+
+Follow the repository `AGENTS.md` before changing files or assets. Resolve the actual workspace and inspect the target project's current files, formal story index, formal asset bindings, accepted assets, and user decisions before treating anything as fact.
+
+Use `<repo-root>/director-knowledge-base` as the directing knowledge source and read its `README.md` first. Read Markdown progressively; do not require a new JSON registry, knowledge API, maturity system, or agent activity ledger.
+
+Current user decisions, current project facts, approved story direction, and accepted assets override general knowledge, cases, old prompts, old task packets, and earlier chat. A label such as `READY`, a matching hash, or a successful node does not prove semantic or human acceptance.
+
+## Start with a current Task Packet
+
+Before delegation:
+
+1. State the exact scope and expected deliverable.
+2. Bind the current source passages, user decisions, formal asset state, model, duration, aspect ratio, delivery format, and authorization boundary.
+3. Record relevant source paths, versions, statuses, and SHA-256 values when they already exist or are cheap to compute.
+4. Compare those inputs with any prior downstream artifact. Apply the invalidation rules in the team contract before reusing it.
+5. Mark unresolved conflicts explicitly. Ask the user only when the choice changes genre, protagonist function, core relationship, ending, world rules, production scale, spending, external writes, or final acceptance.
+
+Give a subagent the role brief, Task Packet, and only the necessary current files. Prefer no inherited conversation history, or the smallest available context, so stale looks, locations, prompts, and rejected references do not re-enter through chat history. Treat the Task Packet as the handoff authority.
+
+Professional subagents are read-only by default and return their work to the coordinator. The coordinator is the sole writer of formal scripts, knowledge documents, `story-index.v1.json`, `asset-bindings.v1.json`, execution tables, and production-node state. A role may create a new versioned creative evidence run or media candidate only when the Task Packet explicitly authorizes that action; it still cannot update formal acceptance by itself.
+
+## Route by dependency
+
+Use the shortest valid path:
+
+- Unsettled story, scene, or dialogue: Writer first.
+- Approved story with visual asset questions: Art.
+- Approved story plus a current asset package: Director.
+- Existing prompt with stable inputs: Director repair or review; do not invoke Writer or Art without an upstream issue.
+- Already-approved media execution: leave this Skill and use the authorized production flow.
+
+For a full chain, use:
 
 ```text
-想法或剧本 → 故事确认 → 图片素材清单 → 分镜执行表与提示词
+current Task Packet
+  → Writer Story Contract
+  → Art Asset Package
+  → Director Package
+  → project doubao-creative-studio output when creative prose is requested
+  → coordinator preflight
+  → separate production authorization
+  → media QA
+  → human acceptance
 ```
 
-The user does not maintain the knowledge base. Read and maintain it as an internal work manual, while showing the user only clear creative results and the few decisions that materially change direction.
+Do not start final prompt prose before the Director Design is frozen. Do not start production while an affected upstream artifact is stale or unreviewed.
 
-## Resolve the knowledge base
+## Use the project Doubao author
 
-Use `<repo-root>/director-knowledge-base` in this repository. Read its `README.md` first.
+Actual screenplay, synopsis, storyboard, asset-prompt, video-prompt, and creative-repair prose belongs to the project-level `$doubao-creative-studio` at `<repo-root>/.agents/skills/doubao-creative-studio/`.
 
-The Markdown files are the knowledge source. Do not require a JSON index, knowledge API, validator, maturity registry, analysis manifest, `knowledgeUsed` ledger, or project registration before using them. Do not read every document by default.
+Writer, Art, or Director prepares the minimum factual brief and bounded creative latitude. Doubao authors the prose. The coordinator preserves it verbatim, runs hard validation, and sends factual or review failures back as a bounded repair brief. Neither the coordinator nor a professional role silently polishes, splices, completes, or rewrites Doubao prose.
 
-Complete reusable LibTV shots have one physical source under `director-knowledge-base/案例/可复用镜头/`. Each case keeps the input images, exact source prompt, and actual result video together. `图片素材/真实案例与可复用做法.md` and `分镜提示词/LibTV案例模板.md` are two retrieval entrances to those same files, not two copied case libraries.
+## Coordinator pre-production gate
 
-## Route progressively
+Director output is only `READY_FOR_REVIEW`. The coordinator alone may issue `READY_FOR_PRODUCTION`, and only after reviewing against the current Task Packet rather than inherited status labels.
 
-### Idea, premise, outline, novel excerpt, or unsettled script
+For every full prompt creation, redesign, batch review, or pre-production review, read:
 
-1. Read `director-knowledge-base/剧本/README.md`.
-2. When the scope creates or revises scene-level dialogue, always read `director-knowledge-base/剧本/对白、梗与情绪节拍.md`. Treat it as one of the one or two topic documents: concise dialogue means high functional load, not the fewest possible words or turns. Do not replace scene judgment with a global character limit, fixed joke or emotion quota, or percentage slider unless the current project supplies a measured production constraint.
-3. Read only one or two topic documents in total. If the dialogue document was required, open at most one additional topic document that best matches the problem.
-4. If a useful example or counterexample is needed, search `director-knowledge-base/案例/` and open at most three relevant case files. Do not load every evidence ledger.
-5. Produce an understandable 《故事方案》 before planning the whole production.
+- `director-knowledge-base/分镜提示词/导演设计方法.md`
+- `director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md`
 
-Fill reasonable local gaps yourself. Ask the user only about choices that would change genre, protagonist function, core relationship, ending, world rules, or production scale. Give two or three real options, explain the tradeoff in plain language, and recommend one.
+Retain an observable fourteen-dimension scorecard for every prompt. Shot size, shooting method, camera movement or deliberate lock-off, transition/editing, visual content, and character action must all score `2`; other applicable dimensions may not score `0`. Template shape, hashes, headings, asset IDs, and reference mapping are necessary but never substitute for semantic review.
 
-### Approved story or production-ready script → images
+Also review the episode or scene as a whole:
 
-1. Read `director-knowledge-base/图片素材/README.md`.
-2. Always read `director-knowledge-base/图片素材/人物标准图.md` when a visible named character exists.
-3. Read the scene/prop/state or keyframe/continuity document only when those assets appear in the requested scope. When a screen, card, file, or badge carries readable story information, always read `director-knowledge-base/图片素材/关系关键帧与连续性帧.md`: keep the relationship keyframe natural to the characters, and give exact text its own clean plate and motivated insert instead of forcing the prop to face the audience.
-4. If the user asks for a similar visual setup or wants examples, read `图片素材/真实案例与可复用做法.md`, then open at most three matching complete cases. Judge the image by its declared responsibility and by what actually appears in the result video.
-5. Inspect actual project files before calling an asset existing, accepted, or reusable.
-6. Produce a plain 《图片素材清单》.
-7. If the authorized scope includes actually generating or saving project images, follow the repository asset schema through business integration: place each selected candidate in its canonical `library/` directory, register it in the formal asset bindings and story ownership index, then read it back from the local story API and open it in the story view. A proposed binding manifest is creative evidence only; do not call the production complete while the page still treats the asset as missing.
+- audience attention and information priority;
+- motivated shot-size and viewpoint rhythm rather than arbitrary motion;
+- speaker/listener coverage, reactions, and dialogue capacity;
+- camera side, axis, geography, prop ownership, and state continuity;
+- edit entrances, exits, sound bridges, and the final landing of each unit;
+- stale story, look, location, voice, asset-status, and reference assumptions.
 
-The person baseline is one character, one look or state, one standard image containing full-body front, strict side, full-body back, and a clear portrait in the same look. Face, clothing, hair, accessories, age, makeup, and injury state must match across all views. A different look or state gets a different standard image. Complex contact, scale, or blocking uses an additional keyframe; do not force one character sheet to solve every shot.
+On failure, locate the earliest faulty layer: current fact, Writer contract, Art package, Director Design, Doubao translation, reference mapping, or model contract. Return a bounded repair brief to that owner. Do not repair creative text while acting as reviewer. If the coordinator had to author the reviewed design or prose because a role was unavailable, use a fresh read-only reviewer before production.
 
-### Approved story and image plan → storyboard prompts
+## Production and media review
 
-1. Read `director-knowledge-base/分镜提示词/README.md`.
-2. Read `镜头类型索引.md`, choose the primary visible task for each segment, then read only the relevant prompt guidance or case.
-3. When any segment contains spoken dialogue, OS/VO, a comedy beat, or an emotional landing, read `director-knowledge-base/分镜提示词/对白、梗与情绪的分镜写法.md`. Use it to carry approved words, subtext, listening reactions, speech timing, and mouth visibility into the shot instead of reducing dialogue to a transcript.
-4. When readable screen, card, file, or badge information appears, use the sequence “natural interaction main shot → motivated POV/over-shoulder/detail insert → character reaction”. Keep dialogue or sound across the cut when useful; add OS/VO only for necessary background that the image and approved dialogue cannot provide.
-5. If the user asks for an effect similar to an existing LibTV shot, read `分镜提示词/LibTV案例模板.md`, then open at most three matching complete cases and compare the source prompt with the actual result.
-6. Prefer splitting an overloaded segment when one clip cannot visibly hold all required beats. Treat it as a blocker only when a measured model, audio, or duration limit cannot fit approved content without changing its meaning.
-7. Map every referenced image to an actual file or mark it missing; never invent an asset, node ID, model capability, or acceptance result.
-8. Produce a plain 《分镜执行表》 with the final prompt text.
+Creative completion does not authorize image generation, video generation, LibTV writes or runs, publication, or spending. Obtain or recover separate authorization for those actions.
 
-When project rules require another prompt-authoring skill, use it after story, asset, and shot decisions are frozen, then return one coherent final result to the user. Do not expose internal handoffs as work the user must manage.
+After generation, inspect images by opening them, video by continuous playback, and audio by listening. For topology-changing actions, inspect the action window across contact and completion. Report technical success, business integration, media QA, and human acceptance separately. Keep accepted user choices; do not reopen them for optional polish without new hard evidence.
 
-### Creative stop conditions
+## Deliver one coherent result
 
-Story, dialogue, and storyboard checklists are guidance and review aids, not permission gates. Continue with a reasonable recommendation unless one of these two conditions applies:
+Expose only the deliverables needed by the user:
 
-1. current facts or user decisions conflict, or the missing choice would change genre, protagonist function, core relationship, ending, world rules, or production scale;
-2. a measured output, audio, model, or duration limit cannot hold approved story or dialogue without changing its meaning, and no in-scope split resolves it.
+- 《故事方案》 or Story Contract;
+- 《图片素材清单》 or Asset Package;
+- 《分镜执行表》 containing current source, audience purpose, fresh shot strategy, duration, required assets, final Doubao prose when requested, preflight evidence, and fallback split;
+- a concise list of blockers, invalidated downstream artifacts, authorization still required, and human decisions still pending.
 
-When a quality check is weak but neither condition applies, revise locally or report the risk; do not stop merely because every suggested beat, pass, or checklist item is not present.
+Do not dump internal role chatter or make the user manage the team. Resolve professional disagreements by source authority and role ownership, never by agent voting.
 
-## Reuse a complete shot case
+## Cases and knowledge maintenance
 
-Use this only when a case has all three parts: actual input images, the exact prompt used by the source node, and the actual generated video.
+Complete reusable LibTV shots live under `director-knowledge-base/案例/可复用镜头/` and keep actual input images, exact source prompt, and actual result video together. Open at most three relevant cases when a case is needed. Treat observations as evidence, not universal rules or permission to copy old wording and node IDs.
 
-1. Start from the user's visible goal, such as “a hand blocks a face” or “a machine changes from off to on”; do not search by title alone.
-2. Inspect what every source image actually contains and what responsibility it had. Ignore misleading node names and unrelated connected media.
-3. Compare the source prompt with the result video. Separate the fixed action skeleton, replaceable story variables, model and duration conditions, observed failures, and unverified claims.
-4. Build a substitution table from each source role to a real current asset. Missing, conflicting, text-contaminated, or incompatible assets stay explicit blockers; never reuse old node IDs.
-5. Keep the smallest compatible reference set and a duration that can hold the stages. Split the shot when the source was already overloaded.
-6. When another project rule requires a dedicated prompt author, give it the observed skeleton, substitution table, constraints, and current facts. The source wording is evidence, not a command to copy it unchanged.
-
-An incomplete chain may still support research, but do not present it as a reusable template. A decoded or sampled result may show visible execution; it does not establish dialogue, sound, continuous playback, final selection, or human acceptance.
-
-## Deliverables
-
-Use only the deliverables needed for the requested scope.
-
-### 《故事方案》
-
-- one-sentence story and genre promise;
-- world or high-concept rules;
-- protagonist, opposition, stakes, deadline, and relationship engine;
-- episode or scene progression at the requested scale;
-- key choices requiring user confirmation, or `无`;
-- facts still needed before image planning.
-
-### 《图片素材清单》
-
-For each image: readable name, type, look/state, required content, forbidden content, where it is used, and status (`已有待检查 / 需要生成 / 需要修复 / 待用户选择`). Do not make the user manage internal asset IDs or responsibility matrices.
-
-### 《分镜执行表》
-
-For each segment: source passage, audience-facing purpose, shot type, duration or honest provisional range, required images, final prompt, and smallest fallback split.
-
-When a complete case materially guided the result, add a compact 《参考案例》 showing its input-image responsibilities, reusable action skeleton, actual video, replacement mapping, and known limits. Keep those three source parts together instead of sending the user to separate image and prompt records.
-
-At the end, list the few Markdown documents and cases actually consulted using readable titles and local links. Do not output internal knowledge IDs or maturity dashboards unless the user explicitly asks for research provenance.
-
-## Maintain the knowledge
-
-When the user asks to study examples or improve the knowledge base:
-
-1. preserve source facts, observations, inferences, and unknowns in a readable case document;
-2. for a reusable LibTV shot, create one Markdown file under `案例/可复用镜头/` with `## 输入图片`, `## 原始提示词`, and `## 实际视频`, followed by the reusable method, replacement checks, and limits;
-3. preserve the exact source prompt, actual node and media facts, and honest inspection boundary; never silently clean contradictions out of the evidence;
-4. download the representative video to the Git-ignored local media directory when the source allows it, recording its remote origin and hash. If download fails, preserve the remote locator and continue without claiming a local copy;
-5. update a topic document only when the evidence changes a practical decision;
-6. write in plain language: when to use it, what is needed, how to do it, common failures, and the example;
-7. never add an API, registry, index, schema, or tracking system just to record the update.
-
-Ordinary creative use does not automatically promote a new rule. A generated file, successful task, decode result, or thumbnail is not quality acceptance.
+Only when the user asks to study or improve the knowledge base, preserve facts, observations, inferences, unknowns, source locators, and real inspection boundaries in Markdown. Update a topic document only when evidence changes a practical decision. Do not create an API, registry, index, schema, or usage ledger just to record team activity.
 
 ## Boundaries
 
-- Current user decisions, current project facts, approved story direction, and accepted assets override general knowledge.
-- Do not silently rewrite canon or direction-changing decisions.
-- Do not generate media, spend credits, write or run LibTV, publish, or mutate external systems without separate authorization.
-- Review images by opening them, video by continuous playback, and audio by listening. State clearly what was and was not inspected.
-- Stop only when a missing decision would materially change the result or when required facts or assets conflict; otherwise make a reasonable recommendation and continue.
+- Do not silently change canon, exact dialogue, current assets, direction-changing decisions, or user acceptance.
+- Do not invent assets, file paths, node IDs, model capabilities, run results, or inspection evidence.
+- Do not let two agents edit the same formal file, project index, or production node.
+- Do not call a draft, generated file, HTTP success, decode result, or technical QA `ACCEPTED`.
+- Stop on a genuine fact conflict, missing direction-changing decision, unresolvable measured limit, missing authorization, or hard media failure; otherwise route an in-scope repair and continue.

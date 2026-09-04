@@ -8,6 +8,7 @@ import type {
   EpisodeDetailReadModel,
   EpisodeSummaryReadModel,
   LocationReadModel,
+  ProductionScheduleReadModel,
   ProjectStoryReadModel,
   SceneReadModel,
   StoryAssetKind,
@@ -99,6 +100,11 @@ interface RawEpisode {
   title: string;
   summary: string;
   summaryStatus?: string;
+  productionCompletion?: {
+    status: string;
+    confirmedAt?: string;
+    note?: string;
+  };
   scenes?: RawScene[];
 }
 
@@ -108,6 +114,7 @@ interface RawStoryIndex {
   documentBindings?: RawDocumentBinding[];
   story: ProjectStoryReadModel["story"];
   currentMilestone?: ProjectStoryReadModel["currentMilestone"];
+  productionSchedule?: ProductionScheduleReadModel;
   requirements?: RawRequirement[];
   characters?: RawCharacter[];
   locations?: RawLocation[];
@@ -212,6 +219,7 @@ function publicStoryMetadata(raw: ProjectStoryReadModel["story"]): Omit<ProjectS
     title: raw.title,
     genre: raw.genre,
     totalEpisodes: raw.totalEpisodes,
+    ...(raw.aspectRatio !== undefined ? { aspectRatio: raw.aspectRatio } : {}),
     ...(raw.productionScope !== undefined ? { productionScope: raw.productionScope } : {}),
     logline: raw.logline,
     synopsis: raw.synopsis,
@@ -230,6 +238,35 @@ function assertUniqueStableIds(label: string, ids: unknown[]) {
     }
     values.add(id);
   }
+}
+
+function publicProductionSchedule(raw: ProductionScheduleReadModel | undefined): ProductionScheduleReadModel | undefined {
+  if (!raw) return undefined;
+  if (typeof raw.title !== "string" || !raw.title.trim()
+    || typeof raw.timezone !== "string" || !raw.timezone.trim()
+    || !Array.isArray(raw.phases) || raw.phases.length === 0) {
+    throw new ProjectWorkspaceError("invalid_index", "排期计划必须包含标题、时区和至少一个阶段。");
+  }
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: raw.timezone }).format();
+  } catch {
+    throw new ProjectWorkspaceError("invalid_index", `排期计划时区 ${raw.timezone} 无效。`);
+  }
+  assertUniqueStableIds("schedule phase id", raw.phases.map((phase) => phase.id));
+  const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+  for (const phase of raw.phases) {
+    if (!isoDatePattern.test(phase.startDate) || !isoDatePattern.test(phase.endDate) || phase.startDate > phase.endDate
+      || typeof phase.title !== "string" || !phase.title.trim()
+      || !Array.isArray(phase.items) || phase.items.length === 0
+      || phase.items.some((item) => typeof item !== "string" || !item.trim())) {
+      throw new ProjectWorkspaceError("invalid_index", `排期阶段 ${phase.id} 的日期或内容无效。`);
+    }
+  }
+  return {
+    title: raw.title,
+    timezone: raw.timezone,
+    phases: raw.phases.map((phase) => ({ ...phase, items: [...phase.items] })),
+  };
 }
 
 function publicVerification(raw: RawAssetBinding["verification"]): StoryAssetLink["verification"] | undefined {
@@ -386,7 +423,13 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       assertUniqueStableIds("location id", rawLocations.map((location) => location.id));
       assertUniqueStableIds("episode id", rawEpisodes.map((episode) => episode.id));
       assertUniqueStableIds("scene id", rawEpisodes.flatMap((episode) => (episode.scenes ?? []).map((scene) => scene.id)));
+      const productionSchedule = publicProductionSchedule(storyIndex.productionSchedule);
       const episodeIds = new Set(rawEpisodes.map((episode) => episode.id));
+      for (const episode of rawEpisodes) {
+        if (episode.productionCompletion && episode.productionCompletion.status !== "USER_CONFIRMED_COMPLETE") {
+          throw new ProjectWorkspaceError("invalid_index", `分集 ${episode.id} 的完成确认状态无效。`);
+        }
+      }
       for (const asset of rawAssets) {
         assertUniqueStableIds("asset subject episode id", asset.subject?.episodeIds ?? []);
         for (const episodeId of asset.subject?.episodeIds ?? []) {
@@ -956,11 +999,29 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         const storyboardReady = usableDocument(rawEpisode.id, "prompt.video", { episodeLevelOnly: true });
         const shotAssets = usableEpisodeAssets(rawEpisode.id, "video.shot");
         const finalAssets = usableEpisodeAssets(rawEpisode.id, "video.final");
-        const finalAccepted = finalAssets.some((asset) => {
+        const humanReviewedFinalAsset = finalAssets.find((asset) => {
           const linked = linkedAssets.get(asset.assetId);
           return asset.status === "ACCEPTED" && linked?.verification?.kind === "human-playback";
         });
-        const stage: EpisodeProductionStage = finalAccepted
+        const finalAccepted = Boolean(humanReviewedFinalAsset);
+        const userConfirmedComplete = rawEpisode.productionCompletion?.status === "USER_CONFIRMED_COMPLETE";
+        const completionEvidence = humanReviewedFinalAsset
+          ? {
+              kind: "human-playback" as const,
+              ...(humanReviewedFinalAsset.verification?.verifiedAt
+                ? { verifiedAt: humanReviewedFinalAsset.verification.verifiedAt }
+                : {}),
+            }
+          : userConfirmedComplete
+            ? {
+                kind: "user-confirmation" as const,
+                ...(rawEpisode.productionCompletion?.confirmedAt
+                  ? { verifiedAt: rawEpisode.productionCompletion.confirmedAt }
+                  : {}),
+                ...(rawEpisode.productionCompletion?.note ? { note: rawEpisode.productionCompletion.note } : {}),
+              }
+            : undefined;
+        const stage: EpisodeProductionStage = completionEvidence
           ? "COMPLETED"
           : finalAssets.length > 0
             ? "FINAL_REVIEW"
@@ -982,6 +1043,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
           storyboardReady,
           shotProduced: shotAssets.length > 0,
           finalAccepted,
+          ...(completionEvidence ? { completionEvidence } : {}),
         };
       });
       const stageCounts: Record<EpisodeProductionStage, number> = {
@@ -1008,7 +1070,13 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
           finalAccepted: productionEpisodes.filter((episodeProgress) => episodeProgress.finalAccepted).length,
         },
         stageCounts,
-        episodes: productionEpisodes.map(({ id, title, stage, current }) => ({ id, title, stage, current })),
+        episodes: productionEpisodes.map(({ id, title, stage, current, completionEvidence }) => ({
+          id,
+          title,
+          stage,
+          current,
+          ...(completionEvidence ? { completionEvidence } : {}),
+        })),
       };
 
       const reusableMaterialTypes = new Set([
@@ -1114,6 +1182,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
               episodeIds: storyIndex.currentMilestone.episodeIds,
             }
           : { id: "UNSPECIFIED", episodeIds: [] },
+        ...(productionSchedule ? { productionSchedule } : {}),
         currentMilestoneCompletion,
         production,
         characters,

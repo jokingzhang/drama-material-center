@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   BookOpenText,
   BrainCircuit,
+  CalendarDays,
   CheckCircle2,
   ChevronRight,
   CircleDashed,
@@ -22,6 +23,14 @@ import { ProjectViewTabs } from "../components/ProjectViewTabs";
 import { StoryAssetGallery, StoryAssetModal, type StoryAssetOpenHandler } from "../components/StoryAssetGallery";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { getProjects } from "../lib/materials";
+import {
+  compactScheduleDate,
+  currentSchedulePhase,
+  dateKeyInTimeZone,
+  scheduleDateRange,
+  schedulePhaseState,
+  scheduleTodayLabel,
+} from "../lib/productionSchedule";
 import { getProjectStory, storyAssetLibraryPath } from "../lib/projectStory";
 import { collectSceneDedicatedAssets, deduplicateCurrentStoryAssets as deduplicateAssets } from "../lib/storyAssets";
 import {
@@ -41,6 +50,7 @@ import type {
   EpisodeProductionStage,
   EpisodeSummaryReadModel,
   LocationReadModel,
+  ProductionScheduleReadModel,
   ProjectStoryReadModel,
   SceneReadModel,
   StoryAssetLink,
@@ -72,16 +82,6 @@ const productionStageCopy: Record<EpisodeProductionStage, string> = {
   FINAL_REVIEW: "成片待验收",
   COMPLETED: "已完成",
 };
-
-const productionStageOrder: EpisodeProductionStage[] = [
-  "PREPRODUCTION",
-  "STORYBOARD_DRAFT",
-  "SHOT_PRODUCTION",
-  "FINAL_REVIEW",
-  "SCRIPT_READY",
-  "COMPLETED",
-  "NOT_STARTED",
-];
 
 const storySections: Array<{ id: ProjectStorySection; label: string }> = [
   { id: "overview", label: "故事大概" },
@@ -152,23 +152,97 @@ function MaterialSection({
   );
 }
 
+function useCurrentDateKey(timeZone: string) {
+  const [today, setToday] = useState(() => dateKeyInTimeZone(new Date(), timeZone));
+  useEffect(() => {
+    const refreshToday = () => setToday(dateKeyInTimeZone(new Date(), timeZone));
+    refreshToday();
+    const timer = window.setInterval(refreshToday, 60_000);
+    return () => window.clearInterval(timer);
+  }, [timeZone]);
+  return today;
+}
+
+function ProductionSchedulePanel({ schedule, today }: { schedule: ProductionScheduleReadModel; today: string }) {
+  const firstPhase = schedule.phases[0];
+  const lastPhase = schedule.phases.at(-1);
+  const fullRange = firstPhase && lastPhase
+    ? `${compactScheduleDate(firstPhase.startDate)}–${compactScheduleDate(lastPhase.endDate)}`
+    : undefined;
+
+  return (
+    <details className="story-production-schedule">
+      <summary className="story-schedule-summary">
+        <div className="story-schedule-heading">
+          <span><CalendarDays size={18} /></span>
+          <div><h2 id="story-schedule-title">排期计划</h2><p>{schedule.title}</p></div>
+        </div>
+        <span className="story-schedule-action">
+          {fullRange && <b>{fullRange}</b>}
+          <span>查看总计划</span>
+          <ChevronRight size={17} />
+        </span>
+      </summary>
+      <section className="story-schedule-timeline" aria-labelledby="story-total-plan-title">
+        <header><h3 id="story-total-plan-title">总计划</h3><span>点击上方排期计划可收起</span></header>
+        <ol>{schedule.phases.map((phase) => {
+          const state = schedulePhaseState(phase, today);
+          return (
+            <li className={`schedule-phase-${state}`} key={phase.id}>
+              <div className="story-schedule-phase-date">
+                <b>{scheduleDateRange(phase)}</b>
+                <span>{state === "current" ? "今日所在" : state === "past" ? "已过" : "待执行"}</span>
+              </div>
+              <div className="story-schedule-phase-copy">
+                <strong>{phase.title}</strong>
+                <ul>{phase.items.map((item) => <li key={item}>{item}</li>)}</ul>
+              </div>
+            </li>
+          );
+        })}</ol>
+      </section>
+    </details>
+  );
+}
+
+function TodayPlanCard({ schedule, today }: { schedule?: ProductionScheduleReadModel; today: string }) {
+  const phase = schedule ? currentSchedulePhase(schedule.phases, today) : undefined;
+  return (
+    <section className="story-today-summary" aria-labelledby="story-today-plan-title">
+      <header>
+        <h2 id="story-today-plan-title">今日计划</h2>
+        <time dateTime={today}><span>今天</span><b>{scheduleTodayLabel(today)}</b></time>
+      </header>
+      {phase
+        ? <div className="story-today-plan-content">
+            <span>{scheduleDateRange(phase)}</span>
+            <strong>{phase.title}</strong>
+            <ul>{phase.items.map((item) => <li key={item}>{item}</li>)}</ul>
+          </div>
+        : <div className="story-today-empty">暂无</div>}
+    </section>
+  );
+}
+
 function ProductionDashboard({ story }: { story: ProjectStoryReadModel }) {
-  const { production, currentMilestoneCompletion } = story;
+  const { production } = story;
+  const today = useCurrentDateKey(story.productionSchedule?.timezone ?? "Asia/Shanghai");
+  const humanPlaybackCount = production.episodes.filter((episode) => episode.completionEvidence?.kind === "human-playback").length;
+  const userConfirmationCount = production.episodes.filter((episode) => episode.completionEvidence?.kind === "user-confirmation").length;
   const pipeline = [
     { key: "script", label: "剧本定稿", value: production.pipeline.scriptReady, icon: <FileCheck2 size={17} /> },
     { key: "storyboard", label: "分镜准备", value: production.pipeline.storyboardReady, icon: <BookOpenText size={17} /> },
     { key: "shots", label: "正式镜头", value: production.pipeline.shotProduced, icon: <Film size={17} /> },
     { key: "final", label: "成片验收", value: production.pipeline.finalAccepted, icon: <Clapperboard size={17} /> },
   ];
-  const visibleStages = productionStageOrder.filter((stage) => production.stageCounts[stage] > 0 || stage === "COMPLETED");
-  const milestonePercentage = currentMilestoneCompletion.required > 0
-    ? Math.round((currentMilestoneCompletion.ready / currentMilestoneCompletion.required) * 100)
-    : 0;
   return (
     <section className="story-command-center" aria-labelledby="story-production-title">
       <header className="story-command-header">
         <div>
-          <h1 className="sr-only" id="story-production-title">全剧总览</h1>
+          <div className="story-command-title-row">
+            <h1 id="story-production-title">全剧制作总览</h1>
+            {story.story.aspectRatio && <span className="story-format-badge"><b>{story.story.aspectRatio}</b><small>竖屏</small></span>}
+          </div>
           <div className="story-meta-row">
             {story.story.genre.map((genre) => <span key={genre}>{genre}</span>)}
             <span>共 {story.story.totalEpisodes} 集</span>
@@ -176,14 +250,17 @@ function ProductionDashboard({ story }: { story: ProjectStoryReadModel }) {
           {story.story.productionScope && <p className="story-production-scope">{story.story.productionScope}</p>}
         </div>
       </header>
+      {story.productionSchedule && <ProductionSchedulePanel schedule={story.productionSchedule} today={today} />}
       <div className="story-production-grid">
         <section className="story-overall-progress">
           <h2>全剧完成进度</h2>
-          <div className="story-progress-ring" role="progressbar" aria-label="全剧已验收成片进度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={production.percentage} style={{ background: `conic-gradient(var(--blue) ${production.percentage}%, var(--surface-soft) 0)` }}>
+          <div className="story-progress-ring" role="progressbar" aria-label="全剧完成进度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={production.percentage} style={{ background: `conic-gradient(var(--blue) ${production.percentage}%, var(--surface-soft) 0)` }}>
             <span><b>{production.percentage}%</b></span>
           </div>
           <strong>{production.completedEpisodes} / {production.totalEpisodes} 集已完成</strong>
-          <p>完成仅以已登记验收证据的成片计。</p>
+          <p>{humanPlaybackCount > 0 || userConfirmationCount > 0
+            ? `其中 ${humanPlaybackCount} 集成片人审${userConfirmationCount > 0 ? `，${userConfirmationCount} 集用户确认完成` : ""}。`
+            : "完成以成片人审或明确的用户完成确认为准。"}</p>
         </section>
         <section className="story-pipeline-chart" aria-label="全剧生产流程">
           <h2>生产流程 <small>全剧 {production.totalEpisodes} 集</small></h2>
@@ -192,25 +269,25 @@ function ProductionDashboard({ story }: { story: ProjectStoryReadModel }) {
             return <span className="story-pipeline-row" key={stage.key}><i>{stage.icon}</i><b>{stage.label}</b><span className="story-pipeline-track"><span style={{ width: `${percentage}%` }} /></span><strong>{stage.value}/{production.totalEpisodes}</strong></span>;
           })}</div>
         </section>
-        <section className="story-stage-summary">
-          <h2>分集阶段分布 <small>{production.totalEpisodes} 集</small></h2>
-          <ul>{visibleStages.map((stage) => <li key={stage}><i className={`stage-dot stage-${stage.toLowerCase().replaceAll("_", "-")}`} /><span>{productionStageCopy[stage]}</span><b>{production.stageCounts[stage]}</b></li>)}</ul>
-          <div className="story-current-focus">
-            <span>当前焦点</span>
-            <strong>{story.currentMilestone.episodeIds.join("、") || "未指定"} · {story.currentMilestone.name ?? story.currentMilestone.id}</strong>
-            <small>局部基础素材 {currentMilestoneCompletion.ready}/{currentMilestoneCompletion.required}</small>
-            <span className="story-focus-track"><span style={{ width: `${milestonePercentage}%` }} /></span>
-            {currentMilestoneCompletion.blocked > 0 && <b><AlertTriangle size={14} />{currentMilestoneCompletion.blocked} 项阻塞</b>}
-          </div>
-        </section>
+        <TodayPlanCard schedule={story.productionSchedule} today={today} />
       </div>
       <section className="story-episode-stage-board" aria-label={`${production.totalEpisodes} 集生产阶段总览`}>
         <header><h2>{production.totalEpisodes} 集生产阶段总览</h2><span>横向查看全部分集</span></header>
-        <div className="story-episode-stage-rail">{production.episodes.map((episode) => (
-          <Link className={`episode-stage-cell stage-${episode.stage.toLowerCase().replaceAll("_", "-")}${episode.current ? " current" : ""}`} key={episode.id} to={projectEpisodePath(story.project.id, episode.id)} title={`${episode.id} ${episode.title} · ${productionStageCopy[episode.stage]}`}>
-            <b>{episode.id}</b><span>{productionStageCopy[episode.stage]}</span>
-          </Link>
-        ))}</div>
+        <div className="story-episode-stage-rail">{production.episodes.map((episode) => {
+          const evidenceLabel = episode.completionEvidence?.kind === "human-playback"
+            ? "成片人审通过"
+            : episode.completionEvidence?.kind === "user-confirmation"
+              ? "用户确认完成"
+              : undefined;
+          const detail = [episode.id, episode.title, productionStageCopy[episode.stage], evidenceLabel, episode.completionEvidence?.note]
+            .filter(Boolean)
+            .join(" · ");
+          return (
+            <Link className={`episode-stage-cell stage-${episode.stage.toLowerCase().replaceAll("_", "-")}${episode.current ? " current" : ""}`} key={episode.id} to={projectEpisodePath(story.project.id, episode.id)} title={detail}>
+              <b>{episode.id}</b><span>{productionStageCopy[episode.stage]}</span>
+            </Link>
+          );
+        })}</div>
       </section>
     </section>
   );

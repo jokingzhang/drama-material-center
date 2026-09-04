@@ -754,11 +754,24 @@ describe("project story catalog", () => {
     ]);
     await writeFile(join(projectRoot, "production", "story-index.v1.json"), JSON.stringify({
       schemaVersion: 1,
-      story: { title: "全剧进度", genre: [], totalEpisodes: 6, logline: "按正式证据统计。", synopsis: "不能用局部素材冒充全剧完成。", summaryStatus: "ACCEPTED" },
+      story: { title: "全剧进度", genre: [], totalEpisodes: 6, aspectRatio: "9:16", logline: "按正式证据统计。", synopsis: "不能用局部素材冒充全剧完成。", summaryStatus: "ACCEPTED" },
       currentMilestone: { id: "EP01_PREPRODUCTION", episodeIds: ["EP01"] },
+      productionSchedule: {
+        title: "冲刺计划",
+        timezone: "Asia/Shanghai",
+        phases: [{ id: "PHASE-01", startDate: "2026-09-01", endDate: "2026-09-06", title: "准备阶段", items: ["完成准备"] }],
+      },
       requirements: [],
       characters: [],
-      episodes: Array.from({ length: 6 }, (_, index) => ({ id: `EP0${index + 1}`, title: `第${index + 1}集`, summary: "进度测试。", scenes: [] })),
+      episodes: Array.from({ length: 6 }, (_, index) => ({
+        id: `EP0${index + 1}`,
+        title: `第${index + 1}集`,
+        summary: "进度测试。",
+        ...(index === 2
+          ? { productionCompletion: { status: "USER_CONFIRMED_COMPLETE", confirmedAt: "2026-09-03", note: "用户确认完成，成片待回收登记。" } }
+          : {}),
+        scenes: [],
+      })),
       documentBindings: [
         ...["EP01", "EP02", "EP03", "EP04", "EP05"].map((episodeId) => ({ materialType: "story.episode-script", decisionStatus: "ACCEPTED", path: `剧情/分集/${episodeId}/${episodeId}-SCRIPT-v01.md`, subject: { episodeId } })),
         { materialType: "prompt.video", decisionStatus: "DRAFT", path: "剧情/分集/EP02/EP02-SHOTS-v01.md", subject: { episodeId: "EP02" } },
@@ -777,26 +790,38 @@ describe("project story catalog", () => {
 
     const story = await createProjectStoryCatalog(root).readProjectStory("story-demo");
 
+    expect(story.story.aspectRatio).toBe("9:16");
+    expect(story.productionSchedule).toEqual({
+      title: "冲刺计划",
+      timezone: "Asia/Shanghai",
+      phases: [{ id: "PHASE-01", startDate: "2026-09-01", endDate: "2026-09-06", title: "准备阶段", items: ["完成准备"] }],
+    });
     expect(story.production).toEqual({
-      completedEpisodes: 1,
+      completedEpisodes: 2,
       totalEpisodes: 6,
-      percentage: 17,
+      percentage: 33,
       pipeline: { scriptReady: 5, storyboardReady: 1, shotProduced: 1, finalAccepted: 1 },
       stageCounts: {
         NOT_STARTED: 1,
         SCRIPT_READY: 0,
         STORYBOARD_DRAFT: 1,
         PREPRODUCTION: 1,
-        SHOT_PRODUCTION: 1,
+        SHOT_PRODUCTION: 0,
         FINAL_REVIEW: 1,
-        COMPLETED: 1,
+        COMPLETED: 2,
       },
       episodes: [
         { id: "EP01", title: "第1集", stage: "PREPRODUCTION", current: true },
         { id: "EP02", title: "第2集", stage: "STORYBOARD_DRAFT", current: false },
-        { id: "EP03", title: "第3集", stage: "SHOT_PRODUCTION", current: false },
+        {
+          id: "EP03",
+          title: "第3集",
+          stage: "COMPLETED",
+          current: false,
+          completionEvidence: { kind: "user-confirmation", verifiedAt: "2026-09-03", note: "用户确认完成，成片待回收登记。" },
+        },
         { id: "EP04", title: "第4集", stage: "FINAL_REVIEW", current: false },
-        { id: "EP05", title: "第5集", stage: "COMPLETED", current: false },
+        { id: "EP05", title: "第5集", stage: "COMPLETED", current: false, completionEvidence: { kind: "human-playback", verifiedAt: "2026-09-01" } },
         { id: "EP06", title: "第6集", stage: "NOT_STARTED", current: false },
       ],
     });

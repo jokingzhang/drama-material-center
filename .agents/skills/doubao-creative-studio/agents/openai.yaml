@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目豆包创作工作室"
+  short_description: "让豆包负责本项目短剧创意正文，Codex只打包事实、保存原文并做硬校验"
+  default_prompt: "Use $doubao-creative-studio in this repository to send my approved short-drama brief to Doubao, preserve the returned prose verbatim, and validate it without generating media."

@@ -1,4 +1,4 @@
 interface:
-  display_name: "项目 AI 导演"
-  short_description: "把想法或剧本变成故事、图片清单和分镜提示词"
-  default_prompt: "Use $ai-director in this repository to turn my idea or script into an understandable story proposal, image-material checklist, and storyboard prompts. Read only the relevant Markdown knowledge and stop before media generation."
+  display_name: "AI短剧制作小队"
+  short_description: "统筹编剧、美术和导演协作，锁定当前事实并完成生产前独立审查"
+  default_prompt: "Use $ai-director in this repository to coordinate the Writer, Art, and Director roles for my short-drama task, preserve current facts, and stop before unauthorized production."
