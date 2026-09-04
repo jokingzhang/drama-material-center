@@ -49,8 +49,9 @@ Produce a reviewable analysis before asking for creative prose:
 9. `knowledgeUsed[]`
    - canonical usage records described below.
 10. `doubaoHandoff`
-    - `NOT_REQUIRED`, `BLOCKED_PENDING_DECISION`, or `READY_FOR_CREATIVE_PROSE`;
-    - only the approved brief is handed to `$doubao-creative-studio`.
+    - compatibility field with `NOT_REQUIRED`, `BLOCKED_PENDING_DECISION`, or `READY_FOR_CREATIVE_PROSE`;
+    - default to `NOT_REQUIRED`, including when creative prose is requested and the Writer will author it;
+    - use `READY_FOR_CREATIVE_PROSE` only when the user's current request explicitly asks for `$doubao-creative-studio`, and hand off only the approved brief.
 
 ## Diagnostic order
 
@@ -127,9 +128,9 @@ Use `OVERRIDDEN_BY_HIGHER_PRIORITY` only with an explicit user decision, canon f
 - `VALIDATED`: means the repository has the required own-production and human-acceptance evidence; it does not replace current-user approval.
 - External cases may illustrate a mechanism. Do not copy their distinctive plot, character, dialogue, scene order, or title packaging.
 
-## Doubao handoff
+## Default author and optional Doubao handoff
 
-Call `$doubao-creative-studio` only when the user wants actual creative prose and has approved all direction-changing decisions. The handoff must contain:
+The Writer role authors requested screenplay, synopsis, dialogue, and other story prose by default after all direction-changing decisions are approved. Call `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao. An explicit Doubao handoff must contain:
 
 - exact source binding and target range;
 - approved `DEV-*` decision IDs;
@@ -140,7 +141,7 @@ Call `$doubao-creative-studio` only when the user wants actual creative prose an
 - forbidden borrowing from knowledge-base cases;
 - unresolved items and acceptance criteria.
 
-The AI Director reviews returned prose against the approved brief and knowledge constraints. It does not silently rewrite Doubao's creative prose or accept a draft merely because generation succeeded.
+The AI Director reviews either author's returned prose against the approved brief and knowledge constraints. It does not let an author approve its own production text. When Doubao was explicitly selected, it does not silently rewrite or splice Doubao's prose, or accept a draft merely because generation succeeded.
 
 ## Stop conditions
 

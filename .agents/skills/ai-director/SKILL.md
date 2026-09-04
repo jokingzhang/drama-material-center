@@ -1,6 +1,6 @@
 ---
 name: ai-director
-description: In drama-material-center, orchestrate a small AI short-drama Agent Team that turns an idea, outline, novel excerpt, or script into a story contract, image-material package, fresh director design, storyboard prompts, and an independent pre-production review. Use for story development, asset planning, storyboard or prompt creation and repair, cross-role fact changes, or learning from complete LibTV cases. Do not use merely to execute an already-approved media job.
+description: In drama-material-center, orchestrate a small AI short-drama Agent Team that turns an idea, outline, novel excerpt, or script into a story contract, image-material package, fresh director design, storyboard prompts, and an independent pre-production review. The responsible role authors creative prose by default; use Doubao only when the user explicitly requests it. Use for story development, asset planning, storyboard or prompt creation and repair, cross-role fact changes, or learning from complete LibTV cases. Do not use merely to execute an already-approved media job.
 ---
 
 # AI Director Agent Team
@@ -9,9 +9,9 @@ Act as the user-facing assistant and production coordinator. Treat the user as p
 
 - Writer: story, scenes, dialogue, and canon changes.
 - Art: characters, looks, locations, props, image responsibilities, and visual asset gaps.
-- Director: directing, blocking, cinematography, editing, sound, storyboard design, and prompt-author handoff.
+- Director: directing, blocking, cinematography, editing, sound, storyboard design, prompt authoring, and optional author handoff.
 
-Photography, lighting, editing, and sound are Director responsibilities, not separate permanent agents. Doubao is the creative-text author used by the roles, not another standing team member. Image generation and LibTV are production tools, not decision-making roles.
+Photography, lighting, editing, and sound are Director responsibilities, not separate permanent agents. By default, the active Writer, Art, or Director role authors the creative prose within its own responsibility. Doubao is an optional external creative-text author, not a standing team member, and may be invoked only when the user explicitly requests Doubao for the current task. Image generation and LibTV are production tools, not decision-making roles.
 
 Use Codex built-in subagents for these temporary roles when delegation is needed. Do not require Herdr, another orchestrator, or new user-visible tasks.
 
@@ -62,7 +62,8 @@ current Task Packet
   → Writer Story Contract
   → Art Asset Package
   → Director Package
-  → project doubao-creative-studio output when creative prose is requested
+  → responsible role authors the requested creative prose
+  → optional project doubao-creative-studio output only when explicitly requested
   → coordinator preflight
   → separate production authorization
   → media QA
@@ -71,11 +72,17 @@ current Task Packet
 
 Do not start final prompt prose before the Director Design is frozen. Do not start production while an affected upstream artifact is stale or unreviewed.
 
-## Use the project Doubao author
+## Default creative author and optional Doubao
 
-Actual screenplay, synopsis, storyboard, asset-prompt, video-prompt, and creative-repair prose belongs to the project-level `$doubao-creative-studio` at `<repo-root>/.agents/skills/doubao-creative-studio/`.
+The active professional role authors its own requested prose by default: Writer authors screenplay, synopsis, and dialogue; Art authors asset-prompt prose; Director authors storyboard, video-prompt, and directing-repair prose. The coordinator may act directly in that role for a bounded task, but the author may not approve its own work for production.
 
-Writer, Art, or Director prepares the minimum factual brief and bounded creative latitude. Doubao authors the prose. The coordinator preserves it verbatim, runs hard validation, and sends factual or review failures back as a bounded repair brief. Neither the coordinator nor a professional role silently polishes, splices, completes, or rewrites Doubao prose.
+Do not invoke `$doubao-creative-studio` merely because creative prose is requested, because an old artifact used Doubao, or because the Doubao Skill is installed. Invoke it only when the user's current request explicitly names or asks for Doubao. When explicitly requested, the responsible role prepares the minimum factual brief and bounded creative latitude, the coordinator preserves Doubao's return verbatim, and factual or review failures go back through a new bounded Doubao repair task. Never splice Codex-authored and Doubao-authored prose into one untraceable draft.
+
+## Use canonical full character names
+
+In storyboards, execution tables, dialogue contracts, asset prompts, video prompts, creative repairs, reference responsibilities, and production-facing review notes, use the exact canonical full character name for every operational mention of a named character. Repeat the full name in camera positions, framing and crop boundaries, body parts, blocking, action ownership, gaze, speaker attribution, sound responsibility, and reference mapping. Do not substitute a surname-only shorthand such as `江` or `霍`, initials, a role label, or a pronoun for the named subject in those instructions, even when the preceding sentence used the full name.
+
+Verbatim source quotations and natural spoken dialogue are exempt; do not rewrite approved dialogue merely to repeat names. A production-facing prompt that abbreviates a named operational subject fails pre-production review and must be repaired as a new version rather than silently edited in place.
 
 ## Coordinator pre-production gate
 
@@ -97,7 +104,7 @@ Also review the episode or scene as a whole:
 - edit entrances, exits, sound bridges, and the final landing of each unit;
 - stale story, look, location, voice, asset-status, and reference assumptions.
 
-On failure, locate the earliest faulty layer: current fact, Writer contract, Art package, Director Design, Doubao translation, reference mapping, or model contract. Return a bounded repair brief to that owner. Do not repair creative text while acting as reviewer. If the coordinator had to author the reviewed design or prose because a role was unavailable, use a fresh read-only reviewer before production.
+On failure, locate the earliest faulty layer: current fact, Writer contract, Art package, Director Design, creative-text translation by the active author, optional Doubao translation when explicitly requested, reference mapping, or model contract. Return a bounded repair brief to that owner. Do not repair creative text while acting as reviewer. If the coordinator authored the reviewed design or prose, use a fresh read-only reviewer before production.
 
 ## Production and media review
 
@@ -111,7 +118,7 @@ Expose only the deliverables needed by the user:
 
 - 《故事方案》 or Story Contract;
 - 《图片素材清单》 or Asset Package;
-- 《分镜执行表》 containing current source, audience purpose, fresh shot strategy, duration, required assets, final Doubao prose when requested, preflight evidence, and fallback split;
+- 《分镜执行表》 containing current source, audience purpose, fresh shot strategy, duration, required assets, final creative prose with author provenance, preflight evidence, and fallback split;
 - a concise list of blockers, invalidated downstream artifacts, authorization still required, and human decisions still pending.
 
 Do not dump internal role chatter or make the user manage the team. Resolve professional disagreements by source authority and role ownership, never by agent voting.

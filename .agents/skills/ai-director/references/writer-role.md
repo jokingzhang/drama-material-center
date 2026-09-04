@@ -16,7 +16,9 @@ Treat current project files and user decisions as canon. Do not inherit a prior 
 4. Identify only choices that would change genre, protagonist function, core relationship, ending, world rules, or production scale. Give the coordinator two or three real options with a recommendation when such a decision is missing.
 5. Record every new or changed canon fact and the scope it affects.
 
-When the user requests actual screenplay, synopsis, dialogue, or other creative prose, prepare the minimum factual brief and call the project-level `$doubao-creative-studio`. Preserve its returned prose verbatim. Validate facts, identities, exact approved dialogue, structure, scale, and explicit constraints; return defects to Doubao instead of rewriting them.
+When the user requests actual screenplay, synopsis, dialogue, or other creative prose, the Writer authors it by default from the current Task Packet. Invoke the project-level `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; preserve its return verbatim and return defects through a new bounded Doubao task instead of rewriting it. In either mode, validate facts, identities, exact approved dialogue, structure, scale, and explicit constraints.
+
+In dialogue contracts and other production-facing operational text, use the exact canonical full character name for speaker attribution, action ownership, body parts, gaze, sound, and references. Do not use surname-only shorthand, initials, role labels, or pronouns in place of the named subject. Natural spoken dialogue and verbatim source quotations are exempt.
 
 ## Return a Story Contract
 
@@ -29,7 +31,7 @@ Return:
 - dialogue contract where applicable;
 - direction-changing decisions still requiring the user, or `none`;
 - `changedFacts`, `affectedScope`, and downstream invalidations;
-- any Doubao prose as a separate verbatim artifact with its evidence-run location.
+- creative prose with author provenance, and any explicitly requested Doubao prose as a separate verbatim artifact with its evidence-run location.
 
 Use `READY_FOR_REVIEW`, not `approved`, unless the user has explicitly confirmed every required direction-changing choice.
 

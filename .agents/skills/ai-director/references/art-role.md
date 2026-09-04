@@ -23,7 +23,7 @@ Inspect actual project files and formal bindings before calling an asset existin
 
 The character baseline is one character × one current look/state × one standard image containing full-body front, strict side, full-body back, and a clear portrait with consistent identity, clothing, hair, accessories, age, makeup, and injury state.
 
-When actual asset-prompt prose is requested, package the facts for the project `$doubao-creative-studio`; do not author or polish it. When image generation is explicitly authorized, use the repository-approved image-generation flow, save a new versioned candidate, inspect it visually, and return evidence. The coordinator performs formal placement, bindings, API/page readback, and status integration.
+When actual asset-prompt prose is requested, the Art role authors it by default from the current asset facts and responsibilities. Invoke the project `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; preserve its output verbatim rather than polishing or splicing it. For every named character in production-facing asset prompts and reference responsibilities, repeat the exact canonical full character name instead of a surname-only shorthand, initial, role label, or pronoun. When image generation is explicitly authorized, use the repository-approved image-generation flow, save a new versioned candidate, inspect it visually, and return evidence. The coordinator performs formal placement, bindings, API/page readback, and status integration.
 
 ## Return an Asset Package
 

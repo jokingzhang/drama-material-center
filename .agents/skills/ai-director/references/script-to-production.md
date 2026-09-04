@@ -97,6 +97,8 @@ The ShotPromptPlan is a directing contract, not final creative prose. For each s
 
 Use `0.0–2.4s` style intervals. Reject ambiguous time notation, aspect-ratio contradictions, role-to-node mismatches, duplicated global blocks, contradictory costume or state descriptions, and undefined tail duration.
 
+Every operational mention of a named character must use the exact canonical full character name, including camera placement, framing and crop boundaries, body parts, blocking, action ownership, gaze, speaker attribution, sound responsibility, and reference mapping. Do not shorten names to a surname such as `江` or `霍`, initials, role labels, or pronouns. Verbatim source quotations and natural spoken dialogue are exempt.
+
 ## 6. Emit and, when authorized, register the structured analysis
 
 Keep the human-readable plan and its machine-readable record semantically identical. The structured record is `ScriptProductionAnalysis v1`; read [script-production-analysis-schema.md](script-production-analysis-schema.md) and use its exact root fields, `knowledgeUsed` dispositions, snapshots, output references, project paths, and index format.
@@ -116,6 +118,6 @@ If any durable binding condition is missing, return a non-persistent `DRAFT` and
 
 ## Handoff and stopping point
 
-Return the analysis as `DRAFT` when assets are missing or material choices remain unresolved. If final generation prompt prose is requested, pass the approved WorldGenreProfile, AssetPlan, ShotTypePlan, exact dialogue, reference responsibilities, hard constraints, bounded creative latitude, and decision IDs to `$doubao-creative-studio`. Validate its return against this plan; do not silently rewrite creative prose.
+Return the analysis as `DRAFT` when assets are missing or material choices remain unresolved. If final generation prompt prose is requested, the Director role authors it by default from the approved WorldGenreProfile, AssetPlan, ShotTypePlan, exact dialogue, reference responsibilities, hard constraints, bounded creative latitude, and decision IDs. Invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; preserve its return verbatim and route defects through a new bounded Doubao task. In either mode validate the result against this plan and use a fresh read-only reviewer before production.
 
 Analysis registration does not change its approval state. Planning and registration never authorize image/video generation, LibTV writes, paid runs, retries, asset replacement, or knowledge promotion.

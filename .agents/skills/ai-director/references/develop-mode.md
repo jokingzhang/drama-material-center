@@ -5,7 +5,7 @@ Develop/Adapt mode turns an idea or non-screen-ready source into an approved, pr
 Use it for an idea, premise, treatment, novel, outline, prose draft, or script whose screen structure is still unsettled. If the current screenplay and its production facts are already approved and the request is about staging, shots, or execution, use Direct mode instead.
 
 Use [creative-dialogue.md](creative-dialogue.md) to challenge material weaknesses and brainstorm alternatives. Resolve discoverable facts first; discuss genuine creative branches one dependency-bearing decision at a time.
-Use [script-development.md](script-development.md) for the complete retrieval, diagnosis, option, `knowledgeUsed`, and Doubao handoff contract. Do not replace that structured analysis with a generic list of screenwriting tips.
+Use [script-development.md](script-development.md) for the complete retrieval, diagnosis, option, `knowledgeUsed`, creative-authorship, and optional Doubao handoff contract. Do not replace that structured analysis with a generic list of screenwriting tips.
 
 ## Bind the source and authority
 
@@ -62,6 +62,6 @@ The brief remains `DRAFT` until the user approves it or explicitly authorizes au
 
 ## Handoff to screenplay and direction
 
-When the user requests screenplay or other creative prose, freeze the approved package and send the minimum facts, decisions, requested deliverable, and bounded creative latitude to `$doubao-creative-studio`. Let Doubao author the prose; validate canon, structure, identities, dialogue facts, duration, and explicit constraints without silently rewriting creative language. Returned prose remains `DRAFT` until the applicable approval gate passes.
+When the user requests screenplay or other creative prose, freeze the approved package and let the Writer role author it by default from the minimum facts, decisions, requested deliverable, and bounded creative latitude. Invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; in that mode preserve its return verbatim and route defects through a new bounded Doubao task. In either mode validate canon, structure, identities, dialogue facts, duration, and explicit constraints. Returned prose remains `DRAFT` until the applicable approval gate passes.
 
 Once the story package is approved, Direct mode chooses the next useful scale. Do not jump from a long-form source straight to hundreds of shot prompts when project-, act-, dungeon-, or episode-level decisions are still open.

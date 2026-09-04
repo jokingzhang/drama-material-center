@@ -29,6 +29,8 @@ For every unit state:
 - continuity of action, gaze, axis, geography, light, sound, prop ownership, and topology-changing boundaries;
 - smallest compatible reference set and smallest fallback split.
 
+Use the exact canonical full character name for every operational subject mention in the Director Design and production-facing prompt. Repeat the full name for camera positions, crop boundaries, body parts, blocking, action ownership, gaze, speaker, sound, and reference responsibilities; never shorten a named character to a surname such as `江` or `霍`, an initial, a role label, or a pronoun. Verbatim dialogue and source quotations are exempt.
+
 For doors, thresholds, vehicles, elevators, handoffs, and other state-changing actions, write the visible chain from before contact through completion and fix the camera's physical side. Split the unit when the complete state cannot be shown safely.
 
 An overloaded wide shot may not simultaneously promise multiple clear lip movements, micro-expressions, gestures, props, and crowd reactions. Assign one visual priority at a time using motivated cuts, focus changes, or a smaller unit. A camera term such as “slow push” is incomplete without start, subject, direction, magnitude, speed behavior, and landing.
@@ -45,11 +47,11 @@ Design the scene or episode as a sequence, not isolated prompt cards. Check:
 - action matches, sound bridges, visual transitions, and downstream continuity handles;
 - whether the audience's attention moves deliberately instead of watching a stage recording.
 
-## Prompt-author handoff
+## Prompt authoring
 
-When final creative prompt prose is requested, pass the frozen Director Design, exact dialogue, reference responsibilities, current model contract, hard constraints, and bounded creative latitude to the project `$doubao-creative-studio`. Require a complete new version. Do not author, splice, or polish the prose yourself.
+When final creative prompt prose is requested, the Director authors a complete new version from the frozen Director Design, exact dialogue, reference responsibilities, current model contract, hard constraints, and bounded creative latitude. Do not begin from an older prompt's wording, and do not approve the Director's own prose for production.
 
-Run deterministic template and reference checks on the return, then perform a self-check against the Director Design. Return creative mismatches to Doubao. The coordinator still performs the independent semantic preflight and is the only role that may mark the prompt `READY_FOR_PRODUCTION`.
+Invoke the project `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao. In that case, pass the same frozen package, require a complete new version, preserve the returned prose verbatim, and return creative mismatches through a new bounded Doubao repair task rather than rewriting them. In either authorship mode, run deterministic template and reference checks, then use a fresh read-only reviewer for the semantic preflight. The coordinator is the only role that may mark the prompt `READY_FOR_PRODUCTION`.
 
 ## Complete-case use
 
@@ -63,7 +65,7 @@ Return:
 - whole-scene or episode camera/edit/sound strategy;
 - shot execution table and fallback splits;
 - smallest current reference plan with real asset identities and statuses;
-- project Doubao job brief and its verbatim output when requested;
+- final prompt prose with author provenance, plus the project Doubao job brief and verbatim output only when explicitly requested;
 - deterministic check results and self-review findings;
 - `changedFacts`, `affectedScope`, and invalidations discovered;
 - status `READY_FOR_REVIEW`, `NEEDS_REPAIR`, `BLOCKED`, or `STALE_BY_UPSTREAM_CHANGE`.
@@ -71,6 +73,7 @@ Return:
 ## Boundaries
 
 - Do not rewrite story canon or exact approved dialogue.
+- Do not abbreviate a named operational subject; use the exact canonical full character name throughout production-facing directing text.
 - Do not assume an asset, node, model capability, duration, or acceptance state.
 - Do not use an `INTERNAL`, rejected, superseded, missing, text-contaminated, or incompatible image as a generation reference.
 - Do not write or run LibTV, generate media, spend credits, or edit formal project state without separate authorization.

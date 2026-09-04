@@ -16,6 +16,8 @@ Record exact file or node, version, duration, expected Bible or Brief, related `
 6. **Sound** — speaker, exact dialogue, emotion, lip visibility, ambience, effects, music, noise, clipping, and mix. Mark subjective listening pending if it was not actually performed.
 7. **AI failure** — morphing, duplicated subjects, sliding contact, temporal reset, reference conflict, model artifacts, or excessive task complexity.
 
+For production-facing storyboards, prompts, contracts, and repair text, verify that every operational mention of a named character uses the exact canonical full character name. Surname-only shorthand such as `江` or `霍`, initials, role labels, or pronouns may not replace the subject in camera placement, framing, body parts, blocking, action ownership, gaze, speaker, sound, or reference mapping. Verbatim source quotations and natural spoken dialogue are exempt. Any violation fails pre-production review and requires a new version.
+
 ## Review reference effect, not reference presence
 
 Compare each supplied reference with its declared visual or sound responsibility and the actual output. Record whether it was followed, ignored, conflicted with another reference, or contaminated the result. For a directly supplied turnaround, inspect identity and body consistency across front, side, back, turning, and movement as applicable, then check for repeated people, triptych or storyboard layout, neutral-pose copying, labels, or studio-background leakage.
@@ -57,6 +59,6 @@ For each failed criterion, specify:
 - exact re-review test;
 - whether the repair affects only one shot or requires stopping downstream work.
 
-By default, stop at a factual repair brief. Invoke `$doubao-creative-studio` only when the user explicitly requests creative repair or approves the proposed repair. When authorized, keep `repairFeedback` limited to its supported `observedFailure`, `evidence`, and `mustCorrect` fields; carry affected `DEV-*` / `DIR-*` IDs through `canon` or `hardConstraints`. Do not silently rewrite creative text.
+By default, stop at a factual repair brief and return it to the responsible Writer, Art, or Director author. Invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao. When explicitly selected, keep `repairFeedback` limited to its supported `observedFailure`, `evidence`, and `mustCorrect` fields; carry affected `DEV-*` / `DIR-*` IDs through `canon` or `hardConstraints`. A reviewer never silently rewrites the text it reviewed.
 
 Record a knowledge-card practice result only after the repaired output is actually reviewed. The record must bind the decision IDs, intended audience effect, actual result, human conclusion, evidence path, cost, and side effects. Technical success alone cannot promote a card.

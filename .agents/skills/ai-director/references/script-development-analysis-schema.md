@@ -60,6 +60,8 @@ Use the same append-only project analysis location as production analyses:
 
 The parser requires `schemaVersion`, `kind`, `analysisId`, `projectId`, `createdAt`, `sourceBinding.relativePath`, and `knowledgeUsed`. Keep the development sections even when blocked; use explicit empty arrays, `UNKNOWN`, or blocking reasons instead of fabricated facts.
 
+`doubaoHandoff` is retained only for compatibility. Its default is `NOT_REQUIRED`, including ordinary creative-prose tasks authored by the Writer role. Set it to `READY_FOR_CREATIVE_PROSE` only when the user's current request explicitly asks to use Doubao; the presence of this field never authorizes an automatic Doubao call.
+
 ## knowledgeUsed and readback
 
 Use the exact `knowledgeUsed` record and disposition rules in [script-production-analysis-schema.md](script-production-analysis-schema.md). Development output references should use stable artifact names such as `StoryEngine`, `CharacterEngine`, `RelationshipMatrix`, `EpisodeLadder`, `ProblemLedger`, `DevelopmentOption`, or `ChangePlan`.
@@ -73,4 +75,4 @@ GET /api/projects/<project-id>/analyses/<analysisId>
 
 The detail must return `kind: ScriptDevelopmentAnalysis`, the same source binding, and every knowledge disposition, snapshot and output reference. If readback is unavailable, report `Web readback: UNVERIFIED`; if it fails, preserve prior records and report the exact failure.
 
-Registration leaves the result `DRAFT`. It does not approve a change plan, authorize Doubao, promote knowledge, generate media, write LibTV, spend credits or publish.
+Registration leaves the result `DRAFT`. It does not approve a change plan, authorize an optional Doubao call, promote knowledge, generate media, write LibTV, spend credits or publish.

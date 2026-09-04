@@ -2,7 +2,7 @@
 
 Direct mode turns an approved dramatic intention into scale-appropriate choices that downstream creators and tools can execute and reviewers can test.
 
-For a request that starts from a script and asks for image materials or storyboard/video prompts, read [script-to-production.md](script-to-production.md) and produce its WorldGenreProfile, AssetPlan, ShotTypePlan, and ShotPromptPlan before any creative-prompt handoff.
+For a request that starts from a script and asks for image materials or storyboard/video prompts, read [script-to-production.md](script-to-production.md) and produce its WorldGenreProfile, AssetPlan, ShotTypePlan, and ShotPromptPlan before authoring any creative prompt.
 
 Use [creative-dialogue.md](creative-dialogue.md) when a directing choice exposes weak causality, contradictory goals, avoidable complexity, or materially different staging options. At bounded shot scale prefer a concise recommendation; at project scale resolve consequential branches collaboratively.
 
@@ -96,17 +96,18 @@ Group materially independent risks instead of naming only the single hardest sho
 
 One test may cover several risks only when the same mechanism and acceptance evidence genuinely exercise them. Do not let an easy establishing shot certify dialogue, multi-character contact, identity transformation, complex effects, or a different duration/model regime.
 
-## Handoff
+## Creative prompt authoring and handoff
 
 When the user requests screenplay-derived production text or prompts:
 
 1. freeze the approved artifact, exact current facts, and decision IDs;
 2. separate immutable director decisions and hard constraints from bounded creative latitude;
-3. package only the minimum relevant facts for `$doubao-creative-studio`;
-4. put only verbatim user language in `userCreativeDirectives`;
-5. let Doubao author the creative text using the project's required template;
-6. validate factual identity, continuity, dialogue, expected reference responsibilities and dispositions, actual reference mapping, model limits, required fields, and preservation of approved decisions;
-7. return creative changes to Doubao instead of silently rewriting them;
-8. execute only with separate authorization and production gates.
+3. let the responsible Writer, Art, or Director role author the creative text by default using the project's required template;
+4. use the exact canonical full character name for every operational mention in camera, framing, body-part, blocking, action, gaze, speaker, sound, and reference instructions; never use surname-only shorthand such as `江` or `霍`, initials, role labels, or pronouns in place of the named subject;
+5. invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; then package only the minimum relevant facts and put only verbatim user language in `userCreativeDirectives`;
+6. validate factual identity, continuity, dialogue, expected reference responsibilities and dispositions, actual reference mapping, model limits, required fields, canonical naming, and preservation of approved decisions;
+7. return creative defects to the same author; when Doubao was explicitly selected, use a new bounded Doubao repair task and do not rewrite its prose;
+8. use a fresh read-only reviewer before production, because an author may not approve its own production text;
+9. execute only with separate authorization and production gates.
 
 Reference mappings must come from actual assets and shot facts, never from a knowledge card. When no prompts or execution are requested, stop at the directing artifact.

@@ -36,7 +36,7 @@ Brainstorming may produce alternatives, counterfactuals, or test ideas, but none
 - rejected options and the reason briefly traceable when they affect later branches;
 - unresolved decisions separate from approved decisions.
 
-AI Director may author concise options, reasons, and decision maps needed for collaboration. It does not turn those notes into finished screenplay, synopsis, storyboard, or prompt prose; after approval, `$doubao-creative-studio` realizes the selected decisions as the requested creative text.
+AI Director may author concise options, reasons, decision maps, and—after approval—the finished screenplay, synopsis, storyboard, or prompt prose through the responsible Writer, Art, or Director role. Invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; in that mode preserve the selected decisions in its factual brief and keep its prose separately attributable.
 
 ## Freeze and stop
 

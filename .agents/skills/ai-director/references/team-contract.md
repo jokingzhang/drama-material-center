@@ -39,6 +39,7 @@ frozenFacts:
 userDecisions:
 actualAssetState:
 modelDurationFormat:
+creativeAuthor: Writer | Art | Director | doubao-explicit
 upstreamArtifact:
 unknownsOrConflicts:
 forbiddenActions:
@@ -70,10 +71,15 @@ consultedDocuments:
 
 - Professional roles are read-only by default and return drafts in their response.
 - The coordinator alone edits formal scripts, indexes, bindings, execution tables, knowledge documents, and production nodes.
-- Doubao is the author of creative prose; the coordinator may save it verbatim but may not rewrite it.
+- The active Writer, Art, or Director role authors the creative prose within its responsibility by default. Set `creativeAuthor: doubao-explicit` only when the user's current request explicitly asks for Doubao.
+- When Doubao is explicitly requested, the coordinator may save its output verbatim but may not rewrite or splice it with another author's prose.
 - A separately authorized role may create a new versioned evidence run or candidate media file, never overwrite an earlier version or promote its own acceptance.
 - Only one actor may hold an external-write scope for the same project or canvas at a time.
 - A reviewer never modifies the object being reviewed.
+
+## Canonical character naming
+
+Production-facing storyboards, execution tables, dialogue contracts, asset prompts, video prompts, repair prose, and review notes must use the exact canonical full name for every operational mention of a named character. Never use surname-only forms such as `江` or `霍`, initials, role labels, or pronouns in place of the subject for camera placement, framing, body parts, blocking, action ownership, gaze, speaker, sound, or reference mapping. Verbatim source quotations and natural spoken dialogue are exempt. Treat a violation as a pre-production failure and repair it in a new version.
 
 ## Change impact and invalidation
 
@@ -119,7 +125,7 @@ The internal stages need not be written into formal project indexes. They exist 
 - Story causality, scene function, or exact-dialogue problem: Writer.
 - Missing or conflicting visual asset responsibility: Art.
 - Blocking, camera, timing, edit, sound, spatial continuity, or overload problem: Director.
-- Correct design translated incorrectly into prose: project `$doubao-creative-studio` repair.
+- Correct design translated incorrectly into prose: return it to the current Writer, Art, or Director author; use `$doubao-creative-studio` only when the current task explicitly selected Doubao.
 - Template, hash, reference, or node mismatch: coordinator stops execution and repairs the deterministic layer.
 - Media hard failure: preserve evidence and route a bounded repair; never spend or rerun automatically.
 
