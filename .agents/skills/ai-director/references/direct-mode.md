@@ -102,12 +102,12 @@ When the user requests screenplay-derived production text or prompts:
 
 1. freeze the approved artifact, exact current facts, and decision IDs;
 2. separate immutable director decisions and hard constraints from bounded creative latitude;
-3. let the responsible Writer, Art, or Director role author the creative text by default using the project's required template;
+3. let the responsible Writer, Art, or Director stage freeze the minimum factual brief, protected decisions, hard constraints, acceptance criteria, and bounded creative latitude;
 4. use the exact canonical full character name for every operational mention in camera, framing, body-part, blocking, action, gaze, speaker, sound, and reference instructions; never use surname-only shorthand such as `江` or `霍`, initials, role labels, or pronouns in place of the named subject;
-5. invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; then package only the minimum relevant facts and put only verbatim user language in `userCreativeDirectives`;
+5. invoke `$doubao-creative-studio` as the sole creative-text author, package only the minimum relevant facts, and put only verbatim user language in `userCreativeDirectives`;
 6. validate factual identity, continuity, dialogue, expected reference responsibilities and dispositions, actual reference mapping, model limits, required fields, canonical naming, and preservation of approved decisions;
-7. return creative defects to the same author; when Doubao was explicitly selected, use a new bounded Doubao repair task and do not rewrite its prose;
-8. use a fresh read-only reviewer before production, because an author may not approve its own production text;
+7. return creative defects through a new bounded Doubao repair job and do not rewrite, polish, or splice its prose in the main session;
+8. use a newly created read-only Reviewer session with no inherited conversation history before production, because the authoring chain may not supply its own independent review;
 9. execute only with separate authorization and production gates.
 
 Reference mappings must come from actual assets and shot facts, never from a knowledge card. When no prompts or execution are requested, stop at the directing artifact.

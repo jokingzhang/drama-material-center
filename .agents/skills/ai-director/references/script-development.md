@@ -50,8 +50,9 @@ Produce a reviewable analysis before asking for creative prose:
    - canonical usage records described below.
 10. `doubaoHandoff`
     - compatibility field with `NOT_REQUIRED`, `BLOCKED_PENDING_DECISION`, or `READY_FOR_CREATIVE_PROSE`;
-    - default to `NOT_REQUIRED`, including when creative prose is requested and the Writer will author it;
-    - use `READY_FOR_CREATIVE_PROSE` only when the user's current request explicitly asks for `$doubao-creative-studio`, and hand off only the approved brief.
+    - use `NOT_REQUIRED` only when no creative prose is requested;
+    - use `BLOCKED_PENDING_DECISION` while a required direction-changing choice remains open;
+    - use `READY_FOR_CREATIVE_PROSE` when the approved brief can be sent to `$doubao-creative-studio`, which is required for every creative-prose request.
 
 ## Diagnostic order
 
@@ -128,9 +129,9 @@ Use `OVERRIDDEN_BY_HIGHER_PRIORITY` only with an explicit user decision, canon f
 - `VALIDATED`: means the repository has the required own-production and human-acceptance evidence; it does not replace current-user approval.
 - External cases may illustrate a mechanism. Do not copy their distinctive plot, character, dialogue, scene order, or title packaging.
 
-## Default author and optional Doubao handoff
+## Doubao creative handoff
 
-The Writer role authors requested screenplay, synopsis, dialogue, and other story prose by default after all direction-changing decisions are approved. Call `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao. An explicit Doubao handoff must contain:
+After all direction-changing decisions are approved, the Writer stage prepares every requested screenplay, synopsis, dialogue, or other story-prose task for `$doubao-creative-studio`. Doubao is the sole prose author. The handoff must contain:
 
 - exact source binding and target range;
 - approved `DEV-*` decision IDs;
@@ -141,7 +142,7 @@ The Writer role authors requested screenplay, synopsis, dialogue, and other stor
 - forbidden borrowing from knowledge-base cases;
 - unresolved items and acceptance criteria.
 
-The AI Director reviews either author's returned prose against the approved brief and knowledge constraints. It does not let an author approve its own production text. When Doubao was explicitly selected, it does not silently rewrite or splice Doubao's prose, or accept a draft merely because generation succeeded.
+The main session preserves the returned prose verbatim, runs hard checks against the approved brief and knowledge constraints, and sends creative defects through a new bounded Doubao repair job. It never rewrites or splices Doubao prose, lets the authoring chain supply its own independent production review, or accepts a draft merely because generation succeeded.
 
 ## Stop conditions
 

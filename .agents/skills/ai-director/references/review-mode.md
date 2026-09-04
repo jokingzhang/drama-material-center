@@ -1,5 +1,7 @@
 # Review mode
 
+Run this mode only in a newly created read-only Reviewer session with no inherited conversation history. One session reviews one frozen candidate version and returns one final verdict; never reuse it for a later version or repair round.
+
 Review the artifact that actually exists. A task status, thumbnail, stream, decode result, or node prompt cannot substitute for watching the relevant image sequence or listening when sound is in scope.
 
 ## Bind the review target
@@ -59,6 +61,6 @@ For each failed criterion, specify:
 - exact re-review test;
 - whether the repair affects only one shot or requires stopping downstream work.
 
-By default, stop at a factual repair brief and return it to the responsible Writer, Art, or Director author. Invoke `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao. When explicitly selected, keep `repairFeedback` limited to its supported `observedFailure`, `evidence`, and `mustCorrect` fields; carry affected `DEV-*` / `DIR-*` IDs through `canon` or `hardConstraints`. A reviewer never silently rewrites the text it reviewed.
+Stop at a factual repair brief and return it to the responsible Writer, Art, Director, or Coordinator stage in the main session. If the failure is in creative prose rather than its upstream contract, the main session must create a new bounded `$doubao-creative-studio` repair job. Keep `repairFeedback` limited to its supported `observedFailure`, `evidence`, and `mustCorrect` fields; carry affected `DEV-*` / `DIR-*` IDs through `canon` or `hardConstraints`. A Reviewer never invokes Doubao, edits files, or silently rewrites the text it reviewed.
 
 Record a knowledge-card practice result only after the repaired output is actually reviewed. The record must bind the decision IDs, intended audience effect, actual result, human conclusion, evidence path, cost, and side effects. Technical success alone cannot promote a card.

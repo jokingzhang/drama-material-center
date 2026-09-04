@@ -49,9 +49,9 @@ Design the scene or episode as a sequence, not isolated prompt cards. Check:
 
 ## Prompt authoring
 
-When final creative prompt prose is requested, the Director authors a complete new version from the frozen Director Design, exact dialogue, reference responsibilities, current model contract, hard constraints, and bounded creative latitude. Do not begin from an older prompt's wording, and do not approve the Director's own prose for production.
+When final creative prompt prose is requested, the Director freezes a complete `$doubao-creative-studio` job from the Director Design, exact dialogue, reference responsibilities, current model contract, hard constraints, acceptance criteria, and bounded creative latitude. Do not begin from an older prompt's wording.
 
-Invoke the project `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao. In that case, pass the same frozen package, require a complete new version, preserve the returned prose verbatim, and return creative mismatches through a new bounded Doubao repair task rather than rewriting them. In either authorship mode, run deterministic template and reference checks, then use a fresh read-only reviewer for the semantic preflight. The coordinator is the only role that may mark the prompt `READY_FOR_PRODUCTION`.
+Doubao is the sole prompt author. Pass the frozen package, require a complete new version, preserve the returned prose verbatim, and return creative mismatches through a new bounded Doubao repair job rather than rewriting them in the main session. Run deterministic template and reference checks, then use a newly created read-only Reviewer session with no inherited conversation history for the semantic preflight. The main session in Coordinator mode is the only role that may mark the prompt `READY_FOR_PRODUCTION`, and only after the fresh Reviewer passes the exact current version.
 
 ## Complete-case use
 
@@ -65,7 +65,7 @@ Return:
 - whole-scene or episode camera/edit/sound strategy;
 - shot execution table and fallback splits;
 - smallest current reference plan with real asset identities and statuses;
-- final prompt prose with author provenance, plus the project Doubao job brief and verbatim output only when explicitly requested;
+- the project Doubao job brief, verbatim final prompt prose, author provenance, and evidence-run location when creative prose was requested;
 - deterministic check results and self-review findings;
 - `changedFacts`, `affectedScope`, and invalidations discovered;
 - status `READY_FOR_REVIEW`, `NEEDS_REPAIR`, `BLOCKED`, or `STALE_BY_UPSTREAM_CHANGE`.

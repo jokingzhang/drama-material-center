@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI短剧制作小队"
-  short_description: "统筹编剧、美术和导演协作，锁定当前事实并完成生产前独立审查"
-  default_prompt: "Use $ai-director in this repository to coordinate the Writer, Art, and Director roles for my short-drama task, preserve current facts, and stop before unauthorized production."
+  display_name: "AI短剧导演工作流"
+  short_description: "单会话顺序完成编剧、美术、导演职责，豆包创作正文并由全新会话独立审查"
+  default_prompt: "Use $ai-director in this repository. In one main session, execute the applicable Writer, Art, and Director SOP in sequence; use $doubao-creative-studio for all creative prose; use a new history-free read-only Reviewer session when independent review is required; and stop before unauthorized production."

@@ -13,10 +13,10 @@ Treat current project files and user decisions as canon. Do not inherit a prior 
 1. State the one-sentence story or scene function and the audience-facing promise.
 2. Resolve protagonist, opposition, stakes, deadline, relationship engine, causality, and episode or scene progression at the requested scale.
 3. Freeze each spoken line's speaker, verbatim wording when already approved, intent, timing expectation, listener reaction, and mouth-visibility need.
-4. Identify only choices that would change genre, protagonist function, core relationship, ending, world rules, or production scale. Give the coordinator two or three real options with a recommendation when such a decision is missing.
+4. Identify only choices that would change genre, protagonist function, core relationship, ending, world rules, or production scale. Record two or three real options with a recommendation for Coordinator mode when such a decision is missing.
 5. Record every new or changed canon fact and the scope it affects.
 
-When the user requests actual screenplay, synopsis, dialogue, or other creative prose, the Writer authors it by default from the current Task Packet. Invoke the project-level `$doubao-creative-studio` only when the user's current request explicitly asks for Doubao; preserve its return verbatim and return defects through a new bounded Doubao task instead of rewriting it. In either mode, validate facts, identities, exact approved dialogue, structure, scale, and explicit constraints.
+When the user requests actual screenplay, synopsis, dialogue, or other creative prose, the Writer freezes the story contract and prepares the minimum factual `$doubao-creative-studio` job: source binding, approved decisions, protected canon, requested deliverable, hard constraints, acceptance criteria, and bounded creative latitude. Doubao is the sole prose author. Preserve its return verbatim and separately attributable; validate facts, identities, exact approved dialogue, structure, scale, and explicit constraints. Return any defect through a new bounded Doubao repair job instead of rewriting it in the main session.
 
 In dialogue contracts and other production-facing operational text, use the exact canonical full character name for speaker attribution, action ownership, body parts, gaze, sound, and references. Do not use surname-only shorthand, initials, role labels, or pronouns in place of the named subject. Natural spoken dialogue and verbatim source quotations are exempt.
 
@@ -31,7 +31,7 @@ Return:
 - dialogue contract where applicable;
 - direction-changing decisions still requiring the user, or `none`;
 - `changedFacts`, `affectedScope`, and downstream invalidations;
-- creative prose with author provenance, and any explicitly requested Doubao prose as a separate verbatim artifact with its evidence-run location.
+- the Doubao job brief, verbatim creative prose, author provenance, and evidence-run location when creative prose was requested.
 
 Use `READY_FOR_REVIEW`, not `approved`, unless the user has explicitly confirmed every required direction-changing choice.
 
