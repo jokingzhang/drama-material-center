@@ -1,5 +1,7 @@
 # Direct mode
 
+> Historical reference — not an active SOP. Use [Director role](director-role.md) and [Art role](art-role.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Direct mode turns an approved dramatic intention into scale-appropriate choices that downstream creators and tools can execute and reviewers can test.
 
 For a request that starts from a script and asks for image materials or storyboard/video prompts, read [script-to-production.md](script-to-production.md) and produce its WorldGenreProfile, AssetPlan, ShotTypePlan, and ShotPromptPlan before authoring any creative prompt.

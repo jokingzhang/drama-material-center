@@ -1,5 +1,7 @@
 # Script to production analysis
 
+> Historical reference — not an active SOP. Use [current workflow contract](workflow-contract.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Use this workflow when the input is a script, screenplay, scene, episode, or approved story package and the requested output includes image materials or storyboard/video prompt construction.
 
 ## Bind before expanding

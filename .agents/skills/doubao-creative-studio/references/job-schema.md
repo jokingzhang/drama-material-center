@@ -72,7 +72,7 @@
     ]
   },
   "template": {
-    "id": "video-shot-prompt-v1",
+    "id": "video-shot-prompt-v2",
     "variables": {
       "status": "DRAFT",
       "taskId": "EP08 FIGHT-01",
@@ -107,7 +107,7 @@
 | `template` | 否 | 内置输出模板 ID 与事实型变量。选择前读取 `template-catalog.md`；模板只固定结构。 |
 | `goldenSamples` | 否 | 用户认可的同类输入与输出，用于质量对照。 |
 | `repairFeedback` | 否 | 实际失败现象、证据和必须修正的结果；返修时使用。 |
-| `referencePlan` | 条件必填 | 使用 `video-shot-prompt-v1` 时必填；声明镜头实际场景、出镜人物和逐项生成输入，供 runner 校验覆盖、职责与引用顺序。 |
+| `referencePlan` | 条件必填 | 使用 `video-shot-prompt-v2` 时必填；声明镜头实际场景、出镜人物和逐项生成输入，供 runner 校验覆盖、职责与引用顺序。 |
 | `output` | 是 | `format` 为 `markdown` 或 `json`；`language` 默认为 `zh-CN`。 |
 
 ## 文本来源
@@ -134,7 +134,7 @@
 ```json
 {
   "template": {
-    "id": "video-shot-prompt-v1",
+    "id": "video-shot-prompt-v2",
     "variables": {
       "status": "DRAFT",
       "taskId": "EP05 V01",
@@ -151,7 +151,7 @@
 
 ## 视频提示词素材合同 `referencePlan`
 
-`referencePlan` 是执行者从当前剧本、人物/场景母版和真实输入列表整理出的确定性合同，不是让豆包猜素材。所有 `video-shot-prompt-v1` 任务都必须提供；`DRAFT` 可把尚未验收的素材标成 `DRAFT`，但不能省略镜头需要的场景、人物或预计输入。
+`referencePlan` 是执行者从当前剧本、人物/场景母版和真实输入列表整理出的确定性合同，不是让豆包猜素材。所有 `video-shot-prompt-v2` 任务都必须提供；`DRAFT` 可把尚未验收的素材标成 `DRAFT`，但不能省略镜头需要的场景、人物或预计输入。
 
 ```json
 {
@@ -213,7 +213,9 @@
 - `assets[].status`：`DRAFT`、`INTERNAL`、`GEN_INPUT`、`ACCEPTED`、`REJECTED` 或 `SUPERSEDED`。任何任务都拒绝引用 `INTERNAL`、`REJECTED`、`SUPERSEDED`；`READY` 只接受 `GEN_INPUT` 或 `ACCEPTED`。
 - `turnaroundDispositions`：新任务应逐个覆盖 `requiredCharacters`，状态只能为 `CONNECTED`、`NOT_APPLICABLE`、`BUDGET_EXCLUDED` 或 `CONFLICT`。`CONNECTED` 必须用 `assetId` 指向同一人物实际输入的 `character-turnaround`；其它状态不得伪造素材 ID，必须写明 `reason`。旧任务可缺省该字段以保持历史兼容，但不能据此宣称三视图职责已经检查。
 
-`assets` 顺序就是实际输入和 `〖参考〗` 顺序：场景 → 人物身份与三视图输入 → 状态/道具/音频 → 空间/连续帧/关键帧。runner 会检查场景与人物覆盖、状态、重复引用和顺序。`--validate-output` 还会检查每个引用只在 `〖参考〗` 出现一次、与 `subject` 邻近关联；空间板/连续帧/关键帧必须使用“只锁/只参考/仅约束”等局部职责，三视图还必须写明只补充体型、轮廓和同一造型前侧背结构，并带有不复制三联排版、中性站姿、重复人物、文字或影棚背景的边界。项目若把三视图母版登记为 `INTERNAL`，不得直接放入 `referencePlan.assets`；先按项目规则建立有版本和适用范围的 `GEN_INPUT` 引用。
+`assets` 按已核对的实际输入顺序记录，Mixed 序号与这个序列对应。v2 不再要求场景先于人物或辅助图必须排在末尾；runner 仍检查场景与人物覆盖、状态、重复映射和 Mixed 输入序号。v2 正文采用开头引用和逐镜分块；引用须邻近正确 `subject`，必要道具可在对应画面句中引用，同一计划内引用可在相关叙述再次使用，不再要求末尾 `〖参考〗` 段或每项只出现一次。不得遗漏或添加计划外引用。人物标准图和辅助图的唯一职责、最小集合与像素相容性仍须实际核对，不以固定否定词代替审查。`INTERNAL` 素材不得进入生成输入。
+
+新画布尚无 Node 时，DRAFT 的 `{{Mixed N}}` 只能是核对后的本地逻辑序号；在 canon／执行表绑定当前项目相对路径、资产 ID、版本、哈希与职责，并标记 `NODE_BINDING_PENDING`。它不证明远端上传存在。先完成本地正式更新，随后创建画布和上传；真实 Node 映射先形成新本地版本并完成审查、绑定和页面核对，之后才能同步 LibTV。
 
 这仍不能替代执行者从事实源逐镜枚举人物：如果执行者把实际出镜角色漏出 `requiredCharacters`，runner 无法凭空知道。因此，`requiredCharacters` 必须来自剧本镜头事实，而不是从已有素材列表反推。
 

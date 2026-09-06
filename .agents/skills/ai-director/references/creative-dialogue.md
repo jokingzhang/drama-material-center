@@ -36,7 +36,7 @@ Brainstorming may produce alternatives, counterfactuals, or test ideas, but none
 - rejected options and the reason briefly traceable when they affect later branches;
 - unresolved decisions separate from approved decisions.
 
-AI Director may author concise factual summaries, options, reasons, decision maps, contracts, and acceptance criteria. Finished screenplay, synopsis, dialogue, storyboard, asset-prompt, video-prompt, and creative-repair prose must go through `$doubao-creative-studio`. The responsible Writer, Art, or Director stage preserves selected decisions in the factual brief, and the main session keeps Doubao prose verbatim and separately attributable.
+AI Director may author factual analysis and requested creative prose in the responsible main-session stage. Follow the [current author selection](../SKILL.md#select-the-creative-author): GPT-6/main-session writing and repairs by default; Doubao only when explicitly selected by the user. Preserve selected decisions, source lineage, and versioned author provenance. In the Doubao branch, preserve its return verbatim and send creative repairs back to it.
 
 ## Freeze and stop
 

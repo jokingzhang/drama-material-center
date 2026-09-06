@@ -1,4 +1,4 @@
 interface:
   display_name: "AI短剧导演工作流"
-  short_description: "单会话顺序完成编剧、美术、导演职责，豆包创作正文并由全新会话独立审查"
-  default_prompt: "Use $ai-director in this repository. In one main session, execute the applicable Writer, Art, and Director SOP in sequence; use $doubao-creative-studio for all creative prose; use a new history-free read-only Reviewer session when independent review is required; and stop before unauthorized production."
+  short_description: "主会话创作并快速检查剧情、连续性与生产硬伤，无需审查子代理或逐镜评分"
+  default_prompt: "Use $ai-director to write and review in the main session, use Doubao only if I select it, fix major story, continuity and execution problems without review subagents or mandatory scoring, and continue authorized production after local publication and execution checks."

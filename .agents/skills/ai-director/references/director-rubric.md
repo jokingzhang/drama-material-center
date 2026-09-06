@@ -1,5 +1,7 @@
 # Director Bible, Brief, and review rubric
 
+> Historical reference — not an active SOP. Use [current workflow contract](workflow-contract.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Use the shortest artifact that resolves the current scale. Omit fields that truly do not apply; never omit a decision merely because the generation tool lacks a matching field.
 
 ## Shared binding and status

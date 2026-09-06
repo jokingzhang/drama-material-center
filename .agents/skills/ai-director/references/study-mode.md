@@ -1,5 +1,7 @@
 # Study mode
 
+> Historical reference — not an active SOP. Use [current knowledge workflow](knowledge-model.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Study a work to learn how choices create audience effects. Do not turn admiration, prompt wording, or an unfinished production branch into rules without evidence.
 
 ## Inputs and source discipline

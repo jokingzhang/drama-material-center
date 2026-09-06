@@ -23,7 +23,7 @@ Inspect actual project files and formal bindings before calling an asset existin
 
 The character baseline is one character × one current look/state × one standard image containing full-body front, strict side, full-body back, and a clear portrait with consistent identity, clothing, hair, accessories, age, makeup, and injury state.
 
-When actual asset-prompt prose is requested, the Art role freezes the current asset facts, responsibilities, consumers, hard constraints, acceptance criteria, and bounded creative latitude as a `$doubao-creative-studio` job. Doubao is the sole prompt author. Preserve its output verbatim rather than polishing or splicing it, and return defects through a new bounded Doubao repair job. For every named character in production-facing asset prompts and reference responsibilities, require the exact canonical full character name instead of a surname-only shorthand, initial, role label, or pronoun. When image generation is explicitly authorized, use the repository-approved image-generation flow, save a new versioned candidate, inspect it visually, and return evidence. The main session in Coordinator mode performs formal placement, bindings, API/page readback, and status integration.
+When asset-prompt prose is requested, freeze the current asset facts, responsibilities, consumers, hard constraints, acceptance criteria, and creative latitude, then use the [selected author](../SKILL.md#select-the-creative-author) inside this Art stage. Default to main-session writing and repair; use Doubao only when explicitly selected. Validate the prose and update the Asset Package before Director consumes it. Record the author, version, sources, and evidence; preserve raw Doubao returns in that branch. For every named operational subject use the exact canonical full name, not a shorthand or pronoun. When image generation is authorized, use the repository-approved flow, save a new versioned candidate, inspect it, and return evidence. The main session in Coordinator mode performs formal placement, bindings, API/page readback, and status integration.
 
 ## Return an Asset Package
 
@@ -36,6 +36,7 @@ For each item return:
 - actual current path, version, status, and hash when present;
 - `existing-needs-inspection`, `needs-generation`, `needs-repair`, or `awaiting-user-choice`;
 - reference eligibility and any conflict;
+- versioned prompt, actual author/model, and evidence location when text was requested;
 - `changedFacts`, `affectedScope`, and downstream invalidations.
 
 Return `READY_FOR_REVIEW`; do not claim `ASSET_PACKAGE_CURRENT` until the coordinator verifies current files and bindings.

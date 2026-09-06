@@ -1,5 +1,7 @@
 # Develop / Adapt mode
 
+> Historical reference — not an active SOP. Use [Writer role](writer-role.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Develop/Adapt mode turns an idea or non-screen-ready source into an approved, production-aware story package. It resolves story and adaptation decisions before screenplay prose, episode direction, prompts, or media execution.
 
 Use it for an idea, premise, treatment, novel, outline, prose draft, or script whose screen structure is still unsettled. If the current screenplay and its production facts are already approved and the request is about staging, shots, or execution, use Direct mode instead.

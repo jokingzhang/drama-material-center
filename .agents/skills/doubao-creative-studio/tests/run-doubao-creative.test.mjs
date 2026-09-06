@@ -346,7 +346,7 @@ test("--list-templates exposes one model-neutral template", () => {
   const result = spawnSync(process.execPath, [RUNNER, "--list-templates"], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const response = JSON.parse(result.stdout);
-  assert.deepEqual(response.templates.map((template) => template.id), ["video-shot-prompt-v1"]);
+  assert.deepEqual(response.templates.map((template) => template.id), ["video-shot-prompt-v2"]);
 });
 
 test("legacy Seedance template id resolves to the canonical template", () => {
@@ -356,6 +356,33 @@ test("legacy Seedance template id resolves to the canonical template", () => {
   const result = runWithFiles(legacyJob, null, (jobPath) => ["--job", jobPath, "--check"]);
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).templateId, "video-shot-prompt-v1");
+});
+
+for (const templateId of ["video-shot-prompt-v1", "seedance-shot-prompt-v1"]) {
+  test(`${templateId} cannot initiate new creative work`, () => {
+    const legacyJob = { ...job("DRAFT"), referencePlan: referencePlan() };
+    legacyJob.template.id = templateId;
+    const result = runWithFiles(legacyJob, null, (jobPath) => [
+      "--job", jobPath, "--out", path.join(path.dirname(jobPath), "new-run"),
+    ]);
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /legacy template .* is read-only/);
+  });
+}
+
+test("v2 preserves verified character-first input order with matching Mixed indices", () => {
+  const plan = referencePlan();
+  plan.assets = [plan.assets[1], plan.assets[2], plan.assets[0], plan.assets[3]];
+  plan.assets.forEach((asset, index) => { asset.reference = `{{Mixed ${index + 1}}}`; });
+  const currentJob = { ...job("DRAFT"), referencePlan: plan };
+  currentJob.template.id = "video-shot-prompt-v2";
+  const result = runWithFiles(currentJob, null, (jobPath) => ["--job", jobPath, "--check"]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(JSON.parse(result.stdout).templateId, "video-shot-prompt-v2");
+  plan.assets[0].reference = "{{Mixed 5}}";
+  const mismatched = runWithFiles(currentJob, null, (jobPath) => ["--job", jobPath, "--check"]);
+  assert.equal(mismatched.status, 2);
+  assert.match(mismatched.stderr, /must be \{\{Mixed 1\}\} to match input order/);
 });
 
 test("a successful Claude response without model metadata is accepted", () => {

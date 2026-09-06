@@ -1,5 +1,7 @@
 # Script Development Contract
 
+> Historical reference — not an active SOP. Use [current workflow contract](workflow-contract.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Use this contract when the user gives an idea, premise, outline, character setup, episode draft, or an existing script and asks the AI Director to diagnose, develop, adapt, or optimize it.
 
 This contract governs analysis and creative decisions. It does not authorize media generation, external writes, paid execution, publication, or copying prose from knowledge-base source cases.

@@ -1,5 +1,7 @@
 # ScriptProductionAnalysis v1 persistence contract
 
+> Historical reference — not an active SOP. Use [current workflow contract](workflow-contract.md) and [SKILL.md](../SKILL.md) for current work. The instructions below describe the former workflow; mandatory JSON analyses, knowledge-use ledgers, maturity promotion, per-level approval, and Doubao-only authorship are not current requirements. Preserve old records as history; do not recreate their machinery or treat this document as production authority.
+
 Use this contract only for a durable, project-bound `剧本 → 图片素材 → 分镜提示词` analysis. The Web application reads only explicitly indexed JSON; it never infers `knowledgeUsed` from ordinary Markdown or conversation.
 
 ## Authorization and binding

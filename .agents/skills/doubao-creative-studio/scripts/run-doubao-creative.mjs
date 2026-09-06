@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { validateShotBlockPrompt } from "./validate-shot-prompt.mjs";
 
 const MAX_FILE_BYTES = 256 * 1024;
 const MAX_TOTAL_SOURCE_BYTES = 512 * 1024;
@@ -15,9 +16,10 @@ const MAX_PROCESS_OUTPUT_BYTES = 16 * 1024 * 1024;
 const DEFAULT_TIMEOUT_MS = 10 * 60 * 1000;
 const SKILL_DIRECTORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const TEMPLATE_DIRECTORY = path.join(SKILL_DIRECTORY, "assets", "templates");
-const VIDEO_SHOT_TEMPLATE_ID = "video-shot-prompt-v1";
+const VIDEO_SHOT_TEMPLATE_ID = "video-shot-prompt-v2";
+const LEGACY_VIDEO_SHOT_TEMPLATE_ID = "video-shot-prompt-v1";
 const TEMPLATE_ID_ALIASES = new Map([
-  ["seedance-shot-prompt-v1", VIDEO_SHOT_TEMPLATE_ID],
+  ["seedance-shot-prompt-v1", LEGACY_VIDEO_SHOT_TEMPLATE_ID],
 ]);
 const ALLOWED_TEMPLATE_STATUSES = new Set(["DRAFT", "NEEDS_REVISION", "BLOCKED", "READY"]);
 const ALLOWED_REFERENCE_ROLES = new Set([
@@ -61,8 +63,19 @@ const TEMPLATE_DEFINITIONS = new Map([
   [
     VIDEO_SHOT_TEMPLATE_ID,
     {
-      description: "统一视频分镜/生成提示词：EP05 结构；与目标视频模型无关，并使用有序 referencePlan",
+      description: "统一视频提示词：开头引用、全局美学设定、逐镜相机/构图运镜/画面与对白；模型无关",
+      fileName: "video-shot-prompt-v2.md",
+      outputFormat: "markdown",
+      allowedKinds: ["storyboard", "video-prompts", "creative-repair"],
+      requiredVariables: ["status", "taskId", "title", "version", "durationSeconds", "aspectRatio"],
+    },
+  ],
+  [
+    LEGACY_VIDEO_SHOT_TEMPLATE_ID,
+    {
+      description: "历史五段式，仅供 --check 和 --validate-output 复核旧记录，不用于新创作",
       fileName: "video-shot-prompt-v1.md",
+      legacy: true,
       outputFormat: "markdown",
       allowedKinds: ["storyboard", "video-prompts", "creative-repair"],
       requiredVariables: ["status", "taskId", "title", "version", "durationSeconds", "aspectRatio"],
@@ -282,10 +295,10 @@ function validatePlatformReference(value, label) {
 
 function validateReferencePlan(job) {
   const isVideoShotTemplate = job.template
-    && canonicalTemplateId(job.template.id) === VIDEO_SHOT_TEMPLATE_ID;
+    && [VIDEO_SHOT_TEMPLATE_ID, LEGACY_VIDEO_SHOT_TEMPLATE_ID].includes(canonicalTemplateId(job.template.id));
   const templateStatus = job.template?.variables?.status;
   if (job.referencePlan === undefined) {
-    if (isVideoShotTemplate) fail(`referencePlan is required when using ${VIDEO_SHOT_TEMPLATE_ID}`);
+    if (isVideoShotTemplate) fail(`referencePlan is required when using ${canonicalTemplateId(job.template.id)}`);
     return;
   }
 
@@ -347,7 +360,7 @@ function validateReferencePlan(job) {
     }
 
     const priority = REFERENCE_ROLE_PRIORITY.get(asset.role);
-    if (priority < previousPriority) {
+    if (canonicalTemplateId(job.template.id) === LEGACY_VIDEO_SHOT_TEMPLATE_ID && priority < previousPriority) {
       fail(`${label}.role=${asset.role} is out of order; use scene -> character identity -> state/prop/audio -> spatial/continuity/keyframe`);
     }
     previousPriority = priority;
@@ -545,7 +558,7 @@ async function loadJob(jobPath) {
 }
 
 function listTemplateDefinitions() {
-  return [...TEMPLATE_DEFINITIONS.entries()].map(([id, definition]) => ({
+  return [...TEMPLATE_DEFINITIONS.entries()].filter(([, definition]) => !definition.legacy).map(([id, definition]) => ({
     id,
     description: definition.description,
     outputFormat: definition.outputFormat,
@@ -639,10 +652,10 @@ function buildPrompt(materializedJob) {
     ? "只输出一个合法 JSON 值，不要 Markdown 代码围栏、前言或后记。"
     : "只输出最终 Markdown 交付物，不要写调用过程、免责声明、前言或后记。";
   const templateInstruction = materializedJob.template
-    ? "template.content 是本轮强制输出骨架，事实型变量已经填好。严格保留标题和核心段落顺序，用当前任务内容替换所有角括号说明；不要输出模板说明本身。〖禁止〗标为可选，没有高价值风险时删除整段。平台真实引用语法（例如 {{Mixed 1}}、@图片1、<Subject 1>）不是占位说明，应按实际素材保留或替换。"
+    ? "template.content 是本轮强制输出骨架。当前新创作使用开头引用、【全局美学设定】和逐镜相机/构图运镜/画面；对白、声音和反应在镜内连贯展开，不输出旧五段式、状态标题或独立重复的声音段。用当前事实替换所有模板说明，按真实节拍增减镜头；不能照抄示例时长或加速台词。平台引用不是模板说明，按 referencePlan 保留。status/taskId/title/version 留在任务记录，durationSeconds/aspectRatio 决定正文时间与画幅。"
     : "本轮没有指定输出模板；按 deliverables 选择最清楚的最终交付结构。";
   const referenceInstruction = materializedJob.referencePlan
-    ? "referencePlan 是执行者核对后的实际生成输入合同。〖参考〗必须按 assets 顺序逐项使用 reference，每项只出现一次并紧邻 subject；场景负责空间/材质/光色，character-identity 负责脸部身份，可直接输入的 character-turnaround 补充体型、轮廓和同一造型的前侧背结构，state/prop/audio 只负责对应状态或物件，spatial/continuity/keyframe 只能写成局部辅助约束。身份图与同一人物三视图可同时存在但职责不得互换；三视图必须明确忽略三联排版和中性站姿，禁止复制重复人物、拼板、文字或影棚背景。不得引用 INTERNAL 素材。"
+    ? "referencePlan 是执行者核对后的输入合同。开头引用紧邻当前 subject；必要道具也可在画面句中引用，计划内引用可在实际需要处再次使用，不增加新资产。人物标准图负责身份与当前造型，场景负责空间和光色，其余只承担已核对的单一职责。使用相容的最小参考集合，不默认追加同一人物头像、标准图或关系帧，不引用 INTERNAL 或计划外素材；文字标签不能消除拼板、重复人物或背景冲突。"
     : "本轮没有 referencePlan；若模板状态不是 READY，可先返回 DRAFT，但不得自行宣称素材覆盖已经完成。";
 
   return [
@@ -950,6 +963,9 @@ function validateVideoShotPrompt(output, variables, referencePlan) {
 function validateTemplateOutput(output, template, referencePlan) {
   if (!template) return [];
   if (canonicalTemplateId(template.id) === VIDEO_SHOT_TEMPLATE_ID) {
+    return validateShotBlockPrompt(output, { ...template.variables, referencePlan });
+  }
+  if (canonicalTemplateId(template.id) === LEGACY_VIDEO_SHOT_TEMPLATE_ID) {
     return validateVideoShotPrompt(output, template.variables, referencePlan);
   }
   fail(`no output validator registered for template: ${template.id}`);
@@ -1032,6 +1048,10 @@ async function main() {
       goldenSampleStatus: materializedJob.goldenSampleStatus,
     }, null, 2)}\n`);
     return;
+  }
+
+  if (materializedJob.template && getTemplateDefinition(materializedJob.template.id).legacy) {
+    fail(`legacy template ${materializedJob.template.id} is read-only; use ${VIDEO_SHOT_TEMPLATE_ID} for new creation or repair`);
   }
 
   const outputDir = await createOutputDirectory(options.outputDir);

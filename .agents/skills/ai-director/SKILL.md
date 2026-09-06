@@ -1,6 +1,6 @@
 ---
 name: ai-director
-description: In drama-material-center, run one main session through the Writer, Art, and Director responsibilities in sequence, hand every creative-text task to the project doubao-creative-studio, then use a new history-free read-only Reviewer session for any required independent pre-production review. The workflow turns an idea, outline, novel excerpt, or script into a story contract, image-material package, fresh director design, storyboard prompts, and review without an Agent Team. Use for story development, asset planning, storyboard or prompt creation and repair, cross-role fact changes, or learning from complete LibTV cases. Do not use merely to execute an already-approved media job.
+description: Develop stories, plan visual assets, and create or repair storyboard/video prompts in drama-material-center. One main session writes and reviews the work; use doubao-creative-studio only when the user explicitly selects Doubao as author. Review for major story, continuity and execution problems without review subagents or mandatory scoring. Reuse checked work for authorized uploads, node binding and media production.
 ---
 
 # AI Director Sequential Workflow
@@ -9,12 +9,12 @@ Act as the user-facing assistant and production coordinator. Treat the user as p
 
 - Writer: story, scenes, dialogue, and canon changes.
 - Art: characters, looks, locations, props, image responsibilities, and visual asset gaps.
-- Director: directing, blocking, cinematography, editing, sound, storyboard design, prompt specification, and Doubao creative handoff.
-- Reviewer: independent semantic and production-readiness review of a frozen candidate; never authors or repairs the candidate being reviewed.
+- Director: directing, blocking, cinematography, editing, sound, storyboard design, and prompt authoring.
+- Review: the same main session checks the actual text or media for major story, continuity and production problems, repairs within scope, and continues when no blocker remains.
 
-Photography, lighting, editing, and sound are Director responsibilities, not separate permanent agents. Writer, Art, and Director own the decisions, contracts, factual briefs, and acceptance criteria in their domains. The project `$doubao-creative-studio` is the sole author of screenplay, synopsis, dialogue, asset-prompt, storyboard, video-prompt, and creative-repair prose. The main session packages facts, invokes Doubao, preserves its text verbatim, performs hard validation, saves evidence, and executes only separately authorized production. Image generation and LibTV are production tools, not decision-making roles.
+Photography, lighting, editing, and sound are Director responsibilities, not separate permanent agents. Each responsibility owns its decisions, contracts, creative text, and acceptance criteria within the user's scope. The main session is the default author, including storyboard/video prompts and repairs; the current preferred author is GPT-6. Use the Doubao branch only on an explicit user author selection. Image generation and LibTV are production tools, not decision-making roles.
 
-Writer, Art, and Director are responsibility modes inside the same main session, not subagents or separate tasks. Do not create an Agent Team, do not shard scenes or shots across agents, and do not delegate these three roles. The only separate session is a disposable Reviewer when independent review is required.
+Writer, Art, Director and review are responsibilities inside the same main session. Do not create an Agent Team, shard scenes or shots across agents, or create a Reviewer subagent/separate review task. A review request, repair or new version does not authorize delegation.
 
 Read [references/workflow-contract.md](references/workflow-contract.md) before any multi-stage or production-facing job. Read a role file only when that responsibility is needed:
 
@@ -24,6 +24,8 @@ Read [references/workflow-contract.md](references/workflow-contract.md) before a
 - [references/review-mode.md](references/review-mode.md)
 
 Do not run every stage for appearance. Answer a small read-only fact question directly. For a deliverable, execute the shortest dependency path that preserves every applicable responsibility, gate, and acceptance boundary.
+
+The older Develop/Direct/Study modes, analysis schemas, and knowledge-card machinery under `references/` are historical material, not additional stages or prerequisites. Use the current role files and [knowledge-model.md](references/knowledge-model.md) for current routing and knowledge maintenance.
 
 ## Resolve current truth
 
@@ -38,7 +40,7 @@ Current user decisions, current project facts, approved story direction, and acc
 At the start of the main session's work:
 
 1. State the exact scope and expected deliverable.
-2. Bind the current source passages, user decisions, formal asset state, model, duration, aspect ratio, delivery format, and authorization boundary.
+2. Bind the current source passages, user decisions, applicable asset/model/format constraints, author route, and authorization boundary. Mark irrelevant fields `N/A`; a text-only planning task need not invent downstream production facts.
 3. Record relevant source paths, versions, statuses, and SHA-256 values when they already exist or are cheap to compute.
 4. Compare those inputs with any prior downstream artifact. Apply the invalidation rules in the workflow contract before reusing it.
 5. Mark unresolved conflicts explicitly. Ask the user only when the choice changes genre, protagonist function, core relationship, ending, world rules, production scale, spending, external writes, or final acceptance.
@@ -51,14 +53,14 @@ The main session is the sole writer of formal scripts, knowledge documents, `sto
 
 Run one main session through the complete applicable SOP:
 
-1. Enter Writer mode when story, scene, dialogue, or canon work is required; record its Story Contract and stage status.
-2. Continue in the same session in Art mode when visual assets or reference responsibilities are required; record its Asset Package and stage status.
-3. Continue in the same session in Director mode when directing, storyboard, prompt, camera, edit, sound, or continuity work is required; record its Director Package and stage status.
-4. Return to Coordinator mode for deterministic checks, formal writes, status integration, authorization checks, and user-facing delivery.
+1. Enter Writer mode when story, scene, dialogue, or canon work is required. Complete requested story prose through the selected author, validate it, and update the Story Contract before downstream work consumes it.
+2. Continue in Art mode when visual assets or reference responsibilities are required. Complete requested asset-prompt prose through the selected author, validate it, and update the Asset Package before Director work consumes it.
+3. Continue in Director mode when directing, storyboard, prompt, camera, edit, sound, or continuity work is required. Freeze the applicable design, complete prompt prose through the selected author, and validate the Director Package.
+4. Check the actual output in the main session, then complete Coordinator checks, formal writes, status integration and user-facing delivery within the existing authorization.
 
-Role changes are sequential checkpoints, not chat handoffs. Each stage must still execute its role file and return contract; sharing one session removes repeated discovery and coordination, not professional responsibilities or gates.
+Role changes are sequential checkpoints, not chat handoffs. Each applicable stage completes its own facts → requested creative text → validation → updated contract loop. When Doubao is selected, invoke it inside that stage, not once after all three stages. Required story-direction decisions still need user confirmation before dependent work; provisional work must be explicitly labeled.
 
-Whenever independent review is required, create exactly one new read-only Reviewer session for that review round. Start it with no inherited conversation history (`fork_turns: "none"` or the equivalent isolation mechanism), give it only the frozen review packet, exact current candidate files, relevant source bindings, acceptance criteria, and [references/review-mode.md](references/review-mode.md), and require one final verdict. Do not reuse an earlier Reviewer session, send it repair follow-ups, or let it edit files. If the main session repairs or versions the candidate, discard the prior verdict and create another new history-free Reviewer session for the next review round. If a fresh Reviewer cannot be created, stop at `READY_FOR_REVIEW` and report independent review as pending; never replace it with the author's self-approval.
+Use [the main-session review](references/review-mode.md): read the current candidate once for major problems, repair only evidenced faults, and recheck the changed parts and affected cuts. No review handoff packet, fresh session, mandatory scorecard or repeated full review is needed. A missing historical Reviewer report is not itself a blocker: inspect the currently unverified scope in the main session. Record this honestly as main-session review, never as independent review.
 
 ## Route by dependency
 
@@ -67,36 +69,46 @@ Use the shortest valid path:
 - Unsettled story, scene, or dialogue: Writer first.
 - Approved story with visual asset questions: Art.
 - Approved story plus a current asset package: Director.
-- Existing prompt with stable inputs: Director repair or review; do not invoke Writer or Art without an upstream issue.
-- Already-approved media execution: leave this Skill and use the authorized production flow.
+- Requested creative repair or review of an existing prompt with stable inputs: local Director repair or review; retain the verified design and change only affected units and their continuity dependencies. Do not invoke Writer or Art without an upstream issue.
+- Already-checked uploads, node binding, layout, synchronization or media execution: verify the existing local publication and relevant checks, then use the authorized production flow. Do not reopen creative work or repeat semantic review merely because execution resumes or a local execution version is created.
+
+Apply [review scope and execution reuse](references/workflow-contract.md#review-scope-and-execution-reuse). Verified token or metadata changes need execution checks only. Creative, reference or relevant model changes need a main-session check of affected units and continuity boundaries. Retain valid checks elsewhere, including when an earlier batch needed repair in another unit.
 
 For a full chain, use:
 
 ```text
 current Task Packet
-  → main session: Writer Story Contract
-  → same main session: Art Asset Package
-  → same main session: Director Package
-  → same main session: frozen factual creative brief and bounded latitude
-  → project doubao-creative-studio: requested creative prose
-  → same main session: preserve verbatim, save evidence, and run hard checks
-  → same main session: deterministic coordinator preflight
-  → new history-free read-only Reviewer session: semantic preflight
-  → same main session: coordinator verdict
-  → separate production authorization
+  → Writer: facts → selected author writes requested story prose → validate → Story Contract
+  → Art: current story → selected author writes requested asset prose → validate → Asset Package
+  → Director: current inputs → freeze design → selected author writes prompt → validate
+  → same main session: major-problem check + deterministic preflight
+  → publish the reviewed local documents, formal bindings and current page view
+  → recover applicable production authorization, or obtain it if missing
+  → authorized LibTV canvas/asset setup
+  → bind real Node IDs in a new local execution version → deterministic equivalence/mapping checks → update local bindings and page
+  → sync local bodies to LibTV → read back → authorized media production
+  → integrate generated media locally
   → media QA
   → human acceptance
 ```
 
-Do not start final prompt prose before the Director Design is frozen. Do not start production while an affected upstream artifact is stale or unreviewed.
+Do not start final prompt prose before the applicable Director Design is settled. Do not run an affected unit while its inputs are stale or a concrete production blocker remains; continue unaffected authorized work.
 
-## Doubao owns creative text
+## Select the creative author
 
-The main session may author factual summaries, options, decision maps, contracts, execution tables, acceptance criteria, deterministic templates, and repair evidence. It must not author, polish, continue, compress, splice, or silently repair creative prose.
+**Default:** the main session (GPT-6 in this workflow) writes and repairs requested creative text directly in the responsible stage. Record the actual author/model, source bindings, version, and review evidence; never claim a model identity that the runtime does not support. A prompt request is sufficient authorization for its text work and does not require a Doubao call or a second author-selection question.
 
-Whenever the requested deliverable includes creative prose, use `$doubao-creative-studio` and follow its job schema, evidence, output-size, template, and validation rules. The responsible Writer, Art, or Director mode prepares the minimum current factual brief, protected decisions, hard constraints, acceptance criteria, and bounded creative latitude. Keep only verbatim user language in `userCreativeDirectives`. Preserve Doubao's return verbatim and separately attributable. On factual, structural, template, or review failure, create a new bounded Doubao repair job from observed evidence; never patch the prose in the main session or splice authors.
+**Explicit Doubao selection:** only when the user asks Doubao to author the current scope, use `$doubao-creative-studio` and its job schema, evidence, transport limits, and validation rules. Preserve that selection through the authorized stages and repairs. Keep only verbatim user language in `userCreativeDirectives`. Preserve returned prose verbatim; send creative repairs back to Doubao as bounded new jobs. Do not silently substitute the main session if this branch fails.
 
-Do not invoke Doubao for fact discovery, repository inspection, decision analysis, deterministic validation, status integration, or media execution. A creative-text request authorizes its text-creation step under this workflow, but never authorizes image/video generation, LibTV writes or runs, publication, or other spending.
+Mentioning Doubao, reading a historical Doubao output, or reusing its template does not select it as author. An old file's provenance alone does not override the current author route. When the main session revises historical prose, preserve the source and save a new version attributed to the main session, with clear source lineage; do not present a mixed or rewritten text as an untouched Doubao return.
+
+All newly authored or substantively repaired video prompts use [video-shot-prompt-v2](../doubao-creative-studio/assets/templates/video-shot-prompt-v2.md) and [the shot-block contract](references/shot-block-format.md): inline references → global aesthetics → timed shots with camera, composition/movement and unfolding action/dialogue. Do not use the old five-section format for that creative work. Pure execution does not require rewriting an already-reviewed body just to migrate its template. The explicit H3 voice-casting exception remains separate. Template reuse does not select Doubao or require a fictitious Doubao job. Its 2500-character CLI safety line applies only to that CLI branch; both authors obey the actual target entrance limit without padding.
+
+**Multiple shots are a user hard requirement.** Every production prompt for one generation unit must contain at least two independently timed `镜头N` blocks, each with its own camera, composition/movement and unfolding picture, and a motivated actual cut between shots. One full-duration heading followed by a long paragraph of inline time ranges fails; so do renamed blocks that still prescribe the same uninterrupted shot. Do not waive this for a short opening, simple action, continuity or fewer nodes. Follow [the multi-shot contract](references/shot-block-format.md#mandatory-multiple-shots) in new writing, repairs and before a future run of reused text; this does not authorize regenerating already usable media.
+
+Before any LibTV mutation, follow the [local-first order](references/workflow-contract.md#local-first-libtv-order). A candidate saved only under creative evidence is insufficient: current formal local documents, indexes and the page must reflect the reviewed scope first. New Node IDs then require another local execution version before prompt sync. Read-only discovery may precede this gate.
+
+Do not invoke Doubao for discovery, validation, status integration, or media execution. Text creation never authorizes image/video generation, LibTV writes or runs, publication, or additional spending.
 
 ## Use canonical full character names
 
@@ -106,16 +118,24 @@ Verbatim source quotations and natural spoken dialogue are exempt; do not rewrit
 
 ## Coordinator pre-production gate
 
-Director output is only `READY_FOR_REVIEW`. The main session in Coordinator mode may issue `READY_FOR_PRODUCTION` only after deterministic checks pass and a fresh history-free Reviewer returns a passing semantic verdict against the frozen current Task Packet. Never rely on inherited status labels or a verdict for an earlier version.
+The main session may issue `READY_FOR_PRODUCTION` when it has checked the current output, found no major problem, and completed the applicable execution checks. Reuse valid earlier findings, including historical independent reviews, without requiring another Reviewer or scorecard. A status label alone is insufficient, and readiness does not grant new spending or production authorization.
+
+Use [review-mode.md](references/review-mode.md) to distinguish prompt preflight from actual media QA. Check story and exact dialogue, identity/look and reference compatibility, visible action and spatial continuity, plausible dialogue timing, and real model/execution limits. Only an evidenced conflict that breaks these or an explicit hard constraint blocks the affected unit. Minor expression, camera, timing or aesthetic differences that preserve the story and edit are notes; do not rerun or keep polishing them. A prompt pass does not establish media quality or human acceptance.
 
 For every full prompt creation, redesign, batch review, or pre-production review, read:
 
+- `director-knowledge-base/分镜提示词/README.md`
 - `director-knowledge-base/分镜提示词/导演设计方法.md`
+- `director-knowledge-base/分镜提示词/分镜提示词写法.md`
 - `director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md`
 
-Retain an observable fourteen-dimension scorecard for every prompt. Shot size, shooting method, camera movement or deliberate lock-off, transition/editing, visual content, and character action must all score `2`; other applicable dimensions may not score `0`. Template shape, hashes, headings, asset IDs, and reference mapping are necessary but never substitute for semantic review.
+For dialogue, OS/VO, comedy or emotional beats, also read `对白、梗与情绪的分镜写法.md` before timing or writing. Use the shot-type index and relevant methods to make concrete choices; in the existing design record, connect the consequential method to the choice and its final shot/phrase. A reading list alone is not application. Budget speech, breathing, turn-taking, actions and listener/emotional reactions together; do not lock a shorter total or fewer nodes first and then rush dialogue to fit.
 
-Also review the episode or scene as a whole:
+The author must reread the actual complete final body against its sources and references. This reading also serves as the main-session prompt review; do not repeat it as a separate role ritual. Scripts may check, package or substitute verified tokens, but may not turn design-table bullets plus stock prose into purportedly authored final text. Check crop versus necessary visible action, camera side versus reference geography, dialogue capacity, and action sounds versus sound exclusions.
+
+Default evidence is a short note in the existing record: checked scope/version, major problems or none, any repair, and pass/notes/blocker. Fourteen-dimension scores, lengthy reports and exhaustive per-shot evidence tables are optional only when the user requests detailed scoring or critique; they are not production gates. No major problem means continue within authorization.
+
+For an initial or explicitly requested full-scope review, also assess the episode or scene as a whole. For local re-review, inspect these concerns only across the affected units and their relevant boundaries, retaining valid earlier coverage elsewhere:
 
 - audience attention and information priority;
 - motivated shot-size and viewpoint rhythm rather than arbitrary motion;
@@ -124,7 +144,7 @@ Also review the episode or scene as a whole:
 - edit entrances, exits, sound bridges, and the final landing of each unit;
 - stale story, look, location, voice, asset-status, and reference assumptions.
 
-On failure, locate the earliest faulty layer: current fact, Writer contract, Art package, Director Design, Doubao creative-text translation, reference mapping, or model contract. The Reviewer returns a bounded repair brief without editing. The main session re-enters the responsible Writer, Art, Director, or Coordinator mode to repair the factual layer, or creates a new bounded Doubao repair job for creative prose. After a new version exists, use another new history-free Reviewer session for re-review.
+On a major problem, repair the earliest faulty layer within scope, following the selected author route, then recheck that change and its affected cuts in the same session. Preserve verified decisions elsewhere; deterministic restoration repeats only the failed checks. Do not start another full pass for optional polish, require a new reviewer opinion, or stop unaffected work. If the same blocker remains without a feasible authorized fix, report its concrete evidence and impact.
 
 ## Production and media review
 
@@ -153,9 +173,9 @@ Only when the user asks to study or improve the knowledge base, preserve facts, 
 
 - Do not silently change canon, exact dialogue, current assets, direction-changing decisions, or user acceptance.
 - Do not invent assets, file paths, node IDs, model capabilities, run results, or inspection evidence.
-- Do not author or silently patch creative prose in the main session; route it to `$doubao-creative-studio` and preserve its output verbatim.
-- Do not create Writer, Art, or Director subagents; keep those responsibilities in the main session.
-- Do not reuse a Reviewer session or let any Reviewer edit the reviewed artifact, formal file, project index, or production node.
+- Do not silently change the selected author, overwrite a prior version, or misattribute creative prose. Use Doubao only within an explicit user selection.
+- Keep writing, directing and review in the main session; do not create review subagents or separate review tasks.
+- Do not label main-session checks as independent review or require historical independent-review paperwork to proceed after a current check.
 - Do not let two sessions edit the same formal file, project index, or production node.
 - Do not call a draft, generated file, HTTP success, decode result, or technical QA `ACCEPTED`.
 - Stop on a genuine fact conflict, missing direction-changing decision, unresolvable measured limit, missing authorization, or hard media failure; otherwise route an in-scope repair and continue.
