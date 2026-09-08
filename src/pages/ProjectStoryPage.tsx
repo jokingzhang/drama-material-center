@@ -77,6 +77,7 @@ const productionStageCopy: Record<EpisodeProductionStage, string> = {
   NOT_STARTED: "未开始",
   SCRIPT_READY: "剧本就绪",
   STORYBOARD_DRAFT: "分镜草稿",
+  AWAITING_PRODUCTION: "待生产",
   PREPRODUCTION: "前期制作",
   SHOT_PRODUCTION: "正式镜头",
   FINAL_REVIEW: "成片待验收",

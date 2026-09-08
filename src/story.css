@@ -221,6 +221,7 @@
 .story-today-empty { min-height: 7rem; display: grid; place-items: center; color: var(--faint); font-size: 0.9rem; background: var(--surface-soft); border: 1px dashed var(--line); border-radius: 0.7rem; }
 .stage-dot { --stage-color: #a6b1bd; width: 0.55rem; height: 0.55rem; background: var(--stage-color); border-radius: 50%; }
 .stage-preproduction { --stage-color: #ed6b32; }
+.stage-awaiting-production { --stage-color: #5289bb; }
 .stage-storyboard-draft { --stage-color: #e7a31a; }
 .stage-shot-production { --stage-color: #7b6de1; }
 .stage-final-review { --stage-color: #1e9fa4; }

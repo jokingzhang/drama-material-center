@@ -22,6 +22,8 @@ node <skill-directory>/scripts/run-doubao-creative.mjs --list-templates
 
 状态、Task ID、标题、版本、作者和评分放在任务或执行记录中；单独保存的 UTF-8 提示词文件只含模型正文。含对白、OS/VO、梗或情绪时，按知识库专项方法先安排完整表演再定镜长，不以字符除以平均语速代替真实容量判断。
 
+各段按本镜需要承担职责：全局美学设定只给必要视听和空间条件；逐镜相机、构图／运镜与画面写清站位、视线、机位侧、道具关系、动作因果、逐字对白、声源、倾听反应和结束状态；进出口、路线及危险边界只在相关动作存在时写；开头引用说明各输入控制什么。不要把导演评分、素材审核或生产流程抄进正文，也不要设置最低字数。独立节点所需事实仍须写全，不能假设模型会读取外部合同或上一条提示词。
+
 适用 `kind`：`storyboard`、`video-prompts`、`creative-repair`。输出必须为 Markdown。
 
 必填变量：
@@ -59,12 +61,12 @@ node <skill-directory>/scripts/run-doubao-creative.mjs --list-templates
 - 每个镜头的打印时长等于起止差，镜头编号递增，区间从 0 连续覆盖到 `durationSeconds`；
 - 不能遗留模板中的角括号说明；平台真实语法 `<Subject N>` 例外。
 - 豆包任务包必须有通过输入校验的 `referencePlan`：至少一个场景；每个 `requiredCharacters` 都有 `character-identity`，或目标入口允许直接使用的 `character-turnaround`。`assets` 按已核对的实际输入顺序登记，Mixed 序号与之对应；v2 不再强制场景排在人物之前，也不要求正文末尾汇总或每项只出现一次。`INTERNAL` 不得进入生成输入；`DRAFT` 可声明 DRAFT 素材，`READY` 的素材状态只能是 `GEN_INPUT` 或 `ACCEPTED`。
-- 每个计划内引用均在正文出现并邻近正确主体，可再次用于相关动作；不接受漏引用、计划外引用或错配。场景、人物标准图与辅助图的职责和像素相容性由作者及 Reviewer 实查；不以出现“只锁、禁止”等词证明可用，也不默认同一人物同时接头像与标准图。
+- 每个计划内引用均在正文出现并邻近正确主体，可再次用于相关动作；不接受漏引用、计划外引用或错配。场景、人物标准图与辅助图的职责和像素相容性由主会话实查；不以出现“只锁、禁止”等词证明可用，也不默认同一人物同时接头像与标准图。
 - 新任务应在 `referencePlan.turnaroundDispositions` 中逐个声明可见具名人物的三视图状态；缺少声明、`CONNECTED` 未对应真实三视图输入，或三视图输入没有对应 `CONNECTED` 声明时停止。历史任务缺少该字段只代表兼容读取，不代表职责完整。
 
 这些检查能证明模板结构和已声明素材合同成立，但不能自动发现执行者漏写进 `requiredCharacters` 的人物，也不证明剧情、动作、素材或画面已接受。执行者仍需从事实源逐镜枚举实际出镜人物和场景、检查陌生观众能否复述核心事件、每句对白是否在对应时间段，并确认状态是否真的有资格写成 `READY`。
 
-`video-shot-prompt-v1` 与其别名 `seedance-shot-prompt-v1` 仅供 `--check`、`--validate-output` 只读核对历史记录，保留原始语义和旧校验器；实际新调用会拒绝旧 ID。`--list-templates` 只展示 v2。旧素材不批量改写；当前请求范围内的返修另存 v2 格式新版本。
+`video-shot-prompt-v1` 与其别名 `seedance-shot-prompt-v1` 仅供 `--check`、`--validate-output` 只读核对历史记录，保留历史格式校验；v1 人物标准图可在 `〖参考〗` 末尾共用一行 `共用边界（人物标准图）：…`，但每图仍须独立职责，局部辅助不能借用该边界；实际新调用会拒绝旧 ID。`--list-templates` 只展示 v2。旧素材不批量改写；当前请求范围内的返修另存 v2 格式新版本。
 
 主会话可直接运行不带作者假设、不调用模型的检查器。`contract.json` 使用当前 `durationSeconds`、`aspectRatio` 和 `referencePlan.assets`（每项至少有 `reference` 与 `subject`），可以存于已有创作证据；它是检查输入，不是新的正式业务索引：
 

@@ -110,6 +110,8 @@ Before any LibTV mutation, follow the [local-first order](references/workflow-co
 
 Do not invoke Doubao for discovery, validation, status integration, or media execution. Text creation never authorizes image/video generation, LibTV writes or runs, publication, or additional spending.
 
+For video prompts, apply “把导演设计写成模型正文” in `director-knowledge-base/分镜提示词/导演设计方法.md` before writing or packaging a Doubao job. Do not add a minimum length or a target range such as “1500–2100 characters”; the CLI transport ceiling is only a ceiling. Give the selected author the current unit's audience purpose, start state, causal beats, exact dialogue and reactions, end state, and applicable input constraints. Keep scorecards, asset audits, production status, and repair history outside the model-facing body. Every independent generation unit must still contain the facts and instructions its model needs; an external contract or an earlier unit is not implicit model context.
+
 ## Use canonical full character names
 
 In storyboards, execution tables, dialogue contracts, asset prompts, video prompts, creative repairs, reference responsibilities, and production-facing review notes, use the exact canonical full character name for every operational mention of a named character. Repeat the full name in camera positions, framing and crop boundaries, body parts, blocking, action ownership, gaze, speaker attribution, sound responsibility, and reference mapping. Do not substitute a surname-only shorthand such as `江` or `霍`, initials, a role label, or a pronoun for the named subject in those instructions, even when the preceding sentence used the full name.
@@ -131,7 +133,7 @@ For every full prompt creation, redesign, batch review, or pre-production review
 
 For dialogue, OS/VO, comedy or emotional beats, also read `对白、梗与情绪的分镜写法.md` before timing or writing. Use the shot-type index and relevant methods to make concrete choices; in the existing design record, connect the consequential method to the choice and its final shot/phrase. A reading list alone is not application. Budget speech, breathing, turn-taking, actions and listener/emotional reactions together; do not lock a shorter total or fewer nodes first and then rush dialogue to fit.
 
-The author must reread the actual complete final body against its sources and references. This reading also serves as the main-session prompt review; do not repeat it as a separate role ritual. Scripts may check, package or substitute verified tokens, but may not turn design-table bullets plus stock prose into purportedly authored final text. Check crop versus necessary visible action, camera side versus reference geography, dialogue capacity, and action sounds versus sound exclusions.
+The author must reread the actual complete final body against its sources and references. Reconstruct the visible start, causal change and end from the body and declared inputs without filling gaps from the screenplay; repair omissions or repetition that obscures the action, while keeping stylistic economy non-blocking. This reading also serves as the main-session prompt review; do not repeat it as a separate role ritual. Scripts may check, package or substitute verified tokens, but may not turn design-table bullets plus stock prose into purportedly authored final text. Check crop versus necessary visible action, camera side versus reference geography, dialogue capacity, and action sounds versus sound exclusions.
 
 Default evidence is a short note in the existing record: checked scope/version, major problems or none, any repair, and pass/notes/blocker. Fourteen-dimension scores, lengthy reports and exhaustive per-shot evidence tables are optional only when the user requests detailed scoring or critique; they are not production gates. No major problem means continue within authorization.
 
@@ -166,6 +168,8 @@ Do not dump internal stage chatter or make the user manage the workflow. Resolve
 ## Cases and knowledge maintenance
 
 Complete reusable LibTV shots live under `director-knowledge-base/案例/可复用镜头/` and keep actual input images, exact source prompt, and actual result video together. Open at most three relevant cases when a case is needed. Treat observations as evidence, not universal rules or permission to copy old wording and node IDs.
+
+When comparing prompts, read both the main prompt and any attached text inputs, and record actual media, model, duration, and inspection scope. An empty main field does not prove text-free generation. A current node prompt does not prove what a historical video received. Learn information order and observable cause/effect; do not infer that shorter text caused a better result or promote every node in an attractive project into a golden sample.
 
 Only when the user asks to study or improve the knowledge base, preserve facts, observations, inferences, unknowns, source locators, and real inspection boundaries in Markdown. Update a topic document only when evidence changes a practical decision. Do not create an API, registry, index, schema, or usage ledger just to record team activity.
 

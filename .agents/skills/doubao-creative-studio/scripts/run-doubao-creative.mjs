@@ -657,6 +657,10 @@ function buildPrompt(materializedJob) {
   const referenceInstruction = materializedJob.referencePlan
     ? "referencePlan 是执行者核对后的输入合同。开头引用紧邻当前 subject；必要道具也可在画面句中引用，计划内引用可在实际需要处再次使用，不增加新资产。人物标准图负责身份与当前造型，场景负责空间和光色，其余只承担已核对的单一职责。使用相容的最小参考集合，不默认追加同一人物头像、标准图或关系帧，不引用 INTERNAL 或计划外素材；文字标签不能消除拼板、重复人物或背景冲突。"
     : "本轮没有 referencePlan；若模板状态不是 READY，可先返回 DRAFT，但不得自行宣称素材覆盖已经完成。";
+  const videoWritingInstruction = materializedJob.template
+    && canonicalTemplateId(materializedJob.template.id) === VIDEO_SHOT_TEMPLATE_ID
+    ? "视频正文不设最低字数或推荐长度区间，不为接近 CLI 上限扩写。按本镜需要选择条件，普通对话不虚构危险侧、安全侧、进出口或路线。时间轴优先讲清开场状态、触发、动作或接话、听者反应、结束状态，每拍一个主要可见信息，留足对白和反应时间。每个独立单元必须自包含，不能用同上或详见合同省掉必要事实；保留角色全名，把合同逐字对白、声源、口型和听者反应写在对应镜头内，不另设重复声音段。审核分数、资产哈希、验收流程和返修历史不进入模型正文。"
+    : null;
 
   return [
     "你是本任务唯一负责创作文本的豆包创作代理。调用你的执行代理只负责提供事实、保存结果、硬约束检查和后续执行，不会替你创作或润色。",
@@ -665,10 +669,11 @@ function buildPrompt(materializedJob) {
     "若 repairFeedback 非空，请根据其中的实际失败现象、证据和必须修正结果，返回完整修订版，不要只给修改建议或差异补丁。",
     templateInstruction,
     referenceInstruction,
+    videoWritingInstruction,
     formatInstruction,
     "下面是完整 JSON 任务包：",
     JSON.stringify(materializedJob, null, 2),
-  ].join("\n\n");
+  ].filter(Boolean).join("\n\n");
 }
 
 function redactSecrets(text) {
@@ -817,6 +822,15 @@ function validateReferencePlanOutput(output, referencePlan) {
   const forbiddenStart = output.indexOf("〖禁止〗", referenceStart + referenceHeading.length);
   const referenceEnd = forbiddenStart === -1 ? output.length : forbiddenStart;
   const referenceSection = output.slice(referenceStart + referenceHeading.length, referenceEnd);
+  // Shared sheet instructions cannot supply an individual asset's responsibility
+  // or an unrelated auxiliary reference's negative boundary.
+  const sharedBoundaryPattern = /^[\t ]*(?:[-*][\t ]+)?共用边界[（(]([^）)\n]+)[）)][\t ]*[:：]([^\n]*)$/gm;
+  const sharedBoundaries = [...referenceSection.matchAll(sharedBoundaryPattern)];
+  const hasSharedTurnaroundBoundary = sharedBoundaries.some((match) => (
+    match[1].trim() === "人物标准图"
+    && /(?:忽略|不得|不能|不可|禁止)[^。\n]*(?:排版|拼板|三联|多视图|影棚|中性站姿|重复人物|文字)/.test(match[2])
+  ));
+  const responsibilitySection = referenceSection.replace(sharedBoundaryPattern, "");
   const outsideReference = output.slice(0, referenceStart) + output.slice(referenceEnd);
   const plannedReferences = referencePlan.assets.map((asset) => asset.reference);
   const actualReferences = collectPlatformReferences(referenceSection);
@@ -832,23 +846,35 @@ function validateReferencePlanOutput(output, referencePlan) {
     }
     if (outsideCount > 0) errors.push(`${asset.reference} for ${asset.subject} must not appear outside 〖参考〗`);
 
-    const tokenIndex = referenceSection.indexOf(asset.reference);
-    const context = referenceSection.slice(
+    const tokenIndex = responsibilitySection.indexOf(asset.reference);
+    if (tokenIndex === -1) {
+      errors.push(`${asset.reference} for ${asset.subject} requires its own responsibility outside a shared boundary`);
+      continue;
+    }
+    const context = responsibilitySection.slice(
       Math.max(0, tokenIndex - 140),
-      Math.min(referenceSection.length, tokenIndex + asset.reference.length + 100),
+      Math.min(responsibilitySection.length, tokenIndex + asset.reference.length + 100),
     );
-    const nextReferenceIndex = plannedReferences
-      .map((reference) => referenceSection.indexOf(reference, tokenIndex + asset.reference.length))
-      .filter((index) => index !== -1)
-      .reduce((minimum, index) => Math.min(minimum, index), referenceSection.length);
-    const scopedResponsibility = referenceSection.slice(
+    const nextAsset = referencePlan.assets
+      .map((candidate) => ({
+        subject: candidate.subject,
+        index: responsibilitySection.indexOf(candidate.reference, tokenIndex + asset.reference.length),
+      }))
+      .filter((candidate) => candidate.index !== -1)
+      .sort((left, right) => left.index - right.index)[0];
+    let responsibilityEnd = nextAsset?.index ?? responsibilitySection.length;
+    if (nextAsset) {
+      const nextSubjectIndex = responsibilitySection.lastIndexOf(nextAsset.subject, nextAsset.index);
+      if (nextSubjectIndex >= tokenIndex + asset.reference.length) responsibilityEnd = nextSubjectIndex;
+    }
+    const scopedResponsibility = responsibilitySection.slice(
       tokenIndex + asset.reference.length,
-      nextReferenceIndex,
+      responsibilityEnd,
     );
     const associationPattern = new RegExp(
       `${escapeRegExp(asset.subject)}[^。；\\n{<@]{0,100}${escapeRegExp(asset.reference)}`,
     );
-    if (!associationPattern.test(referenceSection)) {
+    if (!associationPattern.test(responsibilitySection)) {
       errors.push(`${asset.reference} must be explicitly associated with subject ${asset.subject} in 〖参考〗`);
     }
 
@@ -867,15 +893,20 @@ function validateReferencePlanOutput(output, referencePlan) {
       errors.push(`${asset.reference} for ${asset.subject} does not state its ${asset.role} responsibility near the reference`);
     }
     if (new Set(["spatial", "continuity", "keyframe"]).has(asset.role)
-      && (!/(只|仅)/.test(context) || !/(锁|参考|约束)/.test(context))) {
+      && (!/(只|仅)/.test(scopedResponsibility) || !/(锁|参考|约束)/.test(scopedResponsibility))) {
       errors.push(`${asset.reference} for ${asset.subject} must be limited with wording such as 只锁/只参考/仅约束`);
+    }
+    if (new Set(["spatial", "continuity", "keyframe"]).has(asset.role)
+      && !/(不得|不能|不可|禁止)/.test(scopedResponsibility)) {
+      errors.push(`${asset.reference} for ${asset.subject} must state its own negative boundary for spatial/continuity/keyframe references`);
     }
     if (asset.role === "character-turnaround"
       && (!/(只|仅)/.test(scopedResponsibility) || !/(锁|参考|约束)/.test(scopedResponsibility))) {
       errors.push(`${asset.reference} for ${asset.subject} turnaround must be limited with wording such as 只锁/只参考/仅约束`);
     }
     if (asset.role === "character-turnaround"
-      && !/(忽略|不得|不能|不可|禁止)/.test(scopedResponsibility)) {
+      && !/(忽略|不得|不能|不可|禁止)/.test(scopedResponsibility)
+      && !hasSharedTurnaroundBoundary) {
       errors.push(`${asset.reference} for ${asset.subject} turnaround must state a boundary against copying the sheet presentation`);
     }
   }
@@ -889,11 +920,6 @@ function validateReferencePlanOutput(output, referencePlan) {
     errors.push("references in 〖参考〗 must follow referencePlan.assets order");
   }
 
-  const hasAuxiliaryReference = referencePlan.assets
-    .some((asset) => new Set(["spatial", "continuity", "keyframe"]).has(asset.role));
-  if (hasAuxiliaryReference && !/(不得|不能|不可)/.test(referenceSection)) {
-    errors.push("〖参考〗 must state a negative boundary for spatial/continuity/keyframe references");
-  }
   return errors;
 }
 

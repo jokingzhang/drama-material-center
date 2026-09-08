@@ -43,6 +43,7 @@ export type EpisodeProductionStage =
   | "NOT_STARTED"
   | "SCRIPT_READY"
   | "STORYBOARD_DRAFT"
+  | "AWAITING_PRODUCTION"
   | "PREPRODUCTION"
   | "SHOT_PRODUCTION"
   | "FINAL_REVIEW"

@@ -15,7 +15,7 @@ Use the highest unresolved scale and stop at the smallest deliverable the user n
 - **Project, film, season, or dungeon** — produce a Director Bible: audience promise, narrative and performance system, visual/material/space system, shot/edit/sound grammar, continuity policy, production design, and risk-test portfolio.
 - **Act or episode** — produce an Episode Brief and scene sequence: function, escalation, character choices, reveals, continuity changes, hooks, and representative risks.
 - **Scene** — produce a Scene Brief: irreversible change, playable actions, blocking, information order, shot and sound strategy, and edit boundaries.
-- **Shot or generation task** — produce an executable Shot Contract with one new piece of information or one causal action.
+- **Shot or generation task** — produce an executable Shot Contract with one primary information, action, reaction, or transition task.
 
 Do not expand a project or long-form source into a full shot list while upstream decisions remain unresolved. A bounded high-risk test may go directly to shot scale, but it does not approve or certify unrelated scales.
 
@@ -41,7 +41,7 @@ Before choosing shots, answer at the current scale:
 
 - What must the audience feel, understand, anticipate, or misread by the end?
 - What does each character want now, what blocks them, what choice do they make, and what changes or costs them?
-- What is the single irreversible change of this unit?
+- What changes by the end, or what purposeful held state makes this reaction or transition necessary?
 - What information must be visible, audible, delayed, or withheld?
 
 ## Design the minimum sufficient reference strategy
@@ -78,7 +78,7 @@ Do not force a card into the artifact merely because it ranked highly. An `OBSER
 
 ## Produce the directing artifact
 
-Use the compact structures in [director-rubric.md](director-rubric.md). Resolve only the fields required by the chosen scale. At shot scale, keep one new piece of information or one causal action per generation task and make continuity and reference responsibilities one-to-one.
+Use the compact structures in [director-rubric.md](director-rubric.md). Resolve only the fields required by the chosen scale. At shot scale, keep one primary information, action, reaction, or transition task and make continuity and reference responsibilities one-to-one. Apply “把导演设计写成模型正文” in `director-knowledge-base/分镜提示词/导演设计方法.md`; do not turn this decision checklist into mandatory prose for every shot.
 
 Give every original decision a stable `DIR-<scope>-###` ID and mark it `AI_DIRECTOR_DECISION`, never as user language. Preserve those IDs downstream so Review can identify whether the decision, translation, reference, model, or post-production failed.
 

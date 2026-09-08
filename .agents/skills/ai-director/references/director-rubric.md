@@ -108,7 +108,7 @@ Use for an act, episode, scene, shot, or generation task.
 ### 1. Dramatic target
 
 - Audience promise and episode or scene function:
-- Start state → irreversible end state:
+- Start state → clear inheritable end state (or purposeful hold for a reaction/transition):
 - Objective / obstacle / choice / cost:
 - Emotional curve:
 - Information to reveal, delay, or hide:
@@ -117,7 +117,7 @@ Use for an act, episode, scene, shot, or generation task.
 
 - Character intention and playable action:
 - Gaze, distance, touch, weight, and reaction:
-- Space, axis, entrances, exits, and foreground/background use:
+- Relevant space, axis, and foreground/background use; entrances/exits only when the action uses them:
 - Dialogue and sound intention:
 
 ### 3. Visual, shot, edit, and sound grammar
@@ -132,7 +132,7 @@ Use for an act, episode, scene, shot, or generation task.
 For each generation task:
 
 - shot ID, related `DIR-*` IDs, and duration range;
-- one new piece of information or one causal action;
+- one primary information, action, reaction, or transition task;
 - start state, action, contact or turning point, reaction, and end state;
 - shot size, angle, camera and subject movement;
 - continuity facts and one-to-one reference responsibilities;

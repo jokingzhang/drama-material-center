@@ -100,6 +100,11 @@ interface RawEpisode {
   title: string;
   summary: string;
   summaryStatus?: string;
+  productionPreparation?: {
+    status: "AWAITING_PRODUCTION";
+    confirmedAt?: string;
+    note?: string;
+  };
   productionCompletion?: {
     status: string;
     confirmedAt?: string;
@@ -426,6 +431,9 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       const productionSchedule = publicProductionSchedule(storyIndex.productionSchedule);
       const episodeIds = new Set(rawEpisodes.map((episode) => episode.id));
       for (const episode of rawEpisodes) {
+        if (episode.productionPreparation && episode.productionPreparation.status !== "AWAITING_PRODUCTION") {
+          throw new ProjectWorkspaceError("invalid_index", `分集 ${episode.id} 的准备状态无效。`);
+        }
         if (episode.productionCompletion && episode.productionCompletion.status !== "USER_CONFIRMED_COMPLETE") {
           throw new ProjectWorkspaceError("invalid_index", `分集 ${episode.id} 的完成确认状态无效。`);
         }
@@ -1027,13 +1035,15 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
             ? "FINAL_REVIEW"
             : shotAssets.length > 0
               ? "SHOT_PRODUCTION"
-              : currentMilestoneEpisodeIds.has(rawEpisode.id)
-                ? "PREPRODUCTION"
-                : storyboardReady
-                  ? "STORYBOARD_DRAFT"
-                  : scriptReady
-                    ? "SCRIPT_READY"
-                    : "NOT_STARTED";
+              : rawEpisode.productionPreparation?.status === "AWAITING_PRODUCTION"
+                ? "AWAITING_PRODUCTION"
+                : currentMilestoneEpisodeIds.has(rawEpisode.id)
+                  ? "PREPRODUCTION"
+                  : storyboardReady
+                    ? "STORYBOARD_DRAFT"
+                    : scriptReady
+                      ? "SCRIPT_READY"
+                      : "NOT_STARTED";
         return {
           id: rawEpisode.id,
           title: rawEpisode.title,
@@ -1050,6 +1060,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
         NOT_STARTED: Math.max(storyIndex.story.totalEpisodes - productionEpisodes.length, 0),
         SCRIPT_READY: 0,
         STORYBOARD_DRAFT: 0,
+        AWAITING_PRODUCTION: 0,
         PREPRODUCTION: 0,
         SHOT_PRODUCTION: 0,
         FINAL_REVIEW: 0,

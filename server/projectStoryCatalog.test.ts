@@ -729,7 +729,7 @@ describe("project story catalog", () => {
     ]);
   });
 
-  it("reports full-series progress from formal evidence without counting references or technical checks", async () => {
+  it.each([false, true])("reports progress without inflating completion (preparation flags: %s)", async (prepared) => {
     const root = await seedStoryProject();
     const projectRoot = join(root, "story-demo");
     await Promise.all([
@@ -767,6 +767,7 @@ describe("project story catalog", () => {
         id: `EP0${index + 1}`,
         title: `第${index + 1}集`,
         summary: "进度测试。",
+        ...(prepared && index >= 1 && index <= 4 ? { productionPreparation: { status: "AWAITING_PRODUCTION", confirmedAt: "2026-09-07" } } : {}),
         ...(index === 2
           ? { productionCompletion: { status: "USER_CONFIRMED_COMPLETE", confirmedAt: "2026-09-03", note: "用户确认完成，成片待回收登记。" } }
           : {}),
@@ -804,7 +805,8 @@ describe("project story catalog", () => {
       stageCounts: {
         NOT_STARTED: 1,
         SCRIPT_READY: 0,
-        STORYBOARD_DRAFT: 1,
+        STORYBOARD_DRAFT: prepared ? 0 : 1,
+        AWAITING_PRODUCTION: prepared ? 1 : 0,
         PREPRODUCTION: 1,
         SHOT_PRODUCTION: 0,
         FINAL_REVIEW: 1,
@@ -812,7 +814,7 @@ describe("project story catalog", () => {
       },
       episodes: [
         { id: "EP01", title: "第1集", stage: "PREPRODUCTION", current: true },
-        { id: "EP02", title: "第2集", stage: "STORYBOARD_DRAFT", current: false },
+        { id: "EP02", title: "第2集", stage: prepared ? "AWAITING_PRODUCTION" : "STORYBOARD_DRAFT", current: false },
         {
           id: "EP03",
           title: "第3集",
@@ -825,6 +827,16 @@ describe("project story catalog", () => {
         { id: "EP06", title: "第6集", stage: "NOT_STARTED", current: false },
       ],
     });
+  });
+
+  it("rejects an invalid preparation status instead of treating it as production evidence", async () => {
+    const root = await seedStoryProject();
+    const indexPath = join(root, "story-demo", "production", "story-index.v1.json");
+    const index = JSON.parse(await readFile(indexPath, "utf8"));
+    index.episodes[0].productionPreparation = { status: "COMPLETED" };
+    await writeFile(indexPath, JSON.stringify(index));
+    await expect(createProjectStoryCatalog(root).readProjectStory("story-demo"))
+      .rejects.toMatchObject({ code: "invalid_index" });
   });
 
   it("resolves a scene location alias to one reusable location family", async () => {

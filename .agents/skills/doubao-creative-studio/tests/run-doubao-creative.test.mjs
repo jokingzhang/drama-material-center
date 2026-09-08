@@ -123,6 +123,29 @@ function validOutputWithTurnaround() {
   );
 }
 
+function sharedTurnaroundFixture() {
+  const plan = referencePlanWithTurnaround();
+  plan.assets.splice(4, 0, {
+    assetId: "CHAR-SY-TURNAROUND-v01",
+    subject: "苏野",
+    role: "character-turnaround",
+    reference: "{{Mixed 5}}",
+    status: "GEN_INPUT",
+  });
+  plan.assets.at(-1).reference = "{{Mixed 6}}";
+  plan.turnaroundDispositions[1] = {
+    subject: "苏野", status: "CONNECTED", assetId: "CHAR-SY-TURNAROUND-v01",
+  };
+  const output = validOutput().replace(
+    "抓肩关键帧 {{Mixed 4}}",
+    "\n林默 {{Mixed 4}} 三视图只锁体型和当前服装前侧背结构。\n苏野 {{Mixed 5}} 三视图只锁体型和当前服装前侧背结构。\n抓肩关键帧 {{Mixed 6}}",
+  ).replace(
+    "\n\n〖禁止〗",
+    "\n共用边界（人物标准图）：忽略三联排版与中性站姿，不得复制重复人物、拼板、文字或影棚背景。\n\n〖禁止〗",
+  );
+  return { jobValue: { ...job("READY"), referencePlan: plan }, output };
+}
+
 function runWithFiles(jobValue, outputValue, argsBuilder) {
   const directory = mkdtempSync(path.join(os.tmpdir(), "doubao-creative-test-"));
   try {
@@ -297,6 +320,62 @@ test("--validate-output rejects an unrestricted turnaround", () => {
   assert.match(result.stderr, /turnaround must be limited|turnaround must state a boundary/);
 });
 
+test("two turnarounds can share one sheet boundary while retaining individual responsibilities", () => {
+  const fixture = sharedTurnaroundFixture();
+  const result = runWithFiles(fixture.jobValue, fixture.output, (jobPath, outputPath) => [
+    "--job", jobPath, "--validate-output", outputPath,
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+});
+
+for (const [name, from, to, expectedError] of [
+  ["shared boundary cannot supply a missing character responsibility",
+    "林默 {{Mixed 4}} 三视图只锁体型和当前服装前侧背结构。",
+    "林默 {{Mixed 4}} 三视图。",
+    /林默 turnaround must be limited/],
+  ["shared boundary cannot apply to an unspecified asset class",
+    "共用边界（人物标准图）", "共用边界（所有素材）",
+    /turnaround must state a boundary/],
+  ["unrelated prohibition is not a shared sheet boundary",
+    "忽略三联排版与中性站姿，不得复制重复人物、拼板、文字或影棚背景。", "禁止跑动。",
+    /turnaround must state a boundary/],
+  ["auxiliary references cannot borrow the shared character boundary",
+    "只参考手部接触和动作峰值，不得照抄错误姿态或覆盖场景与人物母版。",
+    "只参考手部接触和动作峰值。",
+    /抓肩关键帧 must state its own negative boundary/],
+]) {
+  test(name, () => {
+    const fixture = sharedTurnaroundFixture();
+    const result = runWithFiles(fixture.jobValue, fixture.output.replace(from, to), (jobPath, outputPath) => [
+      "--job", jobPath, "--validate-output", outputPath,
+    ]);
+    assert.equal(result.status, 4, result.stderr);
+    assert.match(result.stderr, expectedError);
+  });
+}
+
+test("a short scene-only prompt needs neither hazard labels nor an optional prohibition section", () => {
+  const sceneOnlyJob = {
+    ...job("READY"),
+    referencePlan: {
+      requiredScenes: ["404病区走廊"], requiredCharacters: [], assets: [referencePlan().assets[0]],
+    },
+  };
+  // Structural fixture only: it is not a production prompt or a semantic acceptance claim.
+  const output = `# READY｜EP07 G01｜走廊抓肩 v1
+〖风格〗写实，8 秒，16:9，清晨冷光。
+〖空间与轴线〗摄影机在走廊东端向西，空走廊。
+〖时间轴〗
+- \`0–8s\`：固定全景，晨光照入空走廊，保持空镜供转场。
+〖声音〗通风声，无对白。
+〖参考〗404病区走廊 {{Mixed 1}} 只锁空间与光色。
+`;
+  const result = runWithFiles(sceneOnlyJob, output, (jobPath, outputPath) => [
+    "--job", jobPath, "--validate-output", outputPath,
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+});
+
 test("--validate-output rejects a Mixed reference not associated with its character", () => {
   const readyJob = { ...job("READY"), referencePlan: referencePlan() };
   const brokenOutput = validOutput().replace("林默 {{Mixed 2}}", "陌生人 {{Mixed 2}}");
@@ -385,64 +464,105 @@ test("v2 preserves verified character-first input order with matching Mixed indi
   assert.match(mismatched.stderr, /must be \{\{Mixed 1\}\} to match input order/);
 });
 
-test("a successful Claude response without model metadata is accepted", () => {
-  const directory = mkdtempSync(path.join(os.tmpdir(), "doubao-creative-model-metadata-test-"));
-  try {
-    const jobPath = path.join(directory, "job.json");
-    const outputDir = path.join(directory, "run");
-    const fakeClaudePath = path.join(directory, "claude");
-    const storyJob = {
-      schemaVersion: 1,
-      jobId: "missing-model-metadata",
-      kind: "story-outline",
-      expectedModel: "doubao-seed-2.1-turbo",
-      objective: "生成一行测试剧情。",
-      deliverables: ["只输出一行Markdown"],
-      output: { format: "markdown", language: "zh-CN" },
-    };
-    const fakeClaudeSource = [
-      "#!/usr/bin/env node",
-      "process.stdin.resume();",
-      "process.stdin.on('end', () => {",
-      "  process.stdout.write(JSON.stringify({",
-      "    type: 'result',",
-      "    subtype: 'success',",
-      "    is_error: false,",
-      "    result: '# DRAFT｜测试剧情',",
-      "    duration_ms: 1,",
-      "    total_cost_usd: 0",
-      "  }));",
-      "});",
-      "",
-    ].join("\n");
-    writeFileSync(jobPath, `${JSON.stringify(storyJob, null, 2)}\n`, "utf8");
-    writeFileSync(fakeClaudePath, fakeClaudeSource, "utf8");
-    chmodSync(fakeClaudePath, 0o755);
+for (const videoPrompt of [false, true]) {
+  test(videoPrompt
+    ? "video CLI request carries concise writing rules and preserves the returned prompt verbatim"
+    : "a successful Claude response without model metadata is accepted", () => {
+    const directory = mkdtempSync(path.join(os.tmpdir(), "doubao-creative-model-metadata-test-"));
+    try {
+      const jobPath = path.join(directory, "job.json");
+      const outputDir = path.join(directory, "run");
+      const fakeClaudePath = path.join(directory, "claude");
+      // New creative calls exercise v2; legacy fixtures remain read-only above.
+      const fixture = {
+        jobValue: { ...job("READY"), referencePlan: {
+          requiredScenes: ["404病区走廊"], requiredCharacters: [], assets: [referencePlan().assets[0]],
+        } },
+        output: `{{Mixed 1}} 404病区走廊，空间与晨光参考。
+【全局美学设定】
+画幅：16:9，写实。
+影调：清晨冷光。
+摄影：固定观察，切镜跟随光线。
+地点：404病区走廊。
+正文：分镜执行动作
+镜头1｜00:00.0—00:04.0｜4秒
+相机：平视全景，在走廊东端朝西。
+构图／运镜：固定机位，走廊延伸至画面深处。
+画面：晨光照入空走廊，通风声持续，无对白。
+镜头2｜00:04.0—00:08.0｜4秒
+相机：地面近景，仍朝西。
+构图／运镜：切至晨光落在地面的细节，固定机位。
+画面：光斑停留，通风声跨切延续，结束于静止光斑。
+`,
+      };
+      fixture.jobValue.template.id = "video-shot-prompt-v2";
+      const responseText = videoPrompt ? fixture.output : "# DRAFT｜测试剧情";
+      const inputJob = videoPrompt ? fixture.jobValue : {
+        schemaVersion: 1,
+        jobId: "missing-model-metadata",
+        kind: "story-outline",
+        expectedModel: "doubao-seed-2.1-turbo",
+        objective: "生成一行测试剧情。",
+        deliverables: ["只输出一行Markdown"],
+        output: { format: "markdown", language: "zh-CN" },
+      };
+      const fakeClaudeSource = [
+        "#!/usr/bin/env node",
+        "process.stdin.resume();",
+        "process.stdin.on('end', () => {",
+        "  process.stdout.write(JSON.stringify({",
+        "    type: 'result',",
+        "    subtype: 'success',",
+        "    is_error: false,",
+        `    result: ${JSON.stringify(responseText)},`,
+        "    duration_ms: 1,",
+        "    total_cost_usd: 0",
+        "  }));",
+        "});",
+        "",
+      ].join("\n");
+      writeFileSync(jobPath, `${JSON.stringify(inputJob, null, 2)}\n`, "utf8");
+      writeFileSync(fakeClaudePath, fakeClaudeSource, "utf8");
+      chmodSync(fakeClaudePath, 0o755);
 
-    const result = spawnSync(process.execPath, [
-      RUNNER,
-      "--job",
-      jobPath,
-      "--out",
-      outputDir,
-    ], {
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        PATH: [directory, process.env.PATH].filter(Boolean).join(path.delimiter),
-      },
-    });
+      const result = spawnSync(process.execPath, [
+        RUNNER,
+        "--job",
+        jobPath,
+        "--out",
+        outputDir,
+      ], {
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          PATH: [directory, process.env.PATH].filter(Boolean).join(path.delimiter),
+        },
+      });
 
-    assert.equal(result.status, 0, result.stderr);
-    assert.deepEqual(JSON.parse(result.stdout).modelsUsed, []);
-    const runRecord = JSON.parse(readFileSync(path.join(outputDir, "run.json"), "utf8"));
-    assert.equal(runRecord.status, "success");
-    assert.deepEqual(runRecord.modelsUsed, []);
-    assert.equal(
-      readFileSync(path.join(outputDir, "creative-output.md"), "utf8"),
-      "# DRAFT｜测试剧情",
-    );
-  } finally {
-    rmSync(directory, { recursive: true, force: true });
-  }
-});
+      assert.equal(result.status, 0, result.stderr);
+      assert.deepEqual(JSON.parse(result.stdout).modelsUsed, []);
+      const runRecord = JSON.parse(readFileSync(path.join(outputDir, "run.json"), "utf8"));
+      assert.equal(runRecord.status, "success");
+      assert.deepEqual(runRecord.modelsUsed, []);
+      assert.equal(
+        readFileSync(path.join(outputDir, "creative-output.md"), "utf8"),
+        responseText,
+      );
+      const sentPrompt = readFileSync(path.join(outputDir, "claude-prompt.txt"), "utf8");
+      if (videoPrompt) {
+        assert.match(sentPrompt, /不设最低字数或推荐长度区间/);
+        assert.match(sentPrompt, /听者反应/);
+        assert.match(sentPrompt, /【全局美学设定】/);
+        assert.match(sentPrompt, /不另设重复声音段/);
+        assert.doesNotMatch(sentPrompt, /〖参考〗|对白在时间轴和声音段的逐字登记/);
+        assert.match(sentPrompt, /普通对话不虚构危险侧/);
+        assert.match(sentPrompt, /每个独立单元必须自包含/);
+        assert.match(sentPrompt, /正文不超过2500个Unicode字符/);
+      } else {
+        assert.doesNotMatch(sentPrompt, /视频正文不设最低字数/);
+      }
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+}
