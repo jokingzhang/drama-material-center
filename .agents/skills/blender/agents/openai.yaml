@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blender 白模预演"
+  short_description: "根据镜头需求选择简化程度，生成并检查可用于 AI 视频的白模预演"
+  default_prompt: "使用 $blender，按当前镜头需求制作可编辑的白模工程与干净预演视频。"

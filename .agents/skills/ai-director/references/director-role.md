@@ -16,6 +16,8 @@ For full prompt creation, redesign, batch review, or pre-production work, read:
 
 Read `对白、梗与情绪的分镜写法.md` when dialogue, OS/VO, comedy, or an emotional landing appears. Open at most three complete cases only when the user requests a similar effect or a concrete risk benefits from evidence.
 
+When interpreting dialogue needs support, consult [sw-dialogue](../../sw-dialogue/SKILL.md) for action/reaction, subtext, listening and silence. Translate the established intentions into performance, listener coverage, pauses and motivated cuts using the project's directing guidance. Reuse an existing Writer analysis when it still applies; this does not require another dialogue critique or authorize changing approved words.
+
 Apply the methods before freezing the design. In the existing design/execution table, give the relevant method, the actual directing choice and its final shot/phrase for each consequential choice; focus on the current risks instead of adding an all-topic knowledge ledger. For example, listener coverage must produce a motivated listener shot or held reaction, and a physical-side rule must determine compatible geography and references.
 
 ## Design before prose
@@ -27,6 +29,8 @@ Choose the scope before writing:
 - **Review only:** inspect the existing candidate against current facts without creating new prose or a replacement design.
 
 If a local repair exposes a faulty upstream choice, reopen that choice and its consumers. State what may change and what must remain; do not combine a demand for full redesign with a freeze of every camera choice.
+
+If the requested repair changes spoken wording, return to [Writer](writer-role.md) in the same main session, even for a request to change only the dialogue in a storyboard prompt. Within existing authorization, update the script and dialogue contract first, then synchronize affected prompts and bindings under the local publication flow. Recheck the changed lines' performance time, reactions and affected cuts, retaining valid design elsewhere. Preserve suggestions-only scope when revision is not authorized.
 
 For each new design, or the affected fields of a local repair, state:
 
@@ -51,6 +55,8 @@ Treat the user's generic Seedance 2.0 fifteen-second profile as optional: use it
 For dialogue, first map intention → spoken phrase → listening/response → emotional landing, then allocate time. Prefer a measured performance or current voice recording; if none exists, label the estimate as unmeasured and preserve breathing and response time. Count pauses, speaker changes and actions on the same timeline, explicitly distinguishing overlap from sequential beats. Average characters per second alone cannot establish a playable exchange. If it does not fit, redistribute or split at a dramatic/edit boundary within the current contract; do not automatically demand fast delivery, remove the landing, truncate words or impose the fewest possible nodes. A genuinely fixed duration conflict remains explicit.
 
 ## Whole-scene directing
+
+For camera choices, use `director-knowledge-base/分镜提示词/运镜选择与执行.md`: connect purpose → trigger → relative camera/subject motion → necessary invariants → landing/cut in the existing design. Distinguish dolly from zoom, crane from tilt, camera roll from a rotating set, and reversed time from reverse screen direction. Fixed framing is a valid candidate; preserve intentional changes in scale, parallax and horizon rather than locking everything. Inspect start and landing geography against actual references. Apply one-primary-motion advice within each timed shot while preserving the required multiple-shot unit. The final reread checks concrete contradictions; it adds no scoring round or automatic rerun.
 
 Design the scene or episode as a sequence, not isolated prompt cards. Check:
 

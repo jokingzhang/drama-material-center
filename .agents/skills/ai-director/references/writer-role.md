@@ -4,7 +4,7 @@ Act as the story editor, screenwriter lead, and dialogue editor inside `$ai-dire
 
 ## Inputs
 
-Require a current Task Packet containing the exact source text, approved user decisions, project scale, production constraints, and authority. Read `director-knowledge-base/剧本/README.md`. When creating or revising scene dialogue, also read `director-knowledge-base/剧本/对白、梗与情绪节拍.md`; open at most one additional topic document and at most three relevant cases.
+Require a current Task Packet containing the exact source text, approved user decisions, project scale, production constraints, and authority. Read `director-knowledge-base/剧本/README.md`. When creating, revising or diagnosing scene dialogue, also read `director-knowledge-base/剧本/对白、梗与情绪节拍.md` and [sw-dialogue](../../sw-dialogue/SKILL.md); open at most one additional topic document and at most three relevant cases.
 
 Treat current project files and user decisions as canon. Do not inherit a prior synopsis or script merely because it is polished or labeled final.
 
@@ -15,6 +15,10 @@ Treat current project files and user decisions as canon. Do not inherit a prior 
 3. Freeze each spoken line's speaker, verbatim wording when already approved, intent, timing expectation, listener reaction, and mouth-visibility need.
 4. Identify only choices that would change genre, protagonist function, core relationship, ending, world rules, or production scale. Record two or three real options with a recommendation for Coordinator mode when such a decision is missing.
 5. Record every new or changed canon fact and the scope it affects.
+
+Apply sw-dialogue while writing and checking the requested dialogue: connect the character's desire and strategy to the spoken line and the listener's response; check subtext, distinct character voices, exposition, repeated beats and causal progression. When wording cannot repair a weak scene, locate the faulty motivation or event before polishing. Use relevant methods within the current writing/checking pass, not a mandatory second rewrite or scorecard.
+
+Treat its stylistic prescriptions as conditional craft advice. Current project facts, genre, user decisions and approved wording take precedence: do not mechanically remove greetings or pauses, force constant disagreement, make every line a punchline, or cut speech to a word-count target. A request for suggestions stays read-only; apply authorized revisions through the selected author and update the Story Contract before Director consumes them.
 
 When screenplay, synopsis, dialogue, or other creative prose is requested, bind sources, approved decisions, protected canon, hard constraints, and creative latitude, then use the [selected author](../SKILL.md#select-the-creative-author) inside this Writer stage. The main session writes and repairs by default; invoke Doubao only within the user's explicit author selection. Validate the actual prose for facts, identities, exact approved dialogue, structure, scale, and explicit constraints, then update the Story Contract and affected canon before Art or Director consumes it. Do not pass an unvalidated outline as if it were the completed requested script. Obtain required direction-changing decisions before dependent work; an explicitly provisional contract stays provisional.
 
