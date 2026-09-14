@@ -98,11 +98,32 @@ def validate(spec):
             require((p[0]-t[0])**2 + (p[1]-t[1])**2 > 1e-8, sid + ': vertical pole needs a custom camera up-axis rig')
     require(cursor == n + 1, 'shots do not reach final frame')
     for check in spec.get('visibilityChecks', []):
-        fields(check, 'object start end minSamples', 'visibility check')
+        fields(check, 'object start end minSamples expect', 'visibility check')
         require(check.get('object') in ids, 'visibility check references unknown object')
         require(type(check.get('start')) is int and type(check.get('end')) is int and 1 <= check['start'] <= check['end'] <= n, 'invalid visibility window')
         require(type(check.get('minSamples', 1)) is int and 1 <= check.get('minSamples', 1) <= 3, 'minSamples must be 1..3')
+        require(check.get('expect', 'visible') in ('visible', 'hidden'), 'expect must be visible or hidden')
+        require(check.get('expect') != 'hidden' or 'minSamples' not in check, 'hidden checks require zero visible samples; omit minSamples')
     return spec
+
+
+def render_selection(spec, shot_id=None, frame_range=None, percent=100):
+    """Resolve a preview without retiming or changing the saved full scene."""
+    require(not (shot_id is not None and frame_range is not None), 'choose shot or frame range, not both')
+    require(type(percent) is int and 1 <= percent <= 100, 'preview percent must be 1..100')
+    start, end = 1, spec['frames']
+    if shot_id is not None:
+        shot = next((shot for shot in spec['shots'] if shot['id'] == shot_id), None)
+        require(shot is not None, 'unknown preview shot: ' + str(shot_id))
+        start, end = shot['start'], shot['end']
+    if frame_range is not None:
+        require(len(frame_range) == 2 and all(type(f) is int for f in frame_range), 'preview range requires two integer frames')
+        start, end = frame_range
+    require(1 <= start <= end <= spec['frames'], 'preview range outside timeline or reversed')
+    return {'sourceStartFrame': start, 'sourceEndFrame': end,
+            'sourceStartSeconds': (start-1)/spec['fps'], 'sourceEndSecondsExclusive': end/spec['fps'],
+            'frames': end-start+1, 'fps': spec['fps'], 'percent': percent,
+            'resolution': [max(2, 2*(side*percent//200)) for side in spec['resolution']]}
 
 
 def continuous_slope(track, index, component):

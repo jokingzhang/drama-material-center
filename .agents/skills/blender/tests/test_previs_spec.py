@@ -8,7 +8,7 @@ import unittest
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'scripts'))
-from previs_spec import sample, validate
+from previs_spec import render_selection, sample, validate
 
 
 class ContractTests(unittest.TestCase):
@@ -67,7 +67,8 @@ class ContractTests(unittest.TestCase):
         spec['shots'][0]['lensKeys'] = [{'frame': 1, 'value': 32}, {'frame': 48, 'value': 70}]
         with self.assertRaisesRegex(ValueError, 'unsupported fields lensKeys'):
             validate(spec)
-        actor = next(obj for obj in self.spec['objects'] if obj['shape'] == 'capsule')
+        actor = next(obj for obj in self.spec['objects'] if obj.get('identity'))
+        actor['shape'] = 'capsule'
         actor['size'][2] = .1
         with self.assertRaisesRegex(ValueError, 'capsule height'):
             validate(self.spec)
@@ -108,6 +109,40 @@ class ContractTests(unittest.TestCase):
         self.spec['shots'][0]['maxAngularSpeedDegPerSecond'] = 0
         with self.assertRaisesRegex(ValueError, 'limit must be positive'):
             validate(self.spec)
+
+    def test_preview_keeps_source_timing_and_original_spec(self):
+        original = copy.deepcopy(self.spec)
+        preview = render_selection(self.spec, shot_id='closer-arrival', percent=50)
+        self.assertEqual((preview['sourceStartFrame'], preview['sourceEndFrame']), (49, 96))
+        self.assertEqual((preview['sourceStartSeconds'], preview['sourceEndSecondsExclusive']), (2, 4))
+        self.assertEqual((preview['frames'], preview['fps'], preview['resolution']), (48, 24, [320, 180]))
+        self.assertEqual(self.spec, original)
+        cut = render_selection(self.spec, frame_range=[48, 50], percent=33)
+        self.assertEqual(cut['frames'], 3)
+        self.assertTrue(all(side > 0 and side % 2 == 0 for side in cut['resolution']))
+        self.assertEqual(render_selection(self.spec, frame_range=[96, 96])['frames'], 1)
+
+    def test_preview_invalid_selection_is_rejected(self):
+        for kwargs in [dict(shot_id='missing'), dict(frame_range=[0, 8]), dict(frame_range=[95, 97]),
+                       dict(frame_range=[50, 49]), dict(frame_range=[2.5, 6]), dict(percent=0),
+                       dict(percent=101), dict(shot_id='closer-arrival', frame_range=[1, 2])]:
+            with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
+                render_selection(self.spec, **kwargs)
+
+    def test_hidden_windows_do_not_silently_use_visible_thresholds(self):
+        self.spec['visibilityChecks'] = [{'object': 'actor-a', 'start': 1, 'end': 12, 'expect': 'hidden'}]
+        validate(self.spec)
+        self.spec['visibilityChecks'][0]['minSamples'] = 1
+        with self.assertRaisesRegex(ValueError, 'zero visible'):
+            validate(self.spec)
+
+    def test_example_has_perceptible_speed_stages_and_a_real_hold(self):
+        actor = next(obj for obj in self.spec['objects'] if obj.get('identity') == 'CHAR-A')
+        positions = [sample(actor['locationKeys'], f, actor['ease']) for f in range(1, 97)]
+        speeds = [sum((b-a)**2 for a, b in zip(p, q))**.5*self.spec['fps'] for p, q in zip(positions, positions[1:])]
+        self.assertTrue(all(speed < 1e-10 for speed in speeds[:10]))
+        self.assertGreater(max(speeds[22:48]), max(speeds[12:20])*2)
+        self.assertTrue(all(speed < 1e-10 for speed in speeds[60:]))
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ import time
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from previs_spec import sample, validate
+from previs_spec import render_selection, sample, validate
 
 
 def curves(owner):
@@ -52,7 +52,11 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--spec', required=True)
     p.add_argument('--output', required=True, help='A NEW directory; existing paths are refused')
-    p.add_argument('--render', action='store_true', help='Render all frames and encode a silent H.264 preview')
+    p.add_argument('--render', action='store_true', help='Render and encode a silent H.264 preview')
+    selection = p.add_mutually_exclusive_group()
+    selection.add_argument('--shot', help='Render only this shot ID, preserving source timing')
+    selection.add_argument('--frame-range', nargs=2, type=int, metavar=('START', 'END'), help='Render this inclusive source frame range')
+    p.add_argument('--preview-percent', type=int, default=100, help='Preview size percent (1..100); saved scene retains full resolution')
     p.add_argument('--engine', choices=['BLENDER_WORKBENCH', 'BLENDER_EEVEE', 'CYCLES'], default='BLENDER_WORKBENCH')
     args = p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     if not bpy.app.background:
@@ -61,6 +65,9 @@ def main():
     spec_path = Path(args.spec).resolve(strict=True)
     spec_bytes = spec_path.read_bytes()
     spec = validate(json.loads(spec_bytes))
+    if not args.render and (args.shot is not None or args.frame_range is not None or args.preview_percent != 100):
+        p.error('--shot, --frame-range and --preview-percent require --render')
+    preview = render_selection(spec, args.shot, args.frame_range, args.preview_percent)
     out = Path(args.output).expanduser().absolute()
     if out.exists() or out.is_symlink():
         raise FileExistsError('Output already exists; choose a new run/version: ' + str(out))
@@ -185,7 +192,14 @@ def main():
             curve.dimensions = '3D'; curve.resolution_u = 24; curve.use_path = True
             rail = bpy.data.objects.new(curve.name, curve); s.collection.objects.link(rail); rail.hide_render = True
             spline = curve.splines.new('BEZIER')
-            indices = sorted(set(list(range(0, len(coords), 3))+[len(coords)-1]))
+            candidates = sorted(set(list(range(0, len(coords), 3))+[len(coords)-1]))
+            indices = [candidates[0]]
+            for index in candidates[1:]:
+                # Holds belong in the time mapping, not zero-length Bezier spans.
+                if (coords[index]-coords[indices[-1]]).length > 1e-7:
+                    indices.append(index)
+            if len(indices) < 2:
+                raise ValueError('Sampled camera rail collapsed; use a denser task-specific rig')
             spline.bezier_points.add(len(indices)-1)
             for bp, index in zip(spline.bezier_points, indices):
                 bp.co = coords[index]; bp.handle_left_type = 'AUTO'; bp.handle_right_type = 'AUTO'
@@ -208,13 +222,16 @@ def main():
               'specSha256': hashlib.sha256(spec_bytes).hexdigest(), 'frames': spec['frames'], 'fps': spec['fps'],
               'resolution': spec['resolution'], 'purpose': spec['purpose'], 'cameraSwitches': [], 'boundaryChecks': [],
               'maxTrackErrorDegrees': 0., 'maxRailSampleDeviationM': 0., 'visibilityFailures': [],
-              'cameraMotion': {shot['id']: {'samples': 0, 'maxAngularSpeedDegPerSecond': 0.,
+              'cameraMotion': {shot['id']: {'samples': 0, 'speedSamples': [], 'maxAngularSpeedDegPerSecond': 0.,
                   'maxAngularSpeedFrame': None, 'maxLinearSpeedMPerSecond': 0.,
                   'minTargetDistanceM': None, 'angularLimitDegPerSecond': shot.get('maxAngularSpeedDegPerSecond')}
                   for shot in spec['shots']}, 'motionLimitFailures': [],
+              'subjectMotion': {desc['id']: {'speedSamples': [], 'maxLinearSpeedMPerSecond': 0.}
+                                for desc in spec['objects'] if desc.get('identity')},
+              'renderSelection': preview if args.render else None,
               'playback': 'NOT_REVIEWED', 'downstreamGeneration': 'NOT_RUN', 'humanAcceptance': 'PENDING',
               'timeScope': 'Script runtime only; prior design and subsequent playback/integration are not measured.'}
-    prev = None; prev_origin = None; prev_rotation = None
+    prev = None; prev_origin = None; prev_rotation = None; prev_subjects = {}
     for f in range(1, spec['frames']+1):
         s.frame_set(f); dg = bpy.context.evaluated_depsgraph_get()
         desc, cam, target, coords = next(x for x in shot_objects if x[0]['start'] <= f <= x[0]['end'])
@@ -236,14 +253,23 @@ def main():
             delta = prev_rotation.rotation_difference(rotation).normalized()
             angle = 2*math.atan2(math.sqrt(delta.x**2+delta.y**2+delta.z**2), abs(delta.w))
             speed = math.degrees(angle)*spec['fps']
+            linear_speed = (origin-prev_origin).length*spec['fps']
             motion['samples'] += 1
-            motion['maxLinearSpeedMPerSecond'] = max(motion['maxLinearSpeedMPerSecond'], (origin-prev_origin).length*spec['fps'])
+            motion['maxLinearSpeedMPerSecond'] = max(motion['maxLinearSpeedMPerSecond'], linear_speed)
+            motion['speedSamples'].append({'frame': f, 'linearSpeedMPerSecond': linear_speed, 'angularSpeedDegPerSecond': speed})
             if speed > motion['maxAngularSpeedDegPerSecond']:
                 motion['maxAngularSpeedDegPerSecond'] = speed; motion['maxAngularSpeedFrame'] = f
             limit = desc.get('maxAngularSpeedDegPerSecond')
             if limit is not None and speed > limit:
                 report['motionLimitFailures'].append({'frame': f, 'shot': desc['id'], 'angularSpeedDegPerSecond': speed, 'limit': limit})
         prev = cam; prev_origin = origin.copy(); prev_rotation = rotation.copy()
+        for oid, subject_motion in report['subjectMotion'].items():
+            position = roots[oid].evaluated_get(dg).matrix_world.translation.copy()
+            if oid in prev_subjects:
+                velocity = (position-prev_subjects[oid]).length*spec['fps']
+                subject_motion['speedSamples'].append({'frame': f, 'linearSpeedMPerSecond': velocity})
+                subject_motion['maxLinearSpeedMPerSecond'] = max(subject_motion['maxLinearSpeedMPerSecond'], velocity)
+            prev_subjects[oid] = position
         for check in spec.get('visibilityChecks', []):
             if not check['start'] <= f <= check['end']:
                 continue
@@ -254,8 +280,10 @@ def main():
                 if projected.z > 0 and 0 < projected.x < 1 and 0 < projected.y < 1:
                     hit, loc, normal, index, hit_obj, matrix = s.ray_cast(dg, origin, (point-origin).normalized())
                     visible += int(hit and hit_obj.get('previs_id') == check['object'])
-            if visible < check.get('minSamples', 1):
-                report['visibilityFailures'].append({'frame': f, 'object': check['object'], 'visibleSamples': visible})
+            expectation = check.get('expect', 'visible')
+            failed = visible > 0 if expectation == 'hidden' else visible < check.get('minSamples', 1)
+            if failed:
+                report['visibilityFailures'].append({'frame': f, 'object': check['object'], 'visibleSamples': visible, 'expect': expectation})
     for desc, cam, target, _ in shot_objects:
         cut = desc['start']
         for f, sub in ([(1, 0)] if cut == 1 else [(cut-1, 0), (cut-1, .999), (cut, 0), (cut, .001)]):
@@ -282,20 +310,22 @@ def main():
         raise RuntimeError('Technical checks failed; preserved diagnostic scene and report; do not use as input')
     if args.render:
         started = time.perf_counter(); frames_dir = out/'frames'; frames_dir.mkdir()
-        for f in range(1, spec['frames']+1):
+        s.render.resolution_x, s.render.resolution_y = preview['resolution']
+        for f in range(preview['sourceStartFrame'], preview['sourceEndFrame']+1):
             s.frame_set(f); s.render.filepath = str(frames_dir/('%06d.png'%f))
             bpy.ops.render.render(write_still=True)
         report['renderSeconds'] = time.perf_counter()-started
-        started = time.perf_counter(); video = out/(stem+'.mp4')
-        subprocess.run(['ffmpeg', '-v', 'error', '-n', '-framerate', str(spec['fps']), '-start_number', '1', '-i', str(frames_dir/'%06d.png'), '-frames:v', str(spec['frames']), '-c:v', 'libx264', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(video)], check=True)
+        suffix = '' if preview['frames'] == spec['frames'] and preview['percent'] == 100 else '-f%04d-%04d-p%03d' % (preview['sourceStartFrame'], preview['sourceEndFrame'], preview['percent'])
+        started = time.perf_counter(); video = out/(stem+suffix+'.mp4')
+        subprocess.run(['ffmpeg', '-v', 'error', '-n', '-framerate', str(spec['fps']), '-start_number', str(preview['sourceStartFrame']), '-i', str(frames_dir/'%06d.png'), '-frames:v', str(preview['frames']), '-c:v', 'libx264', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(video)], check=True)
         probe = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-count_frames', '-show_entries', 'stream=width,height,r_frame_rate,nb_read_frames,duration', '-of', 'json', str(video)]))['streams'][0]
-        assert int(probe['nb_read_frames']) == spec['frames']
-        assert [probe['width'], probe['height']] == spec['resolution']
+        assert int(probe['nb_read_frames']) == preview['frames']
+        assert [probe['width'], probe['height']] == preview['resolution']
         from fractions import Fraction
         assert Fraction(probe['r_frame_rate']) == spec['fps']
-        assert abs(float(probe['duration'])-spec['frames']/spec['fps']) < 1/spec['fps']
+        assert abs(float(probe['duration'])-preview['frames']/spec['fps']) < 1/spec['fps']
         subprocess.run(['ffmpeg', '-v', 'error', '-i', str(video), '-f', 'null', '-'], check=True)
-        report['video'] = {'path': video.name, 'sha256': hashlib.sha256(video.read_bytes()).hexdigest(), 'probe': probe, 'fullDecode': 'PASS'}
+        report['video'] = {'path': video.name, 'sha256': hashlib.sha256(video.read_bytes()).hexdigest(), 'probe': probe, 'fullDecode': 'PASS', 'sourceTimeline': preview}
         report['encodeAndDecodeSeconds'] = time.perf_counter()-started
     report['scriptTotalSeconds'] = time.perf_counter()-began
     (out/'technical-qa.json').write_text(json.dumps(report, indent=2))
