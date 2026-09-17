@@ -47,7 +47,7 @@ const body = `{{Mixed 1}} 走廊。 {{Mixed 2}} 林默。 {{Mixed 3}} 苏野。
 苏野说完仍看着林默，等林默略微放松肩膀，才把目光转回门上。通风声延续，按视线切出。
 `;
 
-// Regression: the whole unit is one shot even when its prose contains many timed beats.
+// A continuous take remains one shot even when its prose contains several timed beats.
 const singleShotBody = body.slice(0, body.indexOf("\n镜头2｜"))
   .replace("00:05.0｜5秒", "00:12.0｜12秒")
   + "\n00:05.0—00:08.0，苏野回看林默，低声回答。\n00:08.0—00:12.0，林默放松肩膀，苏野转回门上。\n";
@@ -56,10 +56,17 @@ test("v2 accepts example-style shots with integrated dialogue", () => {
   assert.deepEqual(validateShotBlockPrompt(body, contract), []);
 });
 
-test("v2 rejects one full-duration shot despite multiple inline timed beats", () => {
-  const errors = validateShotBlockPrompt(singleShotBody, contract);
-  assert.equal(errors.length, 1, errors.join("; "));
-  assert.match(errors[0], /at least two timed shot blocks/);
+test("v2 accepts one full-duration shot with inline performance beats", () => {
+  assert.deepEqual(validateShotBlockPrompt(singleShotBody, contract), []);
+});
+
+test("v2 still requires a complete shot header and fields for a continuous take", () => {
+  const noHeader = singleShotBody.replace(/^镜头1[^\n]*\n/m, "");
+  assert.match(validateShotBlockPrompt(noHeader, contract).join("; "), /at least one complete timed shot block/);
+  const noCamera = singleShotBody.replace(/^相机：[^\n]*\n/m, "");
+  assert.match(validateShotBlockPrompt(noCamera, contract).join("; "), /ordered 相机/);
+  const wrongEnd = singleShotBody.replace("00:12.0｜12秒", "00:11.0｜11秒");
+  assert.match(validateShotBlockPrompt(wrongEnd, contract).join("; "), /end at 12s/);
 });
 
 test("v2 accepts split composition/movement and repeated planned references", () => {
@@ -115,17 +122,17 @@ test("author-neutral CLI checks a body without a Doubao job or model", () => {
   }
 });
 
-test("author-neutral CLI exits unsuccessfully for an overloaded single-shot body", () => {
+test("author-neutral CLI accepts a complete single-shot body without altering it", () => {
   const directory = mkdtempSync(path.join(os.tmpdir(), "single-shot-cli-"));
   try {
     writeFileSync(path.join(directory, "body.md"), singleShotBody);
     writeFileSync(path.join(directory, "contract.json"), JSON.stringify(contract));
     const result = spawnSync(process.execPath, [path.join(scripts, "validate-shot-prompt.mjs"),
       "--prompt", path.join(directory, "body.md"), "--contract", path.join(directory, "contract.json")], { encoding: "utf8" });
-    assert.equal(result.status, 4, result.stderr);
+    assert.equal(result.status, 0, result.stderr);
     const report = JSON.parse(result.stdout);
-    assert.equal(report.ok, false);
-    assert.match(report.errors.join("; "), /at least two timed shot blocks/);
+    assert.equal(report.ok, true);
+    assert.deepEqual(report.errors, []);
     assert.equal(readFileSync(path.join(directory, "body.md"), "utf8"), singleShotBody);
   } finally {
     rmSync(directory, { recursive: true, force: true });

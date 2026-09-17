@@ -1,59 +1,51 @@
 # Main-session review
 
-Review in the current main session. Do not create a Reviewer subagent, separate review task or history-free handoff. Read the actual requested scope once for major problems; the author's final reread can serve this purpose. A repair needs only a recheck of the changed parts and affected cuts.
-
-First apply [review scope and execution reuse](workflow-contract.md#review-scope-and-execution-reuse). Same-asset uploads, verified reference-token substitutions, layout and administrative metadata changes need execution checks only. Reuse valid earlier findings; missing old Reviewer reports or scorecards do not prevent checking the current scope yourself.
-
-Review the artifact that actually exists and declare `reviewTargetType: prompt | media`. Prompt review does not require a generated video. Media review requires actual viewing, continuous playback, or listening for the relevant modality; task status, thumbnails, decoding, and node text cannot replace those observations.
+This is the default review entry. The author’s final read is the main-session check, before formal binding. Do not add a Reviewer, Coordinator approval, fresh task, scorecard or second full read to document the same conclusion. For repairs, check the changed content and its actual continuity consequences; preserve valid coverage elsewhere.
 
 ## Bind the review target
 
-Use the existing Task Packet and record to identify the current file/node, version, scope and relevant facts. Do not duplicate the packet or create a report per round. Preserve selected and accepted takes. For new writing check the requested batch; for repairs check changed units and their affected continuity.
+Use the current artifact, sources, user choices and existing record. Distinguish prompt review from image/video/audio QA without requiring a new field or packet. A new batch needs all new or unverified content read; a resumed batch needs its missing coverage, not just the last edit and not the already-checked remainder. Missing an old review report is not a reason to block work.
 
-Keep a short conclusion: scope/version, major problems or none, repairs and pass/notes/blocker. No fourteen-dimension scores or exhaustive per-shot evidence tables by default. Use detailed scoring only when the user requests it, still in this session; a score does not automatically authorize rewriting or rerunning an accepted take.
+Finish names, exact dialogue, shot format, timing and declared-reference checks before switching formal bindings. Use the existing read-only [structural validator](../../doubao-creative-studio/scripts/validate-shot-prompt.mjs) where applicable; it checks format, timing and declared references, not story or media quality. Inspect suspected operational pronouns in context; never globally replace words inside approved speech or source quotations.
 
 ## Prompt preflight
 
-For `reviewTargetType: prompt`, apply the quick-check route in `director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md`. Focus on wrong story or dialogue, wrong identity/look or references, impossible/conflicting visible actions and geography, clearly overfull dialogue timing, and actual model/execution limits. A blocker needs a concrete text/reference locator and a story or execution consequence. A less elegant cut, underspecified aesthetic preference or minor performance variation is not enough to reject.
+Read the actual final body with its declared inputs. Check the following in that same read, without writing proof for every passing item:
 
-Read [the current shot-block format](shot-block-format.md) and verify the actual final body follows it; reject new candidates that retain the old five-section template. Verify continuous timing, canonical operational names, exact dialogue against the local dialogue contract, speaking/voice/mouth responsibilities in the timed scene and the reference mapping. Do not require a duplicate global sound section. Check only claims the evidence can establish: a compatible reference is not proof the future model will follow it. A missing future take or unperformed media QA does not by itself fail prompt semantics. Record real missing inputs or unverified execution capabilities separately; do not invent references to make the packet pass.
+- Current story, exact dialogue, speaker/action ownership, look and required visible information agree with the sources.
+- Necessary action is visible within the crop; camera side, reference geography, props and start-to-end causal changes are compatible. Essential revelations and reactions are in the model body, not only in a separate design table.
+- Speech, breathing, turn-taking, sequential or overlapping actions and listener response plausibly fit. Average character rate alone is insufficient; unperformed timing remains an estimate, not a demand to generate audio for text review.
+- Apply the [current shot format](shot-block-format.md), [full-name rule](../SKILL.md#use-canonical-full-character-names), exact dialogue and actual model constraints. Choose one or several complete timed shots according to the scene and relevant independent skill. Check that the chosen cuts or uninterrupted motion are coherent; do not impose a two-shot minimum or disguise beat timings as cuts. Preserve the stated H3 exception and already usable historical media.
+- References contain compatible facts and serve their declared consumers. Missing/rejected/INTERNAL or conflicting inputs cannot be supplied as valid generation inputs. A label cannot hide conflicting pixels.
 
-Multiple shots are a current hard constraint: require at least two complete timed blocks with actual motivated cuts. A single full-duration block with many inline times, or multiple headings that still prescribe one uninterrupted composition, fails preflight. Check this during the existing final read, not an additional review round; preserve usable historical media as specified by [the multi-shot contract](shot-block-format.md#mandatory-multiple-shots).
+Consult the relevant directing method only when needed to make or repair a decision; use [Director inputs](director-role.md#inputs) to find it. Do not load every topic or a long scoring sheet again at final check. Keep audit/status prose out of the model body. Scripts may package or verify authored text, not compose it from boilerplate.
 
-When dialogue, OS/VO, comedy or emotion is present, read `对白、梗与情绪的分镜写法.md`. Reconstruct the performed exchange from the final shot blocks: line onset/end, breathing and turn changes, overlapping versus sequential action, listener response and final emotional landing. Reject an evidenced overfull interval; a low average character rate does not excuse unsupported instantaneous answers or an omitted necessary reaction. Unmeasured timing is an estimate, not a performed test. Do not impose a universal pause length or invent new dialogue.
+## Decide what actually blocks
 
-Reconstruct the visible start, trigger, action/reaction and end from the frozen body and declared inputs, without borrowing missing actions from the screenplay. Locate each essential revelation, joke, apology or decision in what the audience can see or hear and the response that follows. Check that decorative jargon, repeated reference warnings, invented hazard labels or competing actions do not hide the main instruction. Mere length or a stylistic preference is non-blocking; keep findings outside the model body.
+| Finding | Action |
+| --- | --- |
+| Concrete source, text, reference or model conflict, or violated explicit hard requirement | Locate the fault and consequence; repair only affected work, or stop that dependent action if no authorized fix is available. |
+| Future model behavior is uncertain, with no evidenced input conflict | Note what an authorized trial must establish; do not keep expanding prompts to promise natural performance or stable pixels. |
+| Sound deferred by the user, future continuity frame or Node not yet available | Complete accurately scoped text work; enforce the missing condition before its actual consumer runs. Never invent inputs or claim production readiness that is not established. |
+| Index, path, hash or node mismatch | Repair and repeat the failed execution checks under [execution reuse](workflow-contract.md#review-scope-and-execution-reuse); no new creative review for an equivalent restoration. |
+| Optional expression, pause, camera or aesthetic improvement | Non-blocking note; no automatic rewrite, extra candidate or generation. |
 
-Compare the final words with the necessary visible action, camera geography, dialogue and sound. A design table cannot supply a critical fact missing from the model body. Cite evidence for concrete problems rather than write proof for every passing dimension. Keep local publication and real Node binding as separate execution conditions; a text pass with pending Node IDs does not permit premature prompt sync or generation.
-
-Return `REVIEW_PASS` or non-blocking notes when no major problem remains, with media QA and unresolved execution conditions kept separate. Continue within existing authorization; do not wait for another review opinion or a user acknowledgment of a routine pass. A text pass does not grant new production authorization or media acceptance.
+A blocker needs a concrete locator and narrative/execution consequence or explicit hard-rule violation. Style preferences, missing paperwork and a future unobserved take are insufficient. Preserve requested direction/acceptance checkpoints; `DRAFT` or pending human acceptance alone does not require another “continue” at each responsibility.
 
 ## Media QA
 
-For `reviewTargetType: media`, judge the actual candidate against the current use and the repository's media acceptance rules:
+Actually open images, continuously play videos and listen to audio. Follow the repository’s media acceptance standard for the current use: story legibility, identity/look/props, action and spatial continuity, edit usability, necessary text, speaker/dialogue/sound and visible artifacts. Technical integrity checks do not replace these observations.
 
-1. **Technical integrity** — dimensions, duration, decoding, missing frames, broken audio, and obvious corruption.
-2. **Story legibility** — objective, threat, causal action, result, information order, and hook.
-3. **Performance and blocking** — gaze, intention, reaction, contact, weight, timing, and spatial relationships.
-4. **Image and material** — identity, costume, injury, prop, location, light, texture, unwanted text, and clean-frame suitability.
-5. **Shot and edit** — shot size, axis, camera motivation, action readability, entrance and exit, rhythm, and match continuity.
-6. **Sound** — speaker, exact dialogue, emotion, lip visibility, ambience, effects, music, noise, clipping, and mix. Mark subjective listening pending if it was not actually performed.
-7. **AI failure** — morphing, duplicated subjects, sliding contact, temporal reset, reference conflict, model artifacts, or excessive task complexity.
-
-For production-facing storyboards, prompts, contracts, and repair text, verify that every operational mention of a named character uses the exact canonical full character name. Surname-only shorthand such as `江` or `霍`, initials, role labels, or pronouns may not replace the subject in camera placement, framing, body parts, blocking, action ownership, gaze, speaker, sound, or reference mapping. Verbatim source quotations and natural spoken dialogue are exempt. Any violation fails pre-production review and requires a new version.
-
-For state-changing actions continuously play the contact-to-completion window and inspect enough intermediate frames to establish the transition. Report `HARD_REJECT`, `PASS_WITH_NOTES`, or passing QA for the observed scope; keep optional polish non-blocking. An unperformed required viewing/listening check remains pending. Never convert media QA into human acceptance or reopen an accepted choice for optional polish.
+For a state-changing action, continuously inspect the contact-to-completion window and sufficient intermediate frames. Judge against the story and usable edit, not literal perfection against every prompt adjective. Keep `HARD_REJECT`, `PASS_WITH_NOTES` and unobserved checks distinct from user acceptance. Preserve accepted choices; optional polish does not reopen them. A newly evidenced hard fault must include its location and effect.
 
 ## Review reference effect, not reference presence
 
-In media QA, compare each supplied reference with its declared responsibility and the actual output. Record whether it was followed, ignored, conflicted, or contaminated the result. For a directly supplied turnaround, inspect identity and body consistency across relevant views and movement, and check for repeated people, panel layout, neutral-pose copying, labels, or studio-background leakage. In prompt review, inspect reference content and compatibility only.
-
-Do not infer generated benefit from upload, input edges, prompt mentions, or successful tasks. Without actual playback, claims about generated reference effect and video quality remain unvalidated; this restriction does not prevent a prompt semantic verdict. When evidence exists, compare against a relevant baseline before recommending broader reuse.
+Inspect actual reference content before use. After generation assess its declared effect only for what was really viewed/heard: followed, ignored, conflicted or contaminated. For character turnarounds, include duplication, pose/panel/text/background leakage and identity/look continuity. Uploads, edges and node text do not establish generated benefit. A baseline is needed before claiming that a reference caused an improvement or recommending broader reuse.
 
 ## Repair and continue
 
-For a concrete major fault, note its text locator or media timecode, narrative/execution impact and smallest fix. Repair the earliest faulty layer rather than add generic adjectives or rerun unchanged inputs. The same main session may make authorized edits; a review-only request still does not authorize a rewrite. Text repairs follow the selected author: main-session writing by default, or bounded Doubao repair when explicitly selected.
+Record one short finding in the existing record: scope/version, concrete faults or none, necessary repair and result. Evidence locates actual issues; do not add a report per unit or a table of all passing dimensions. Detailed scoring is optional only on the user’s request; find it through the [knowledge review entry](../../../../director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md).
 
-Recheck the changed content and affected cuts once the repair is ready. Keep earlier valid findings elsewhere and continue when no major problem remains. Non-blocking notes and optional polish do not trigger another pass or generation. If a major fault cannot be fixed within current authority, report it while continuing unaffected work.
+Follow the selected author for authorized repairs; review-only stays read-only. Fix the earliest faulty layer and recheck the changed part and affected cuts. Stop searching for optional improvements when no major problem remains. If a fault persists without a feasible authorized correction, report it and continue unaffected work, rather than repeat the same attempt.
 
-Use the [main-session review contract](workflow-contract.md#main-session-review-contract) for concise findings and truthful statuses. Do not create knowledge ledgers, new registries or score reports just to document routine checks. Keep prompt review, actual media QA and human acceptance distinct.
+Complete [local publication and execution checks](workflow-contract.md#local-first-libtv-order) when applicable. No new semantic review merely for verified token substitution or resuming execution; run-time readback is still required. Routine passes need no extra acknowledgment. Generation/spending authority and actual media/human acceptance remain separate.

@@ -4,7 +4,7 @@ Act as the story editor, screenwriter lead, and dialogue editor inside `$ai-dire
 
 ## Inputs
 
-Require a current Task Packet containing the exact source text, approved user decisions, project scale, production constraints, and authority. Read `director-knowledge-base/剧本/README.md`. When creating, revising or diagnosing scene dialogue, also read `director-knowledge-base/剧本/对白、梗与情绪节拍.md` and [sw-dialogue](../../sw-dialogue/SKILL.md); open at most one additional topic document and at most three relevant cases.
+Recover relevant source text, user decisions, scale, constraints and authority from the existing current context; a separate Task Packet file is not required. Read `director-knowledge-base/剧本/README.md`. When creating, revising or diagnosing scene dialogue, also read `director-knowledge-base/剧本/对白、梗与情绪节拍.md` and [sw-dialogue](../../sw-dialogue/SKILL.md); open at most one additional topic document and at most three relevant cases.
 
 Treat current project files and user decisions as canon. Do not inherit a prior synopsis or script merely because it is polished or labeled final.
 
@@ -26,7 +26,7 @@ In dialogue contracts and other production-facing operational text, use the exac
 
 ## Return a Story Contract
 
-Return:
+Include only what the requested deliverable and its consumers need, in the existing script or record rather than a separate package:
 
 - story or scene purpose and genre promise;
 - current world rules and relevant canon;
@@ -37,11 +37,11 @@ Return:
 - `changedFacts`, `affectedScope`, and downstream invalidations;
 - the factual brief, versioned creative prose, actual author/model, source lineage, and evidence location when creative prose was requested; include original job/return evidence in explicit Doubao mode.
 
-Use `READY_FOR_REVIEW`, not `approved`, unless the user has explicitly confirmed every required direction-changing choice.
+The final prose check is the main-session review; record its actual result and any user decision still pending. Do not force `READY_FOR_REVIEW` after that check or add another approval. Human acceptance remains separate.
 
 ## Boundaries
 
 - Do not decide character look, location art, props, camera, lighting, editing, reference images, model, or node setup.
 - Do not shorten, paraphrase, or invent approved exact dialogue to fit an assumed duration.
 - Do not silently change canon or upgrade a draft to accepted.
-- Do not generate media, edit formal project files, or trigger external writes unless the Task Packet separately and explicitly grants that exact action.
+- Do not generate media, edit formal project files, or trigger external writes unless the user has authorized that action; the packet records authority rather than granting it.

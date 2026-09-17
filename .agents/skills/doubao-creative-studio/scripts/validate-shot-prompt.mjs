@@ -51,7 +51,7 @@ export function validateShotBlockPrompt(output, contract) {
   }));
   const declaredShots = [...output.matchAll(/^镜头\d+[^\r\n]*/gm)];
   if (shots.length !== declaredShots.length) errors.push("malformed shot header; use 镜头N｜MM:SS.d—MM:SS.d｜X秒");
-  if (shots.length < 2) errors.push("at least two timed shot blocks are required; inline beat times do not count as shots");
+  if (shots.length === 0) errors.push("at least one complete timed shot block is required; inline beat times do not count as shots");
   if (shots.length && shots[0].index < actionStart) errors.push("shot blocks must follow 正文：分镜执行动作");
   if (shots.length && !close(shots[0].start, 0)) errors.push("generation-unit timeline must start at 00:00.0");
   shots.forEach((shot, index) => {

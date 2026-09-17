@@ -1,30 +1,36 @@
 # Director Role
 
-Act as the director, storyboard director, cinematographer, editing designer, and sound designer inside `$ai-director`. Turn a current Story Contract and Asset Package into an executable Director Package. The main session checks that package for major problems and completes Coordinator execution gates; this does not grant new production authority or human acceptance.
+Own directing, cinematography, editing and sound in the same main session. Turn current story and asset facts into the requested design or prompt; finish the final check and authorized local integration without a separate approval role. Human acceptance and production authority remain distinct.
 
 ## Inputs
 
-Require a current Task Packet, Story Contract, dialogue contract where applicable, and actual Asset Package. Resolve differences under the workflow contract's change classification: a version label alone is not a semantic mismatch. Stop on an unresolved source/content/eligibility mismatch and return `STALE_BY_UPSTREAM_CHANGE` instead of adapting an old prompt silently. Already-reviewed execution with equivalent inputs stays in Coordinator/production flow and does not enter this role.
+Recover the current story, protected dialogue, relevant asset facts and user authority from existing files and context. Contract names do not require separate package files. Resolve actual differences under [execution reuse](workflow-contract.md#review-scope-and-execution-reuse); a version number alone is not a semantic mismatch. Already-checked equivalent execution does not restart directing.
 
-For full prompt creation, redesign, batch review, or pre-production work, read:
+Read methods for the decision at hand; reuse already-read unchanged content. Paths below are relative to the repository’s `director-knowledge-base/分镜提示词/`:
 
-- `director-knowledge-base/分镜提示词/README.md`
-- `director-knowledge-base/分镜提示词/导演设计方法.md`
-- `director-knowledge-base/分镜提示词/分镜提示词写法.md`
-- `director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md`
-- `director-knowledge-base/分镜提示词/镜头类型索引.md`
+| Current need | Read only the relevant method |
+| --- | --- |
+| New scene or genuinely unsettled directing choices | `导演设计方法.md`; use `镜头类型索引.md` when selecting or comparing shot types. |
+| New prompt format or a format question | `分镜提示词写法.md` and the current [shot-block format](shot-block-format.md). |
+| Dialogue, comedy or emotional timing | `对白、梗与情绪的分镜写法.md`; reuse current Writer analysis and consult [sw-dialogue](../../sw-dialogue/SKILL.md) only when needed to interpret performance. Do not change approved lines through staging. |
+| A camera-movement decision | `运镜选择与执行.md`. |
+| Screen, receipt or other readable insert | “互动主镜与可读插镜分责” in `导演设计方法.md`; read the image-domain relation-frame method only if choosing or repairing that reference. |
+| A concrete space, handoff or continuity issue | The relevant spatial/continuity passages and actual affected inputs, not all types and cases. |
+| Final check or local recheck | [review-mode.md](review-mode.md); no full knowledge bundle. |
 
-Read `对白、梗与情绪的分镜写法.md` when dialogue, OS/VO, comedy, or an emotional landing appears. Open at most three complete cases only when the user requests a similar effect or a concrete risk benefits from evidence.
+Open at most three complete cases when a concrete risk or user-requested effect needs their evidence. Optional scoring and model-specific profiles are not default reading. After context loss recover the current object and relevant passages, rather than treating a previous read as proof or rebuilding the entire knowledge inventory.
 
-When interpreting dialogue needs support, consult [sw-dialogue](../../sw-dialogue/SKILL.md) for action/reaction, subtext, listening and silence. Translate the established intentions into performance, listener coverage, pauses and motivated cuts using the project's directing guidance. Reuse an existing Writer analysis when it still applies; this does not require another dialogue critique or authorize changing approved words.
+Apply useful methods in the actual shot choices. Do not require a separate method-to-shot evidence table for each choice; explain a consequential tradeoff when it helps the user or future execution.
 
-Apply the methods before freezing the design. In the existing design/execution table, give the relevant method, the actual directing choice and its final shot/phrase for each consequential choice; focus on the current risks instead of adding an all-topic knowledge ledger. For example, listener coverage must produce a motivated listener shot or held reaction, and a physical-side rule must determine compatible geography and references.
+For narrative coverage, uninterrupted camera storytelling or restrained facial performance, select the relevant independent skill through [AI Director routing](../SKILL.md#choose-a-skill-for-the-story). Use one or multiple shots according to the scene; do not treat shot count as a universal gate.
+
+Follow the [keyframe approval gate](../SKILL.md#keyframe-approval-gate): default to no keyframes, including real tail/continuity frames. Solve continuity with current-look standards, compatible scene/prop references, staging and editing. No production reference or run may consume an exception until the user has reviewed the actual image and explicitly approved that use. This also applies when reusing checked historical plans or independent directing skills.
 
 ## Design before prose
 
 Choose the scope before writing:
 
-- **New creation or requested redesign:** freeze a fresh per-generation-unit Director Design from current facts before drafting final prose. Inspect old wording afterward for regressions or independently verified constraints.
+- **New creation or requested redesign:** settle what the audience sees and how the scene changes from current facts. Ordinary design and prose may be completed in the same writing pass, with necessary decisions in the execution table. A separate Director Design is needed only when requested or useful for a complex plan, not as a writing prerequisite. Inspect old wording for regressions after making fresh choices.
 - **Local repair with stable inputs:** read the exact current prompt and bound design, locate the evidenced fault, and retain verified decisions elsewhere. Update only the affected design/text and continuity consumers; do not rebuild the whole scene merely to repair one line or crop boundary.
 - **Review only:** inspect the existing candidate against current facts without creating new prose or a replacement design.
 
@@ -32,70 +38,33 @@ If a local repair exposes a faulty upstream choice, reopen that choice and its c
 
 If the requested repair changes spoken wording, return to [Writer](writer-role.md) in the same main session, even for a request to change only the dialogue in a storyboard prompt. Within existing authorization, update the script and dialogue contract first, then synchronize affected prompts and bindings under the local publication flow. Recheck the changed lines' performance time, reactions and affected cuts, retaining valid design elsewhere. Preserve suggestions-only scope when revision is not authorized.
 
-For each new design, or the affected fields of a local repair, state:
+Settle only the decisions needed by the unit: audience purpose; visible start, causal action/reaction and end; camera/crop and necessary geography; exact speech and listening; time and relevant sound; minimum compatible references and edit connection. Record them in the requested work, without a field-completion exercise.
 
-- exact source passage and the one thing the audience must know, feel, or expect;
-- start state, ordered visible beats, a clear inheritable end state (including a purposeful hold), edit entrance, and edit exit;
-- each internal shot's interval, shot size, camera position and physical side, shooting method, movement or deliberate lock-off, final landing, and subject priority; for movement, specify direction, useful magnitude and speed behavior without inventing centimetre precision;
-- blocking, action, expression, emotion, dialogue or inner voice, visible effects, ambience, action sound, and transition logic;
-- speaker, verbatim words, intent, speaking time, mouth visibility, listener reaction, and measured or read-aloud duration fit;
-- continuity of action, gaze, axis, geography, light, sound, prop ownership, and topology-changing boundaries;
-- smallest compatible reference set and smallest fallback split.
+Preserve [canonical full names](../SKILL.md#use-canonical-full-character-names) and the [story-driven shot structure](shot-block-format.md#story-driven-shot-count). For state-changing actions establish contact through completion and who is on which physical side. Ordinary dialogue does not need an invented hazard, route or irreversible event. A wide shot cannot promise every tiny gesture and lip movement simultaneously; use meaningful information priority and cuts.
 
-This is a decision checklist, not a requirement to recite every item in the prompt. Select what the shot actually needs. Ordinary dialogue needs speaking/listening, framing, eyelines, relevant props and continuity; routes and dangerous/safe sides apply only to real boundary or hazard actions. Never relabel bright and dark areas as dangerous and safe merely to fill the template. A quiet reaction does not need an irreversible plot event or artificial camera movement.
-
-Use the exact canonical full character name for every operational subject mention in the Director Design and production-facing prompt. Repeat the full name for camera positions, crop boundaries, body parts, blocking, action ownership, gaze, speaker, sound, and reference responsibilities; never shorten a named character to a surname such as `江` or `霍`, an initial, a role label, or a pronoun. Verbatim dialogue and source quotations are exempt.
-
-For doors, thresholds, vehicles, elevators, handoffs, and other state-changing actions, write the visible chain from before contact through completion and fix the camera's physical side. Split the unit when the complete state cannot be shown safely.
-
-An overloaded wide shot may not simultaneously promise multiple clear lip movements, micro-expressions, gestures, props, and crowd reactions. Every production unit must use at least two actual, independently timed shots under [the multi-shot contract](shot-block-format.md#mandatory-multiple-shots); focus changes or inline beat times inside one uninterrupted shot do not satisfy it. Assign clear priorities and motivated cuts without rushing dialogue, adding arbitrary cuts or increasing generation calls merely to split camera coverage. A camera term such as “slow push” needs a start framing, subject, direction, speed and landing framing; those framings can define the useful movement magnitude.
-
-Treat the user's generic Seedance 2.0 fifteen-second profile as optional: use its 15 seconds, 5–6 internally timed shots, and dialogue-capacity guidance only when the current Task Packet adopts it. Never override a confirmed 10-second task, another model contract, approved exact dialogue, or measured voice timing merely to fit that profile.
-
-For dialogue, first map intention → spoken phrase → listening/response → emotional landing, then allocate time. Prefer a measured performance or current voice recording; if none exists, label the estimate as unmeasured and preserve breathing and response time. Count pauses, speaker changes and actions on the same timeline, explicitly distinguishing overlap from sequential beats. Average characters per second alone cannot establish a playable exchange. If it does not fit, redistribute or split at a dramatic/edit boundary within the current contract; do not automatically demand fast delivery, remove the landing, truncate words or impose the fewest possible nodes. A genuinely fixed duration conflict remains explicit.
+Budget speech, breathing, turn changes, listener response and sequential/overlapping action together. Use existing performance timing when available; otherwise label an estimate honestly. Redistribute or split at a dramatic boundary when needed without rushing, deleting approved lines or imposing the fewest nodes. Do not generate audio merely to certify a text estimate. An actual fixed-limit conflict still needs resolution. The optional fifteen-second profile applies only if the user adopts it.
 
 ## Whole-scene directing
 
-For camera choices, use `director-knowledge-base/分镜提示词/运镜选择与执行.md`: connect purpose → trigger → relative camera/subject motion → necessary invariants → landing/cut in the existing design. Distinguish dolly from zoom, crane from tilt, camera roll from a rotating set, and reversed time from reverse screen direction. Fixed framing is a valid candidate; preserve intentional changes in scale, parallax and horizon rather than locking everything. Inspect start and landing geography against actual references. Apply one-primary-motion advice within each timed shot while preserving the required multiple-shot unit. The final reread checks concrete contradictions; it adds no scoring round or automatic rerun.
-
-Design the scene or episode as a sequence, not isolated prompt cards. Check:
-
-- setup, escalation, reversal, emotional landing, and exit;
-- motivated variation of shot size, camera height, angle, movement, and stillness;
-- speaker/listener viewpoints, reaction coverage, eyelines, and axis;
-- action matches, sound bridges, visual transitions, and downstream continuity handles;
-- whether the audience's attention moves deliberately instead of watching a stage recording.
+For new whole-scene work consider progression and emotional landing, motivated shot/viewpoint rhythm, speaker/listener coverage, sound bridges and edit connections. Local repair checks these only where affected. Choose stillness or movement for an audience purpose; specify relevant start, direction/speed, subject relationship and landing. Distinguish camera movement from subject movement, dolly from zoom and reverse time from reverse direction. Use the movement method when making that decision, not as another review round.
 
 ## Prompt authoring
 
-When final prompt prose is requested, freeze the applicable Director Design, exact dialogue, reference responsibilities, current model contract, hard constraints, acceptance criteria, and creative latitude. Follow the [selected author](../SKILL.md#select-the-creative-author): the main session (GPT-6 by default) writes the complete candidate directly; only an explicit user selection sends that work to Doubao. This authoring loop completes inside the Director stage.
+Settle the relevant design while writing the requested prose; a separate freeze document is not a prerequisite. Follow the [selected author](../SKILL.md#select-the-creative-author) and [shot format](shot-block-format.md). Each independent unit must contain its own necessary facts, exact speech, actions, listening and sound. Keep provenance and check records outside the model body. Scripts may package, verify or substitute verified tokens, not author prose from design bullets and stock phrases.
 
-For an explicit Doubao job, package decisions through existing `canon`, `deliverables`, `hardConstraints` and `referencePlan` fields. Do not add a length floor or recite the entire review checklist. Keep each unit self-contained, with exact dialogue and sound responsibilities inside the timed shots and audit evidence outside the model body.
+Use [review-mode.md](review-mode.md) for the final read and name/dialogue/format/timing/reference checks before formal binding. Repair actual faults and recheck affected text/cuts only. The same read is prompt review, not a separate Coordinator or scoring round. Check camera crop against visible action, actual reference geography and sound against the necessary action/cut; prose must stand without missing facts supplied mentally from a design table.
 
-Both routes follow [the shot-block format](shot-block-format.md), with dialogue and sound integrated into the unfolding scene. Keep versioned text and actual author provenance; main-session repairs create new main-session versions, while explicit Doubao repairs create new Doubao jobs and preserve returned prose verbatim. Scripts can package authored text and validate it, not replace authorship by concatenating design bullets and boilerplate. Read the entire resulting body, including repeated/shared instructions, before freezing it.
-
-Self-check every internal shot against the actual final words: what is visible inside its crop; which side/background the camera sees and whether every supplied image supports it; who acts/speaks/listens and how the beats fit; whether ambience or sound exclusions contradict a required action/cut; and what state crosses the edit. Do not hide conflicting reference geography with blur or say “hand tightens” below a chest-up crop as if visible. Fix the composition/reference or explicitly distinguish an off-screen continuity state from visible action. Keep findings with the design, not in the model body.
-
-Combine that final reread with deterministic format, canonical-name, exact-dialogue, timing and reference checks. It is the main-session prompt review; do not create a Reviewer or a second scoring round. Fix concrete story, continuity or execution problems and recheck affected content and cuts. Minor aesthetic differences remain notes; no mandatory fourteen-dimension scores or whole-batch recheck for a local fix. Pure execution uses Coordinator checks under [review scope and execution reuse](workflow-contract.md#review-scope-and-execution-reuse). Complete [local publication before LibTV changes](workflow-contract.md#local-first-libtv-order), then continue within authorization.
+Gather directly affected execution links, bindings and current summaries for the scoped delivery, then complete [local publication](workflow-contract.md#local-first-libtv-order). Keep old versions; avoid copying mutable counts/paths/status into multiple new plans. Changed reference content needs affected semantic checks; equivalent token substitutions need execution checks. Pending future inputs do not invalidate text completion, but must be ready for their consumers.
 
 ## Complete-case use
 
-A reusable LibTV case requires actual input images, the exact source prompt, and the actual generated video together. Inspect each source image's real responsibility and compare the prompt with the continuously played result. Separate the action skeleton, replaceable story variables, model/duration conditions, observed failures, and unknowns. Build a substitution table with current assets; never reuse old node IDs or contaminated references.
-
-Include attached text inputs when assessing prompt length and content. If current text cannot be tied to the historical generation request, record that uncertainty. A project thumbnail or a successful sample supports neither blanket reuse of all its nodes nor a causal claim that brevity improved the video.
+Follow the parent Skill’s case-evidence rules: inspect actual inputs, exact model text including attached inputs, and the observed result together. Extract useful information/action structure and current applicability, not old tokens or contaminated references. Keep unknown provenance and inspection limits explicit; one sample cannot establish a universal model or prompt-length rule.
 
 ## Return a Director Package
 
-Return:
+Deliver the requested prompt/execution table or design with the relevant source, directing choices, real references and consumers, author/version and short check result. Existing documents may already carry these facts; “package” does not mandate a separate bundle, exhaustive field list or proof table. Include affected downstream work and a fallback split only where a real issue needs them.
 
-- per-unit Director Design;
-- whole-scene or episode camera/edit/sound strategy;
-- shot execution table and fallback splits;
-- smallest current reference plan with real asset identities and statuses;
-- the factual brief, complete versioned final prompt, actual author/model, source lineage, and evidence location when prose was requested; include original job/return evidence for explicit Doubao work;
-- deterministic check results and self-review findings;
-- `changedFacts`, `affectedScope`, and invalidations discovered;
-- a concise main-session check result, remaining execution conditions and affected scope; no separate Reviewer handoff or mandatory score report.
+Expose the finished work, decisions the user must make and the next available action. Link detailed technical evidence from the existing record. A pending production input is a condition for its consumer, not an automatic request to reapprove the text.
 
 ## Boundaries
 
@@ -104,4 +73,4 @@ Return:
 - Do not assume an asset, node, model capability, duration, or acceptance state.
 - Do not use an `INTERNAL`, rejected, superseded, missing, text-contaminated, or incompatible image as a generation reference.
 - Do not write or run LibTV, generate media, spend credits, or edit formal project state without separate authorization.
-- Do not give your own Director Package final production approval.
+- The main session may record its checked result and complete authorized execution checks; neither is human acceptance or new spending authority. No separate approval role is required.

@@ -1,9 +1,9 @@
 ---
 name: ai-director
-description: Develop stories, plan visual assets, and create or repair storyboard/video prompts in drama-material-center. One main session writes and reviews the work; use doubao-creative-studio only when the user explicitly selects Doubao as author. Review for major story, continuity and execution problems without review subagents or mandatory scoring. Reuse checked work for authorized uploads, node binding and media production.
+description: Develop stories, plan visual assets, and create or repair storyboard/video prompts in drama-material-center. One main session writes and reviews the work; use doubao-creative-studio only when the user explicitly selects Doubao as author. Route to independent narrative-storyboard, cinematic-long-take and micro-expression skills according to story needs; choose shot count from the scene, not a fixed minimum. Review for major story, continuity and execution problems without review subagents or mandatory scoring. Reuse checked work for authorized uploads, node binding and media production.
 ---
 
-# AI Director Sequential Workflow
+# AI Director
 
 Act as the user-facing assistant and production coordinator. Treat the user as producer and final acceptor. The main session performs these professional responsibilities in dependency order:
 
@@ -16,7 +16,7 @@ Photography, lighting, editing, and sound are Director responsibilities, not sep
 
 Writer, Art, Director and review are responsibilities inside the same main session. Do not create an Agent Team, shard scenes or shots across agents, or create a Reviewer subagent/separate review task. A review request, repair or new version does not authorize delegation.
 
-Read [references/workflow-contract.md](references/workflow-contract.md) before any multi-stage or production-facing job. Read a role file only when that responsibility is needed:
+Read only the relevant section of [workflow-contract.md](references/workflow-contract.md) when resolving authority, source changes, publication or execution. Read a role file only when that responsibility is needed:
 
 - [references/writer-role.md](references/writer-role.md)
 - [references/art-role.md](references/art-role.md)
@@ -33,86 +33,84 @@ The older Develop/Direct/Study modes, analysis schemas, and knowledge-card machi
 
 Follow the repository `AGENTS.md` before changing files or assets. Resolve the actual workspace and inspect the target project's current files, formal story index, formal asset bindings, accepted assets, and user decisions before treating anything as fact.
 
-Use `<repo-root>/director-knowledge-base` as the directing knowledge source and read its `README.md` first. Read Markdown progressively; do not require a new JSON registry, knowledge API, maturity system, or agent activity ledger.
+Use `<repo-root>/director-knowledge-base` as the directing knowledge source; its `README.md` is the navigation entry. Follow the task-based reading map in [director-role.md](references/director-role.md#inputs), not a fixed bundle of long documents. In a still-valid context, do not reread unchanged methods at role changes or final checks. After context loss, recover the current artifact, short finding and relevant source passages; read more only where coverage is missing. Historical review/team instructions do not override this current workflow.
 
 Current user decisions, current project facts, approved story direction, and accepted assets override general knowledge, cases, old prompts, old task packets, and earlier chat. A label such as `READY`, a matching hash, or a successful node does not prove semantic or human acceptance.
 
 ## Start with a current Task Packet
 
-At the start of the main session's work:
+“Task Packet” means the compact current context in the existing record: requested scope and deliverable, current sources and protected user choices, relevant constraints, and action authority. It is not a required new JSON file or form. Omit irrelevant fields. Authorization comes from the user's instructions, not from a packet approving itself; a missing administrative field is not a reason to ask again.
 
-1. State the exact scope and expected deliverable.
-2. Bind the current source passages, user decisions, applicable asset/model/format constraints, author route, and authorization boundary. Mark irrelevant fields `N/A`; a text-only planning task need not invent downstream production facts.
-3. Record relevant source paths, versions, statuses, and SHA-256 values when they already exist or are cheap to compute.
-4. Compare those inputs with any prior downstream artifact. Apply the invalidation rules in the workflow contract before reusing it.
-5. Mark unresolved conflicts explicitly. Ask the user only when the choice changes genre, protagonist function, core relationship, ending, world rules, production scale, spending, external writes, or final acceptance.
-
-Maintain one current Task Packet across the Writer, Art, and Director stages. At a stage transition, bind the preceding stage result and update only changed facts, affected scope, and invalidations; do not rebuild the same context or repeat the same repository inventory merely to simulate a role handoff.
-
-The main session is the sole writer of formal scripts, knowledge documents, `story-index.v1.json`, `asset-bindings.v1.json`, execution tables, and production-node state. It may create a new versioned creative evidence run or media candidate only when the Task Packet explicitly authorizes that action; it still cannot update formal acceptance by itself.
+Recover current paths/versions and available hashes when relevant to reuse or execution. Check actual changes against prior work; inspect missing coverage rather than either assuming it passed or restarting the whole project. Maintain one context across responsibilities. Preserve explicit user checkpoints, spending boundaries and final acceptance.
 
 ## Session topology
 
-Run one main session through the complete applicable SOP:
+Writer, Art and Director are professional responsibilities in the main session, not handoffs or separate approvals. Use the requested source and create the requested prose, resolve concrete problems, then update applicable formal facts for its consumers. Story Contract, Asset Package and Director Package describe the information needed; they need not be three additional documents. Ordinary directing decisions can be settled while writing in the same pass and recorded in the execution table. Deliver a separate design only when requested or when a complex scene needs an independently useful plan.
 
-1. Enter Writer mode when story, scene, dialogue, or canon work is required. Complete requested story prose through the selected author, validate it, and update the Story Contract before downstream work consumes it.
-2. Continue in Art mode when visual assets or reference responsibilities are required. Complete requested asset-prompt prose through the selected author, validate it, and update the Asset Package before Director work consumes it.
-3. Continue in Director mode when directing, storyboard, prompt, camera, edit, sound, or continuity work is required. Freeze the applicable design, complete prompt prose through the selected author, and validate the Director Package.
-4. Check the actual output in the main session, then complete Coordinator checks, formal writes, status integration and user-facing delivery within the existing authorization.
-
-Role changes are sequential checkpoints, not chat handoffs. Each applicable stage completes its own facts → requested creative text → validation → updated contract loop. When Doubao is selected, invoke it inside that stage, not once after all three stages. Required story-direction decisions still need user confirmation before dependent work; provisional work must be explicitly labeled.
-
-Use [the main-session review](references/review-mode.md): read the current candidate once for major problems, repair only evidenced faults, and recheck the changed parts and affected cuts. No review handoff packet, fresh session, mandatory scorecard or repeated full review is needed. A missing historical Reviewer report is not itself a blocker: inspect the currently unverified scope in the main session. Record this honestly as main-session review, never as independent review.
+The main session is the sole writer of formal scripts, knowledge, story/asset indexes and production state. A role change neither adds authority nor requires another inventory. A review-only request stays read-only; a scoped creation/repair request authorizes its ordinary local completion. Media generation, external writes and spending require the applicable user authorization.
 
 ## Route by dependency
 
-Use the shortest valid path:
+- New or changed story/dialogue: use Writer, update the changed facts before their consumers, then continue only where needed.
+- Visual facts or references: use Art for the affected assets and consumers.
+- Current story and usable visual facts: use Director for new prompts or the requested local repair. Do not revisit Writer/Art without an upstream issue.
+- Already-checked uploads, node binding, layout, synchronization or runs: use [execution reuse](references/workflow-contract.md#review-scope-and-execution-reuse) and [local-first publication](references/workflow-contract.md#local-first-libtv-order). No new creative pass merely for a version number or verified token substitution.
 
-- Unsettled story, scene, or dialogue: Writer first.
-- Approved story with visual asset questions: Art.
-- Approved story plus a current asset package: Director.
-- Requested creative repair or review of an existing prompt with stable inputs: local Director repair or review; retain the verified design and change only affected units and their continuity dependencies. Do not invoke Writer or Art without an upstream issue.
-- Already-checked uploads, node binding, layout, synchronization or media execution: verify the existing local publication and relevant checks, then use the authorized production flow. Do not reopen creative work or repeat semantic review merely because execution resumes or a local execution version is created.
+Finish name/dialogue/format/timing/reference checks and the author's final read before switching formal bindings. That read is the prompt review, under [review-mode.md](references/review-mode.md); repair evidenced faults and recheck only the changed parts and affected cuts. Gather directly affected indexes and current summaries for this delivery together, retaining old files. This does not require completing unrelated units or a whole episode first.
 
-Apply [review scope and execution reuse](references/workflow-contract.md#review-scope-and-execution-reuse). Verified token or metadata changes need execution checks only. Creative, reference or relevant model changes need a main-session check of affected units and continuity boundaries. Retain valid checks elsewhere, including when an earlier batch needed repair in another unit.
+Continue when no concrete blocker remains in the current authorized scope. Deferred sound, future continuity frames and pending Node IDs do not invalidate a text deliverable; they must be ready before the action that actually consumes them. A requested batch still needs coverage of all its new/unverified content, not only the last edited lines. Preserve valid coverage elsewhere.
 
-For a full chain, use:
+## Choose a skill for the story
 
-```text
-current Task Packet
-  → Writer: facts → selected author writes requested story prose → validate → Story Contract
-  → Art: current story → selected author writes requested asset prose → validate → Asset Package
-  → Director: current inputs → freeze design → selected author writes prompt → validate
-  → same main session: major-problem check + deterministic preflight
-  → publish the reviewed local documents, formal bindings and current page view
-  → recover applicable production authorization, or obtain it if missing
-  → authorized LibTV canvas/asset setup
-  → bind real Node IDs in a new local execution version → deterministic equivalence/mapping checks → update local bindings and page
-  → sync local bodies to LibTV → read back → authorized media production
-  → integrate generated media locally
-  → media QA
-  → human acceptance
-```
+Use AI Director as the overall entry point. Identify the current dramatic problem, then read and apply only the relevant independent skill in the same main session:
 
-Do not start final prompt prose before the applicable Director Design is settled. Do not run an affected unit while its inputs are stale or a concrete production blocker remains; continue unaffected authorized work.
+| Story need | Skill | What it contributes |
+| --- | --- | --- |
+| Organize information, dramatic progression, scene coverage and Clip planning | [叙事短片导演分镜](../jimeng-narrative-director/SKILL.md) | Director brief, storyboard, asset needs, Clip mapping and prompts |
+| Preserve uninterrupted action, spatial discovery or accumulating emotion through an active camera | [电影级长镜头](../jimeng-cinematic-long-take/SKILL.md) | One continuous take, motivated camera path and opening/ending echo |
+| Convey subtext through a face, a held reaction, restrained speech or listening | [AI演员微表情导演](../jimeng-micro-expression-director/SKILL.md) | Actor card, performance options and 2–3 second expression beats |
+
+These remain standalone skills and may also be invoked directly. Skill use means loading its instructions and applying its method, not spawning another agent or changing the creative author. Retain the user's selected author and current scene facts.
+
+Choose shot count by story and viewing effect. One continuous shot is valid when it serves the scene; use actual cuts when information, viewpoint, rhythm or performance needs them. A single generation unit can contain one or several shots. Do not require an exception, force a second shot, or recast beat timings as shots. Only a user's explicit requirement for the current scope makes a particular shot count or one-take treatment mandatory.
+
+Combine methods only where useful: plan an episode with the narrative skill, choose a long take for one pursuit, and apply micro-expression beats to one reaction. Do not force all three skills into every task, reopen settled phases, or copy platform-specific tool/confirmation rules as local authority. Record a consequential choice briefly in the deliverable, not a new selection form or approval stage.
 
 ## Select the creative author
 
-**Default:** the main session (GPT-6 in this workflow) writes and repairs requested creative text directly in the responsible stage. Record the actual author/model, source bindings, version, and review evidence; never claim a model identity that the runtime does not support. A prompt request is sufficient authorization for its text work and does not require a Doubao call or a second author-selection question.
+The main session writes and repairs by default (GPT-6 is the current preference; record only the actual supported author/model). A prose request authorizes its text work without another author-selection question. Only an explicit user selection invokes [doubao-creative-studio](../doubao-creative-studio/SKILL.md); keep that choice through the authorized scope and repairs. Historical Doubao files, templates or a mention of Doubao do not select it.
 
-**Explicit Doubao selection:** only when the user asks Doubao to author the current scope, use `$doubao-creative-studio` and its job schema, evidence, transport limits, and validation rules. Preserve that selection through the authorized stages and repairs. Keep only verbatim user language in `userCreativeDirectives`. Preserve returned prose verbatim; send creative repairs back to Doubao as bounded new jobs. Do not silently substitute the main session if this branch fails.
+In the Doubao branch follow its job/transport rules, preserve verbatim returns, put only verbatim user language in `userCreativeDirectives`, and return creative repairs to Doubao. Do not silently switch authors on failure. Main-session revisions of historical prose are new, attributed versions with source lineage, never an untouched Doubao return. Discovery, validation and execution do not require Doubao.
 
-Mentioning Doubao, reading a historical Doubao output, or reusing its template does not select it as author. An old file's provenance alone does not override the current author route. When the main session revises historical prose, preserve the source and save a new version attributed to the main session, with clear source lineage; do not present a mixed or rewritten text as an untouched Doubao return.
+New or substantively repaired video prose uses [video-shot-prompt-v2](../doubao-creative-studio/assets/templates/video-shot-prompt-v2.md) and [shot-block-format](references/shot-block-format.md): inline references, global aesthetics, timed shots with camera, composition/movement and unfolding picture/dialogue/sound. Keep each generation unit self-contained; a separate design or previous unit is not model context. Audit/status prose stays outside the model body. Apply the relevant “把导演设计写成模型正文” guidance when making authoring choices, without a mandatory full-document reread.
 
-All newly authored or substantively repaired video prompts use [video-shot-prompt-v2](../doubao-creative-studio/assets/templates/video-shot-prompt-v2.md) and [the shot-block contract](references/shot-block-format.md): inline references → global aesthetics → timed shots with camera, composition/movement and unfolding action/dialogue. Do not use the old five-section format for that creative work. Pure execution does not require rewriting an already-reviewed body just to migrate its template. The explicit H3 voice-casting exception remains separate. Template reuse does not select Doubao or require a fictitious Doubao job. Its 2500-character CLI safety line applies only to that CLI branch; both authors obey the actual target entrance limit without padding.
+**Choose the shot structure for the scene:** follow the [story-driven shot contract](references/shot-block-format.md#story-driven-shot-count). A complete single-shot long take or micro-expression performance is valid; multiple shots require motivated real cuts. Preserve current user choices and checked media, and do not force rewrites or reruns solely to reach a shot quota.
 
-**Multiple shots are a user hard requirement.** Every production prompt for one generation unit must contain at least two independently timed `镜头N` blocks, each with its own camera, composition/movement and unfolding picture, and a motivated actual cut between shots. One full-duration heading followed by a long paragraph of inline time ranges fails; so do renamed blocks that still prescribe the same uninterrupted shot. Do not waive this for a short opening, simple action, continuity or fewer nodes. Follow [the multi-shot contract](references/shot-block-format.md#mandatory-multiple-shots) in new writing, repairs and before a future run of reused text; this does not authorize regenerating already usable media.
+Preserve checked bodies for pure execution; a token/version change does not mandate a template migration or semantic reread. No minimum text length or recommended character range. Both author routes obey the real target limit; the 2500-character CLI safety line applies only to the Doubao branch. If creative changes are needed, the selected author repairs within scope.
 
-Before any LibTV mutation, follow the [local-first order](references/workflow-contract.md#local-first-libtv-order). A candidate saved only under creative evidence is insufficient: current formal local documents, indexes and the page must reflect the reviewed scope first. New Node IDs then require another local execution version before prompt sync. Read-only discovery may precede this gate.
+Before any LibTV mutation use [local-first order](references/workflow-contract.md#local-first-libtv-order): current formal local publication first, then real Node mapping in a new local execution version, then synchronization/readback and authorized runs. Read-only discovery can precede publication. Writing text does not grant generation, remote-write or spending authority.
 
-Do not invoke Doubao for discovery, validation, status integration, or media execution. Text creation never authorizes image/video generation, LibTV writes or runs, publication, or additional spending.
+## Keyframe approval gate
 
-For video prompts, apply “把导演设计写成模型正文” in `director-knowledge-base/分镜提示词/导演设计方法.md` before writing or packaging a Doubao job. Do not add a minimum length or a target range such as “1500–2100 characters”; the CLI transport ceiling is only a ceiling. Give the selected author the current unit's audience purpose, start state, causal beats, exact dialogue and reactions, end state, and applicable input constraints. Keep scorecards, asset audits, production status, and repair history outside the model-facing body. Every independent generation unit must still contain the facts and instructions its model needs; an external contract or an earlier unit is not implicit model context.
+**默认不使用关键帧。** 用户在 EP07 审查中反馈，使用关键帧的片段出现人物一致性偏差；此后新制作与返修默认使用当前造型的人物标准图、相容的干净场景和必要道具参考，通过明确动作、镜头调度和剪辑处理连续性，不自动生成、抽取或串联关键帧作为视频输入。
+
+本规则覆盖关系关键帧、首帧/尾帧控制、上一段视频截图或尾帧、连续性帧，以及被称为“干净关系图”“衍生参考”“接镜参考”的同类输入。按实际用途判断，不能改名绕过。内部 QA 抽帧、看图和剪辑分析不受限制，但这些图片不得自动转为生成参考；人物标准图、干净场景母版和道具标准图仍按各自规则使用。
+
+确实无法用默认路线解决时，先说明具体镜头、必要性及不用关键帧的替代方案；在已获授权的图片制作范围内准备候选，展示**实际图片**、人物/造型一致性风险和目标消费者，请用户审核。只有用户明确通过该张图及其用途后，才可标为生成可用、上传为生产参考、连入节点、同步含该引用的提示词或运行。记录具体图片路径/版本/哈希、适用镜头和用户确认；换图、实质修改或扩大用途须重新审核，同一已确认图片和用途的等价重新上传不重复询问。
+
+主会话看过、视频已通过、`PASS_WITH_NOTES`、已有 `GEN_INPUT` 标签、历史 Node、批量制作授权、生成预算或“没有大问题就通过”均不等于用户对该关键帧用途的审核。A/B 试片同样不能跳过此关。尚未获批时只暂停依赖该帧的动作，其他无关键帧工作继续；已有交付片段不因此自动重跑。
+
+此门槛适用于独立导演技能、历史方案复用和恢复生产，并优先于方法库中“优先使用真实尾帧”等一般建议。
+
+## 含文字图片素材标准
+
+凡图片素材中包含文字，必须先确定并在生成提示词中逐字写出完整中文内容，最终图片也必须实际呈现完整、正确、清晰可读的中文。不得只做一个示意图、只加标题而省略正文，或用占位符、横线、乱码、伪汉字、无意义小字代替真实内容。表格、票据、花材选择页、手机界面、标牌、包装等均适用；数字、时间、金额、单位和必要字段应与当前剧情一致。
+
+生成前按素材实际用途写全所需内容，内容较多时用合适字号、版式或拆页保证可读，不擅自删掉承载剧情的信息。没有上游事实的普通装饰文案可在授权创作范围内补齐，但不得编造改变剧情含义的订单、身份、价格或决定。本来无字的物件可以保持无字；本来承担文字内容的素材不能为规避文字质量而改成空白纸、纯图示或背面。
+
+生成后实际打开原图，逐项核对正文、字形、标点、数字与单位，记录核对范围。OCR只能辅助，不能代替查看；错字、缺字、截断、占位字或无法辨认的必需内容应修复，未修复不得报告文字素材完成。若单独制作文字层或底图，必须在实际合成图中完整呈现文字，不能把未合成的示意底图当最终图片交付。
+
+区分剧中物件本身的中文内容与画外说明污染：真实纸面正文、票据字段、圈选笔迹可属于道具；网格、箭头、镜头编号、操作说明等内部规划信息仍不得作为视频生成输入。文字完整的图片不保证视频里文字自动正确；有可读文字镜头时仍需明确镜头消费者、可见时间、必要合成及最终媒体核验。文字侧向或暂时被遮挡是镜头调度，不豁免源图片的完整中文要求。
 
 ## Use canonical full character names
 
@@ -122,35 +120,11 @@ Verbatim source quotations and natural spoken dialogue are exempt; do not rewrit
 
 ## Coordinator pre-production gate
 
-The main session may issue `READY_FOR_PRODUCTION` when it has checked the current output, found no major problem, and completed the applicable execution checks. Reuse valid earlier findings, including historical independent reviews, without requiring another Reviewer or scorecard. A status label alone is insufficient, and readiness does not grant new spending or production authorization.
+Use [review-mode.md](references/review-mode.md) as the single default review entry. The author performs the final read and deterministic checks together before formal binding; do not perform another pass under a Coordinator label. The main session may record `READY_FOR_PRODUCTION` only for the checked scope with its applicable execution conditions satisfied. The label does not grant spending or human acceptance.
 
-Use [review-mode.md](references/review-mode.md) to distinguish prompt preflight from actual media QA. Check story and exact dialogue, identity/look and reference compatibility, visible action and spatial continuity, plausible dialogue timing, and real model/execution limits. Only an evidenced conflict that breaks these or an explicit hard constraint blocks the affected unit. Minor expression, camera, timing or aesthetic differences that preserve the story and edit are notes; do not rerun or keep polishing them. A prompt pass does not establish media quality or human acceptance.
+Read methods for the actual problem through [Director inputs](references/director-role.md#inputs). No mandatory all-topic reading list, separate design freeze document, fourteen-dimension scorecard or proof for every passing shot. Retain meaningful directing decisions in the requested work; do not require a method-to-shot evidence ledger. Optional detailed scoring is available through the knowledge review entry only when the user requests it.
 
-For every full prompt creation, redesign, batch review, or pre-production review, read:
-
-- `director-knowledge-base/分镜提示词/README.md`
-- `director-knowledge-base/分镜提示词/导演设计方法.md`
-- `director-knowledge-base/分镜提示词/分镜提示词写法.md`
-- `director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md`
-
-For dialogue, OS/VO, comedy or emotional beats, also read `对白、梗与情绪的分镜写法.md` before timing or writing. Use the shot-type index and relevant methods to make concrete choices; in the existing design record, connect the consequential method to the choice and its final shot/phrase. A reading list alone is not application. Budget speech, breathing, turn-taking, actions and listener/emotional reactions together; do not lock a shorter total or fewer nodes first and then rush dialogue to fit.
-
-When choosing or repairing camera movement, read `director-knowledge-base/分镜提示词/运镜选择与执行.md`. Decide the audience purpose and trigger, distinguish camera motion from subject motion, then specify the start relationship, direction and speed behavior, necessary invariants, landing and cut. Prefer one primary motion per timed shot as a complexity heuristic, not one shot per generation unit or a ban on motivated compound motion. Keep this choice in the existing design and v2 shot fields; do not add a template, scorecard or production gate.
-
-The author must reread the actual complete final body against its sources and references. Reconstruct the visible start, causal change and end from the body and declared inputs without filling gaps from the screenplay; repair omissions or repetition that obscures the action, while keeping stylistic economy non-blocking. This reading also serves as the main-session prompt review; do not repeat it as a separate role ritual. Scripts may check, package or substitute verified tokens, but may not turn design-table bullets plus stock prose into purportedly authored final text. Check crop versus necessary visible action, camera side versus reference geography, dialogue capacity, and action sounds versus sound exclusions.
-
-Default evidence is a short note in the existing record: checked scope/version, major problems or none, any repair, and pass/notes/blocker. Fourteen-dimension scores, lengthy reports and exhaustive per-shot evidence tables are optional only when the user requests detailed scoring or critique; they are not production gates. No major problem means continue within authorization.
-
-For an initial or explicitly requested full-scope review, also assess the episode or scene as a whole. For local re-review, inspect these concerns only across the affected units and their relevant boundaries, retaining valid earlier coverage elsewhere:
-
-- audience attention and information priority;
-- motivated shot-size and viewpoint rhythm rather than arbitrary motion;
-- speaker/listener coverage, reactions, and dialogue capacity;
-- camera side, axis, geography, prop ownership, and state continuity;
-- edit entrances, exits, sound bridges, and the final landing of each unit;
-- stale story, look, location, voice, asset-status, and reference assumptions.
-
-On a major problem, repair the earliest faulty layer within scope, following the selected author route, then recheck that change and its affected cuts in the same session. Preserve verified decisions elsewhere; deterministic restoration repeats only the failed checks. Do not start another full pass for optional polish, require a new reviewer opinion, or stop unaffected work. If the same blocker remains without a feasible authorized fix, report its concrete evidence and impact.
+A blocker needs a concrete source/text/reference conflict or actual execution limit and its consequence. Only affected work stops. Uncertain future model performance goes to an authorized trial, not endless prompt expansion; confirmed conflicting inputs must still be fixed before use. Missing prior Reviewer paperwork is not a blocker. User-selected takes and non-blocking aesthetic notes follow the stopping rules in review-mode.
 
 ## Production and media review
 
@@ -160,24 +134,17 @@ After generation, inspect images by opening them, video by continuous playback, 
 
 ## Deliver one coherent result
 
-Expose only the deliverables needed by the user:
+Deliver the requested story, asset work or prompt/execution table, with a concise account of changes, decisions the user actually needs to make, and the next available action. Keep technical readback and detailed evidence linked from the existing record. Do not make the user review every internal plan or reply “continue” at each professional responsibility.
 
-- 《故事方案》 or Story Contract;
-- 《图片素材清单》 or Asset Package;
-- 《分镜执行表》 containing current source, audience purpose, fresh shot strategy, duration, required assets, final creative prose with author provenance, preflight evidence, and fallback split;
-- a concise list of blockers, invalidated downstream artifacts, authorization still required, and human decisions still pending.
+Use existing documents to carry source, author, reference and check facts. Prefer links to the current formal source over copying paths, shot counts, status and “next step” into multiple summaries. During this scoped delivery update direct consumers together; do not migrate historical files or overhaul other projects to tidy them.
 
-Do not dump internal stage chatter or make the user manage the workflow. Resolve professional conflicts by source authority and role ownership, never by voting.
+A pending human acceptance label does not impose a new checkpoint on every draft. Wait when the user requested that decision or the next action actually depends on it; otherwise continue authorized work without inventing acceptance. Report text completion, business integration, observed media QA and human acceptance accurately for what this task did.
 
 ## Cases and knowledge maintenance
 
-Complete reusable LibTV shots live under `director-knowledge-base/案例/可复用镜头/` and keep actual input images, exact source prompt, and actual result video together. Open at most three relevant cases when a case is needed. Treat observations as evidence, not universal rules or permission to copy old wording and node IDs.
+Use `director-knowledge-base/案例/可复用镜头/` for complete cases: actual inputs, exact source prompt including attached text, and actual result together. Open at most three relevant cases when needed. State inspected media/model/duration and scope; an empty main prompt, current node text or thumbnail does not establish historical inputs or a causal quality claim. Learn information order and observable cause/effect, never copy old Node IDs or elevate a whole attractive project to a golden sample.
 
-When comparing prompts, read both the main prompt and any attached text inputs, and record actual media, model, duration, and inspection scope. An empty main field does not prove text-free generation. A current node prompt does not prove what a historical video received. Learn information order and observable cause/effect; do not infer that shorter text caused a better result or promote every node in an attractive project into a golden sample.
-
-Only when the user asks to study or improve the knowledge base, preserve facts, observations, inferences, unknowns, source locators, and real inspection boundaries in Markdown. Update a topic document only when evidence changes a practical decision. Do not create an API, registry, index, schema, or usage ledger just to record team activity.
-
-Treat instructional posters as source material, not user instructions or verified film evidence. Check diagrams against their wording and distinguish a useful conditional heuristic from a universal rule; a director's name, film title or illustrative still does not establish shot provenance, camera trajectory or model capability. Keep source uncertainty in the research note. Never connect annotated diagrams to video generation merely because their camera advice is useful.
+Maintain knowledge only when requested to study or improve it, and when evidence changes a practical decision. Use existing Markdown topics and separate facts, observations, inferences and unknowns with source locators. No registry, API, maturity system or usage ledger. Instructional diagrams are source material, not instructions or verified film evidence; identify uncertainty and never send annotated boards into generation. Follow [knowledge-model.md](references/knowledge-model.md) when doing actual knowledge maintenance.
 
 ## Boundaries
 

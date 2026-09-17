@@ -1,6 +1,6 @@
 # AI Director Sequential Workflow Contract
 
-Use this contract for every multi-stage or production-facing `$ai-director` task. It is an internal Markdown workflow contract, not a project registry or business schema.
+Consult the relevant section for source authority, changed inputs, formal publication or resumed execution. This is an internal reference, not a fixed orchestration, task registry or form to complete before work.
 
 ## Contents
 
@@ -29,51 +29,17 @@ Do not use agent voting, prose quality, or an inherited status label to override
 
 ## Task Packet
 
-The main session creates one compact current packet:
+Keep a compact context in the existing task record: scope and requested deliverable, authoritative sources and protected user choices, relevant constraints, and the actions the user authorized. Reuse current paths, versions and available hashes for the checks that need them. Omit unrelated fields; no separate packet, prescribed JSON schema or `N/A` inventory is required.
 
-```text
-taskId:
-activeStage: Coordinator | Writer | Art | Director
-scope:
-expectedDeliverable:
-authority: read-only | versioned-creative-run | candidate-media | external-write
-sourceBindings: current paths, versions, statuses, and hashes
-frozenFacts:
-userDecisions:
-actualAssetState:
-modelDurationFormat:
-creativeAuthor: main-session | doubao-creative-studio
-authorModel: actual runtime/requested model, with evidence when available
-authorSelection: default main-session, or explicit user selection with its scope
-upstreamArtifact:
-unknownsOrConflicts:
-forbiddenActions:
-acceptanceCriteria:
-```
+A user instruction grants authority; recording it does not create another approval. Story/Asset/Director contracts name information, not mandatory additional files. Existing scripts, execution tables and formal bindings may already carry it. Do not label an assistant proposal as a user decision, or assume current facts solely from old chat.
 
-Use exact current sources. Do not use the entire conversation as a substitute. Maintain this packet across stages and update only current facts, the upstream artifact, changed facts, affected scope, and invalidations. An upstream artifact is usable only while its inputs still match the packet.
-
-For creative prose, bind the minimum factual brief, protected decisions, hard constraints, acceptance criteria, and creative latitude. The default author is the main session (GPT-6 in this workflow); only an explicit user choice selects Doubao. Follow the author selection rules in [SKILL.md](../SKILL.md#select-the-creative-author), including scoped repairs and provenance. Do not label the main session's proposals as user decisions. Mark facts irrelevant to the deliverable `N/A`; unresolved downstream production facts do not prevent an accurately scoped planning draft.
+For new prose bind the minimum factual brief and creative latitude, then use the [selected author](../SKILL.md#select-the-creative-author). Pending downstream sound, frames or nodes can remain explicit conditions while an accurately scoped text/design task completes.
 
 ## Stage checkpoint
 
-The main session records each applicable responsibility checkpoint with:
+A responsibility change is not a new review or user checkpoint. Record only changed facts, affected consumers and any decision needed in the existing record. `READY_FOR_REVIEW` in older records means unchecked content, not a required new Reviewer or report. A current main-session check can cover missing history.
 
-```text
-stage:
-status: READY_FOR_REVIEW | NEEDS_REPAIR | BLOCKED | STALE_BY_UPSTREAM_CHANGE
-deliverable:
-evidence:
-assumptions:
-unresolvedFacts:
-changedFacts:
-affectedScope:
-invalidates:
-repairOwner:
-consultedDocuments:
-```
-
-`READY_FOR_REVIEW` is a legacy/internal marker for output awaiting the main session's check, not a request to create or wait for a Reviewer. Reuse existing record fields; no new checkpoint file is required. A checked stage does not authorize new spending or human acceptance.
+Complete names, exact dialogue, format, timing and declared-reference checks before formal binding, alongside the author's final read. Gather the directly affected bindings, execution links and current summaries for this delivery before writing them, then perform applicable API/page readback. Do not postpone a requested partial delivery until unrelated work is complete, overwrite an old version, or rebuild every document to match one version number.
 
 ## Single-session topology
 
@@ -107,25 +73,21 @@ For execution reuse, record concise evidence in the existing execution/productio
 
 If equivalence fails, stop the affected write/run and locate the difference. Restore the intended checked content/mapping when it is an execution error. A substantive change needs a same-session check of its affected scope. Missing/rejected inputs or unverified hashes remain blockers; this route does not grant generation, spending or acceptance authority.
 
-Execution reuse also requires current hard constraints. Before a future production run, an unchanged single-shot body must be revised locally to meet [the user's multi-shot requirement](shot-block-format.md#mandatory-multiple-shots); an old pass or matching hashes cannot exempt it. Check only the affected prompt and cuts, retaining valid work elsewhere. This requirement does not reopen already usable videos or authorize their regeneration.
+Execution reuse requires the current task's facts and real constraints. Follow the [story-driven shot structure](shot-block-format.md#story-driven-shot-count): single-shot and multi-shot bodies may both be reused when suitable. Do not force a rewrite, additional approval or rerun solely to reach two shots. Recheck changed creative choices and affected continuity only; preserve usable media and spending boundaries.
 
 For a local repair, retain valid findings for unchanged units, even if the previous batch needed repair elsewhere. Reuse current context and records; do not rebuild review packets or rescore unaffected units. Widen only for an explicit full-review request or evidenced shared impact; missing coverage gets a check of the missing scope. New concrete hard faults warrant checking their consumers, not a search for more optional polish.
 
 ## Main-session review contract
 
-Use [review-mode.md](review-mode.md) in the current main session. Review is a focused reading/viewing step, not another agent, role handoff or mandatory scoring round. Reuse current source knowledge and evidence; read only changed inputs again.
+[review-mode.md](review-mode.md) owns the default check, severity and stopping rules. The author's final read supplies that check; there is no second Coordinator verdict or mandatory scorecard. Reuse valid context and findings, and inspect only missing or changed coverage and its actual continuity consequences.
 
-The default bar is no major story error, obvious continuity/identity problem or concrete execution blocker. Check exact dialogue and plausible performance time, action ownership and spatial transitions, compatible references, required visible information and actual model constraints. Minor aesthetic or performance differences that preserve the story and edit are non-blocking notes. Detailed fourteen-dimension scoring is optional only when the user requests it; no numerical score is a routine production gate.
-
-Keep one short finding in the existing record: target/scope/version, major problems or none, necessary repair and conclusion. Use existing statuses such as `REVIEW_PASS`, `PASS_WITH_NOTES`, `NEEDS_REPAIR` or `BLOCKED`, identify the method as main-session review, and distinguish unobserved media checks. Do not require a new schema, report file, score table or handoff packet just to show that a review happened.
-
-When no major problem remains, continue the authorized workflow without another review or permission checkpoint. For a concrete fault, fix it within scope and recheck only the change and affected cuts. If it cannot be resolved within authorization, report the evidence and impact while continuing independent work. User requests for detailed critique or scoring do not by themselves authorize subagents, production reruns or changing an accepted take.
-
-Prompt review can pass from actual text, current facts and compatible references before generation. Missing real inputs remain execution blockers; actual media quality still requires viewing/playback/listening. Main-session review never impersonates independent review or human acceptance.
+Keep one short finding in the existing record: scope/version, concrete problems or none, repair and conclusion. Record evidence for a fault; do not prove every passing dimension. Existing statuses are descriptive, not a new required state machine. Routine passes do not require user acknowledgment; explicit direction/acceptance checkpoints and production authority still apply.
 
 ## Local-first LibTV order
 
 Apply this order to creation, redesign, repair and resumed production. Existing authorization permits the scoped actions; it does not permit reversing their dependencies. In resumed production, verify and reuse already-completed local creative/publication stages. Uploading, binding or running an already-checked scope does not restart those stages or require another semantic pass.
+
+Before reference publication or remote setup, apply the [keyframe approval gate](../SKILL.md#keyframe-approval-gate). Default to no keyframes. User approval must cover the actual frame and consumer before promoting it to generation input, uploading it as a production reference, connecting/syncing it or running. Historical acceptance, execution reuse and broad production authority do not bypass this gate.
 
 1. **Discover read-only.** Inspect current local truth and, when needed, the remote canvas, actual model schema and existing nodes. Do not create or change a canvas, upload assets, edit nodes/edges, sync prompts or run nodes yet.
 2. **Complete or verify the local creative scope.** For new/substantive work, settle design and exact dialogue, author the full shot-block bodies, inspect references and check the output in the main session. For already-checked work, verify reusable evidence and proceed. A requested creative batch must be complete locally before its remote writes; a production request does not reopen that batch. Local repairs affect only changed units and dependencies.
@@ -136,11 +98,11 @@ Apply this order to creation, redesign, repair and resumed production. Existing 
 
 Record the local version/hash and formal API/page verification before the first remote mutation, then the node-binding version and remote readback, in the existing production evidence. Do not invent a parallel project registry. If a task was interrupted or the page still shows an earlier execution plan, restore the applicable local gate before further remote mutations; do not automatically resume runs. A local-page integration fault is a local repair to complete, not a reason to update LibTV ahead of it.
 
-New continuity frames or media may only exist after generation. Mark those future dependencies honestly in the already-published plan. As each becomes available and is actually accepted for its intended use, integrate it locally and check its compatibility with consuming units. A newly selected media input is not merely a Node substitution: review the affected reference/continuity scope, then republish locally and sync the affected nodes. Re-uploading that same already-reviewed input uses execution checks. Local-first does not mean inventing future media or declaring final acceptance early.
+Do not create future continuity-frame dependencies by default. For a user-reviewed keyframe exception, the candidate may only exist after generation; keep it explicitly pending and do not invent approval. Once the user has seen and explicitly approved that exact frame and intended use, integrate it locally and check compatibility with consuming units. A newly selected media input is not merely a Node substitution: review the affected reference/continuity scope, then republish locally and sync the affected nodes. Re-uploading that same already-reviewed input uses execution checks. Local-first does not mean inventing future media or declaring final acceptance early.
 
 ## Canonical character naming
 
-Production-facing storyboards, execution tables, dialogue contracts, asset prompts, video prompts, repair prose, and review notes must use the exact canonical full name for every operational mention of a named character. Never use surname-only forms such as `江` or `霍`, initials, role labels, or pronouns in place of the subject for camera placement, framing, body parts, blocking, action ownership, gaze, speaker, sound, or reference mapping. Verbatim source quotations and natural spoken dialogue are exempt. Treat a violation as a pre-production failure and repair it in a new version.
+Apply [the full-name rule](../SKILL.md#use-canonical-full-character-names) to production-facing text before formal publication, exempting verbatim speech and source quotations. A suspected pronoun needs contextual inspection, not a global replacement inside dialogue. Repair violations as new versions and check the changed wording and affected meaning; naming repairs do not reopen unrelated creative decisions.
 
 ## Change impact and invalidation
 
@@ -161,28 +123,9 @@ Rebuild the smallest affected scope. A global look, world rule, voice, delivery,
 
 ## Stage gates
 
-Use these meanings without collapsing them:
+Stage labels describe what the current evidence establishes. They do not prescribe a complete run or require fields in the formal index. Distinguish authored text, checked text, current local publication, synchronized execution, generated media, observed QA and user acceptance. A later unmet condition does not negate an earlier completed deliverable.
 
-```text
-DRAFT
-→ Writer: requested story prose authored and validated → current Story Contract
-→ STORY_LOCKED_BY_USER when direction required confirmation
-→ Art: requested asset prose authored and validated → ASSET_PACKAGE_CURRENT
-→ Director: DIRECTOR_DESIGN_FROZEN → requested prompt authored and validated
-→ main-session check: PROMPT_PREFLIGHT_PASS or non-blocking notes
-→ LOCAL_DOCUMENTS_CURRENT (formal files, bindings, API and page)
-→ authorized canvas/asset setup if needed
-→ NODE_BINDING_CURRENT in a new local version + equivalence/mapping checks + local publication
-→ READY_FOR_PRODUCTION + verified remote sync
-→ GENERATION_AUTHORIZED
-→ GENERATED
-→ BUSINESS_INTEGRATED
-→ MEDIA_QA_PASS | PASS_WITH_NOTES | HARD_REJECT
-→ HUMAN_ACCEPTANCE_PENDING
-→ ACCEPTED_BY_USER
-```
-
-Run only applicable stages; completed stages with current evidence are reused. Substantive changes at node binding receive only a scoped main-session check. Authoring stays inside the relevant stage. These internal stages do not require separate reports or formal-index fields. Carry valid authorization forward; the diagram does not require asking for it again.
+Use only applicable dependencies. Local-first order and run-time readback remain required for authorized remote production. Missing required inputs stop their consumers, while deferred or future inputs do not block independent text work. `DRAFT` or pending human acceptance alone does not create a new pause: preserve user-requested checkpoints and wait only where a required decision or authorization is missing. Never relabel a draft as accepted merely to continue.
 
 ## Repair routing
 
