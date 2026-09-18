@@ -9,6 +9,7 @@ const referencePattern = /\{\{Mixed\s+\d+\}\}|@图片\d+|<Subject\s+\d+>|\{\{Nod
 const close = (left, right) => Math.abs(left - right) < 0.000_001;
 
 export function validateShotBlockPrompt(output, contract) {
+  if (contract?.format === "single-level-shots" || /^### \d+(?:\.\d+)?s–/m.test(output)) return validateSingleLevelShots(output, contract);
   const errors = [];
   const duration = Number(contract?.durationSeconds);
   if (!Number.isFinite(duration) || duration <= 0) errors.push("durationSeconds must be positive");
@@ -40,7 +41,7 @@ export function validateShotBlockPrompt(output, contract) {
   const actualRatio = global.match(/^画幅：[ \t]*(\d+(?:\.\d+)?:\d+(?:\.\d+)?)/m)?.[1];
   if (actualRatio !== ratio) errors.push(`画幅 must start with the contracted ratio ${ratio}`);
 
-  const shotPattern = /^镜头(\d+)｜(\d{2,}):([0-5]\d(?:\.\d+)?)—(\d{2,}):([0-5]\d(?:\.\d+)?)｜(\d+(?:\.\d+)?)秒[ \t]*\r?$/gm;
+  const shotPattern = /^镜头[ \t]*(\d+)｜(\d{2,}):([0-5]\d(?:\.\d+)?)—(\d{2,}):([0-5]\d(?:\.\d+)?)｜(\d+(?:\.\d+)?)[ \t]*秒[ \t]*\r?$/gm;
   const shots = [...output.matchAll(shotPattern)].map((match) => ({
     index: match.index,
     headingEnd: match.index + match[0].length,
@@ -49,7 +50,7 @@ export function validateShotBlockPrompt(output, contract) {
     end: Number(match[4]) * 60 + Number(match[5]),
     printedDuration: Number(match[6]),
   }));
-  const declaredShots = [...output.matchAll(/^镜头\d+[^\r\n]*/gm)];
+  const declaredShots = [...output.matchAll(/^镜头[ \t]*\d+[^\r\n]*/gm)];
   if (shots.length !== declaredShots.length) errors.push("malformed shot header; use 镜头N｜MM:SS.d—MM:SS.d｜X秒");
   if (shots.length === 0) errors.push("at least one complete timed shot block is required; inline beat times do not count as shots");
   if (shots.length && shots[0].index < actionStart) errors.push("shot blocks must follow 正文：分镜执行动作");
@@ -70,9 +71,32 @@ export function validateShotBlockPrompt(output, contract) {
     const combined = position("构图[／/、]运镜");
     const composition = combined >= 0 ? combined : position("构图");
     const motion = combined >= 0 ? combined : position("运镜");
-    const picture = position("画面");
+    const picture = contract?.timedBeats ? body.search(/^画面：[ \t]*$/m) : position("画面");
     if (camera < 0 || composition < camera || motion < composition || picture <= motion) {
       errors.push(`shot ${shot.number} requires ordered 相机, 构图／运镜 (or split fields), 画面 with content`);
+    }
+    if (contract?.timedBeats) {
+      const pictureBody = picture < 0 ? "" : body.slice(picture).replace(/^画面：[ \t]*\r?\n/, "");
+      const beatPattern = /^\*\*(\d{2,}):([0-5]\d(?:\.\d+)?)—(\d{2,}):([0-5]\d(?:\.\d+)?)｜([^\n]+)：\*\*[ \t]*\r?$/gm;
+      const beats = [...pictureBody.matchAll(beatPattern)];
+      if (!beats.length || pictureBody.slice(0, beats[0]?.index).trim()) {
+        errors.push(`shot ${shot.number} requires timed beats with a named subject`);
+      }
+      let cursor = shot.start;
+      beats.forEach((beat, beatIndex) => {
+        const start = Number(beat[1]) * 60 + Number(beat[2]);
+        const end = Number(beat[3]) * 60 + Number(beat[4]);
+        if (!close(start, cursor) || end <= start || end > shot.end) {
+          errors.push(`shot ${shot.number} beat ${beatIndex + 1} must continuously cover cumulative unit time within the shot`);
+        }
+        const prose = pictureBody.slice(beat.index + beat[0].length, beats[beatIndex + 1]?.index ?? pictureBody.length).trim();
+        if (!prose || /^\*\*\d[^\n]*｜/m.test(prose)) errors.push(`shot ${shot.number} has empty prose or a malformed beat heading`);
+        cursor = end;
+      });
+      if (!close(cursor, shot.end)) errors.push(`shot ${shot.number} beats must cover its ending reaction or hold`);
+      if (/本镜头起点为零|\d+(?:\.\d+)?[—–]\d+(?:\.\d+)?秒/.test(body)) {
+        errors.push(`shot ${shot.number} mixes relative seconds with cumulative timecodes`);
+      }
     }
   });
   if (shots.length && !close(shots.at(-1).end, duration)) errors.push(`timeline must end at ${duration}s`);
@@ -81,6 +105,12 @@ export function validateShotBlockPrompt(output, contract) {
     .map((match) => match[0]).filter((token) => !/^<Subject\s+\d+>$/i.test(token));
   if (unresolved.length) errors.push(`unresolved template instructions: ${[...new Set(unresolved)].join(", ")}`);
 
+  errors.push(...validateReferences(output, contract));
+  return errors;
+}
+
+function validateReferences(output, contract) {
+  const errors = [];
   const assets = contract?.referencePlan?.assets;
   if (!Array.isArray(assets)) {
     errors.push("referencePlan.assets is required; an empty array explicitly declares no references");
@@ -138,4 +168,30 @@ async function main() {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => { process.stderr.write(`${error.message}\n`); process.exitCode = 2; });
+}
+
+export function validateSingleLevelShots(output, contract) {
+  const errors = [];
+  const duration = Number(contract?.durationSeconds);
+  if (!Number.isFinite(duration) || duration <= 0) errors.push('durationSeconds must be positive');
+  const summary = output.match(/^\*\*总时长：(\d+(?:\.\d+)?)秒｜([^\n]+)\*\*$/m);
+  if (!summary || !close(Number(summary[1]), duration)) errors.push('summary total must equal contracted duration');
+  if (!/^\d+(?:\.\d+)?:\d+(?:\.\d+)?$/.test(contract?.aspectRatio ?? '') || !summary?.[2].includes(contract.aspectRatio)) errors.push('summary requires contracted aspect ratio');
+  const pattern = /^### (\d+(?:\.\d+)?)s–(\d+(?:\.\d+)?)s｜镜头(\d+)：([^\n]+)$/gm;
+  const shots = [...output.matchAll(pattern)];
+  if (!shots.length || shots.length !== [...output.matchAll(/^### /gm)].length) errors.push('each real shot requires one valid timed heading');
+  let cursor = 0;
+  for (const [index, shot] of shots.entries()) {
+    const start = Number(shot[1]), end = Number(shot[2]);
+    if (Number(shot[3]) !== index + 1 || !close(start, cursor) || end <= start || end > duration) errors.push(`shot ${index + 1} has wrong numbering or cumulative interval`);
+    const prose = output.slice(shot.index + shot[0].length, shots[index + 1]?.index ?? output.length);
+    const fields = [...prose.matchAll(/^\*\*(画面提示词|镜头|音效)：\*\*\s*(\S[^\n]*)/gm)];
+    if (fields.map(x => x[1]).join(',') !== '画面提示词,镜头,音效') errors.push(`shot ${index + 1} requires exactly 画面提示词, 镜头, 音效`);
+    if (/\d{1,}:\d{2}|\d+(?:\.\d+)?\s*(?:s|秒)?\s*[—–~～-]\s*\d|\d+(?:\.\d+)?\s*(?:秒|s\b)|^#{1,6}\s|^\*\*[^\n]*(?:节拍|子镜头)/m.test(prose)) errors.push(`shot ${index + 1} contains forbidden inner timing or subshots`);
+    cursor = end;
+  }
+  if (!close(cursor, duration)) errors.push('shots must cover the full duration');
+  if (/【全局美学设定】|正文：分镜执行动作|^相机：|^画面：/m.test(output)) errors.push('superseded prompt format mixed into single-level shots');
+  errors.push(...validateReferences(output, contract));
+  return errors;
 }

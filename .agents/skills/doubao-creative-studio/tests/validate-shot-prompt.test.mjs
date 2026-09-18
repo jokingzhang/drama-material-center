@@ -156,7 +156,7 @@ test("Doubao v2 runner passes the new template to a stub and preserves exact ret
 let input = '';
 process.stdin.on('data', (chunk) => { input += chunk; });
 process.stdin.on('end', () => {
-  if (!input.includes('【全局美学设定】') || !input.includes('构图／运镜：') || input.includes('〖时间轴〗')) process.exit(7);
+  if (!input.includes('**总时长：') || !input.includes('**画面提示词：**') || !input.includes('**音效：**') || input.includes('〖时间轴〗')) process.exit(7);
   process.stdout.write(JSON.stringify({ type: 'result', subtype: 'success', is_error: false, result: ${JSON.stringify(body)} }));
 });
 `);
@@ -175,3 +175,84 @@ process.stdin.on('end', () => {
     rmSync(directory, { recursive: true, force: true });
   }
 });
+
+const timedBody = body.slice(0, body.indexOf('镜头1｜')) + `镜头 1｜00:00—00:05｜5 秒
+相机：50mm。
+构图：双人中景。
+运镜：固定。
+画面：
+
+**00:00—00:03｜林默嘴部可见：**
+“你真的要走？”
+
+**00:03—00:05｜苏野无对白反应：**
+苏野看向门边。
+
+镜头 2｜00:05—00:12｜7 秒
+相机：85mm。
+构图：苏野近景。
+运镜：固定。
+画面：
+
+**00:05—00:08｜苏野嘴部可见：**
+“我会回来。”
+
+**00:08—00:12｜苏野无对白反应：**
+苏野等林默放松肩膀，才把目光转回门边。
+`;
+const timedContract = { ...contract, timedBeats: true };
+test('cumulative beats accept complete dialogue and reaction coverage across a cut', () => {
+  assert.deepEqual(validateShotBlockPrompt(timedBody, timedContract), []);
+});
+for (const [name, from, to] of [
+  ['second shot resets to zero', '**00:05—00:08', '**00:00—00:03'],
+  ['uncovered pause', '**00:03—00:05', '**00:04—00:05'],
+  ['overlapping reaction', '**00:03—00:05', '**00:02—00:05'],
+  ['reaction past cut', '**00:03—00:05', '**00:03—00:06'],
+  ['missing ending hold', '**00:08—00:12', '**00:08—00:11'],
+  ['malformed beat time', '**00:08—00:12', '**00:68—00:12'],
+]) {
+  test(`cumulative beats reject ${name}`, () => {
+    assert.ok(validateShotBlockPrompt(timedBody.replace(from, to), timedContract).length > 0);
+  });
+}
+
+const singleLevelBody = `**总时长：12秒｜9:16｜无背景音乐｜场景：走廊**
+{{Mixed 1}} 走廊。 {{Mixed 2}} 林默。 {{Mixed 3}} 苏野。
+
+### 0.0s–5.0s｜镜头1：问一个问题
+
+**画面提示词：** 林默看苏野，轻声问：“你真的要走？”苏野没有立刻回答。
+
+**镜头：** 50mm，走廊西侧双人中近景，固定。
+
+**音效：** 林默现场对白与低沉通风声，问完自然等待。
+
+---
+
+### 5.0s–12.0s｜镜头2：得到回答
+
+**画面提示词：** 苏野回看林默，低声说：“我会回来。”说完仍看着林默。
+
+**镜头：** 85mm，切同侧苏野近景，固定。
+
+**音效：** 苏野现场对白，通风声连续。
+`;
+const singleLevelContract = { ...contract, format: 'single-level-shots' };
+test('single-level shots accept one timing range and three fields per real shot', () => {
+  assert.deepEqual(validateShotBlockPrompt(singleLevelBody, singleLevelContract), []);
+});
+for (const [name, from, to] of [
+  ['inner cumulative timeline', '林默看苏野', '00:00—00:03｜林默看苏野'],
+  ['inner seconds timeline', '林默看苏野', '0—3秒林默看苏野'],
+  ['inner numbered hold', '林默看苏野', '林默停2秒后看苏野'],
+  ['second shot time reset', '### 5.0s–12.0s', '### 0.0s–7.0s'],
+  ['gap between shots', '### 5.0s–12.0s', '### 6.0s–12.0s'],
+  ['missing sound field', '**音效：** 林默', '林默'],
+  ['duplicate camera field', '**音效：** 林默', '**镜头：** 固定。\n\n**音效：** 林默'],
+  ['wrong total', '**总时长：12秒', '**总时长：11秒'],
+]) {
+  test(`single-level shots reject ${name}`, () => {
+    assert.ok(validateShotBlockPrompt(singleLevelBody.replace(from, to), singleLevelContract).length > 0);
+  });
+}

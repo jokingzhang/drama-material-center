@@ -567,7 +567,7 @@ function EpisodeDetail({ story, sceneId, onOpen }: { story: ProjectStoryReadMode
       {!sceneId && <EpisodeAcceptanceSummary episode={episode} assets={acceptanceAssets} />}
       {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="COPY" title="本集文案" description="卡片显示摘要；点击后在同页弹窗查看剧本与素材计划全文。" assets={documents} onOpen={onOpen} showEmpty emptyCopy="本集还没有绑定文案文件。" />}
       <section className="episode-scenes-section"><header><div><span className="story-eyebrow">SCENES</span><h2>{sceneId ? "场次详情" : "场次与逐镜提示词"}</h2><p>{sceneId ? "查看本场剧本、人物和专属制作资源。" : "已按场次自动关联分镜提示词；每场依次展示当前有效的 U01、U02…，再展示关键帧与道具。"}</p></div></header><div className="scene-list">{scenes.map((scene) => <SceneCard key={scene.id} story={story} episodeId={episode.id} scene={scene} focused={Boolean(sceneId)} onOpen={onOpen} />)}</div></section>
-      {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="EPISODE OUTPUT" title="本集成片与声音" description="本集级成片、BGM 与其他直接绑定到分集的产物。" assets={episode.assets} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记分集级成片或声音。" />}
+      {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="EPISODE OUTPUT" title="本集成片与声音" description="本集的成片、BGM 与声音素材。" assets={episode.assets.filter((asset) => asset.kind === "video" || asset.kind === "audio")} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记分集级成片或声音。" />}
       {sceneId && !selectedScene && <div className="story-inline-error" role="alert">场次 {sceneId} 不存在。<Link to={projectEpisodePath(story.project.id, episode.id)}>查看本集全部场次</Link></div>}
     </article>
   );
