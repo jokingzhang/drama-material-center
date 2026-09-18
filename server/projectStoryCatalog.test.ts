@@ -499,6 +499,25 @@ describe("project story catalog", () => {
     expect(story.unregisteredAssets).toEqual([]);
   });
 
+  it("selects the current episode script after superseded versions", async () => {
+    const root = await seedStoryProject();
+    const projectRoot = join(root, "story-demo");
+    const indexPath = join(projectRoot, "production", "story-index.v1.json");
+    const index = JSON.parse(await readFile(indexPath, "utf8"));
+    await mkdir(join(projectRoot, "library", "剧情"), { recursive: true });
+    for (const version of ["v01", "v02"]) {
+      await writeFile(join(projectRoot, "library", "剧情", `${version}.md`), `# ${version}`);
+    }
+    index.documentBindings = [
+      { materialType: "story.episode-script", path: "剧情/v01.md", subject: { episodeId: "EP01" }, decisionStatus: "SUPERSEDED" },
+      { materialType: "story.episode-script", path: "剧情/v02.md", subject: { episodeId: "EP01" }, decisionStatus: "DRAFT" },
+    ];
+    await writeFile(indexPath, JSON.stringify(index));
+    const story = await createProjectStoryCatalog(root).readProjectStory("story-demo", { episodeId: "EP01" });
+    expect(story.episode?.script).toEqual(expect.objectContaining({ path: "剧情/v02.md", status: "DRAFT" }));
+    expect(story.episode?.relatedFiles).toEqual([]);
+  });
+
   it("rejects a production index symlink that escapes the project", async () => {
     const root = await seedStoryProject();
     const indexPath = join(root, "story-demo", "production", "story-index.v1.json");
@@ -566,14 +585,32 @@ describe("project story catalog", () => {
     ]);
   });
 
+  it("invalidates cached digests after a same-size edit with restored mtime", async () => {
+    const root = await seedStoryProject();
+    const catalog = createProjectStoryCatalog(root);
+    const path = join(root, "story-demo", "library", "图片/人物/旧目录/CHAR-001-v01.png");
+    const initial = await catalog.readProjectStory("story-demo");
+    expect(initial.characters[0]?.cardImageStatus).toBe("READY");
+    await writeFile(path, "changed");
+    const originalTime = initial.assets.find((asset) => asset.assetId === "ASSET-CHAR-001")!.updatedAt!;
+    await utimes(path, new Date(originalTime), new Date(originalTime));
+    expect((await catalog.readProjectStory("story-demo")).characters[0]?.cardImageStatus).toBe("BLOCKED");
+    await writeFile(path, "fixture");
+    expect((await catalog.readProjectStory("story-demo")).characters[0]?.cardImageStatus).toBe("READY");
+    await rm(path);
+    expect((await catalog.readProjectStory("story-demo")).characters[0]?.cardImageStatus).toBe("BLOCKED");
+  });
+
   it("blocks an accepted binding when the registered SHA-256 no longer matches", async () => {
     const root = await seedStoryProject();
+    const catalog = createProjectStoryCatalog(root);
+    await catalog.readProjectStory("story-demo");
     const assetIndexPath = join(root, "story-demo", "production", "asset-bindings.v1.json");
     const assetIndex = JSON.parse(await readFile(assetIndexPath, "utf8"));
     assetIndex.assets[0].sha256 = sha256("replaced bytes");
     await writeFile(assetIndexPath, JSON.stringify(assetIndex));
 
-    const story = await createProjectStoryCatalog(root).readProjectStory("story-demo");
+    const story = await catalog.readProjectStory("story-demo");
 
     expect(story.characters[0]?.cardImageStatus).toBe("BLOCKED");
     expect(story.characters[0]?.cardImageReason).toContain("SHA-256");

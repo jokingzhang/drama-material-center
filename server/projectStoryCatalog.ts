@@ -318,6 +318,33 @@ async function readProjectIndex<T>(workspaceRoot: string, projectId: string, fil
 
 export function createProjectStoryCatalog(workspaceRoot: string) {
   const workspace = createProjectWorkspace(workspaceRoot);
+  // Cache bytes' digests, not binding decisions. Paths and current index hashes
+  // are still validated on every request, including after a file is replaced.
+  const digests = new Map<string, { fingerprint: string; digest: Promise<string> }>();
+
+  async function verifiedDigest(path: string) {
+    const stat = await lstat(path, { bigint: true });
+    const fingerprint = [stat.dev, stat.ino, stat.size, stat.mtimeNs, stat.ctimeNs].join(":");
+    const cached = digests.get(path);
+    if (cached?.fingerprint === fingerprint) return cached.digest;
+    const digest = (async () => {
+      const result = await sha256File(path);
+      const after = await lstat(path, { bigint: true });
+      if ([after.dev, after.ino, after.size, after.mtimeNs, after.ctimeNs].join(":") !== fingerprint) {
+        throw new ProjectWorkspaceError("invalid_index", "素材在校验期间发生变化，请重试。");
+      }
+      return result;
+    })();
+    const entry = { fingerprint, digest };
+    digests.set(path, entry);
+    if (digests.size > 10000) digests.delete(digests.keys().next().value!);
+    try {
+      return await digest;
+    } catch (error) {
+      if (digests.get(path) === entry) digests.delete(path);
+      throw error;
+    }
+  }
 
   async function resolveStrictMaterialFile(projectId: string, materialPath: string) {
     const rawSegments = materialPath.split("/");
@@ -374,7 +401,7 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
       const resolvedFile = await resolveStrictMaterialFile(projectId, asset.path);
       url = `/api/projects/${encodeURIComponent(projectId)}/file?path=${encodeURIComponent(asset.path)}`;
       updatedAt = resolvedFile.updatedAt;
-      if (expectedSha256 !== undefined && await sha256File(resolvedFile.resolvedPath) !== expectedSha256) {
+      if (expectedSha256 !== undefined && await verifiedDigest(resolvedFile.resolvedPath) !== expectedSha256) {
         assetProblems.set(asset.assetId, "HASH_MISMATCH");
       }
     } catch (error) {
@@ -1153,10 +1180,8 @@ export function createProjectStoryCatalog(workspaceRoot: string) {
             relatedFiles: documentsFor("scene", scene.id),
           };
         });
-        const scriptIndex = (storyIndex.documentBindings ?? []).findIndex((binding) =>
-          binding.materialType === "story.episode-script" && binding.subject?.episodeId === rawEpisode.id,
-        );
-        const script = scriptIndex >= 0 ? linkedDocuments.get(`DOCUMENT:${scriptIndex + 1}`) : undefined;
+        const script = documentsFor("episode", rawEpisode.id)
+          .find((file) => file.materialType === "story.episode-script" && file.url);
         episode = {
           ...summary,
           ...(script?.url && isCurrentStoryAsset(script) ? { script } : {}),
