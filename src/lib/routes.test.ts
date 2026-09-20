@@ -10,6 +10,8 @@ import {
   projectStoryOverviewPath,
   projectStorySectionPath,
   projectStoryPath,
+  weeklyRadarPath,
+  weeklyRadarReportPath,
 } from "./routes";
 
 describe("project library routes", () => {
@@ -46,6 +48,15 @@ describe("director knowledge routes", () => {
     );
     expect(knowledgeCasePath("灵能引擎启动", "shot-prompt")).toBe(
       "/knowledge/cases/%E7%81%B5%E8%83%BD%E5%BC%95%E6%93%8E%E5%90%AF%E5%8A%A8?from=shot-prompt",
+    );
+  });
+});
+
+describe("AI video weekly radar routes", () => {
+  it("builds refresh-safe history and report URLs", () => {
+    expect(weeklyRadarPath()).toBe("/ai-video-radar");
+    expect(weeklyRadarReportPath("2026-09-14--2026-09-20-v01")).toBe(
+      "/ai-video-radar/reports/2026-09-14--2026-09-20-v01",
     );
   });
 });

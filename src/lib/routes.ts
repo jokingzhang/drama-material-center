@@ -47,6 +47,14 @@ export function knowledgeAreaPath(area: string, documentPath = "") {
   return `/knowledge/areas/${encodeURIComponent(area)}${encodedDocumentPath ? `/${encodedDocumentPath}` : ""}`;
 }
 
+export function weeklyRadarPath() {
+  return "/ai-video-radar";
+}
+
+export function weeklyRadarReportPath(reportId: string) {
+  return `${weeklyRadarPath()}/reports/${encodeURIComponent(reportId)}`;
+}
+
 export type KnowledgeCaseEntry = "image-asset" | "shot-prompt";
 
 export function knowledgeCasePath(caseId: string, from?: KnowledgeCaseEntry) {

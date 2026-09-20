@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI 视频转场导演"
+  short_description: "为短剧设计自然、可执行、可验收的镜头与场景转场"
+  default_prompt: "Use $video-transition-director to design a narratively motivated, production-ready transition between these shots."

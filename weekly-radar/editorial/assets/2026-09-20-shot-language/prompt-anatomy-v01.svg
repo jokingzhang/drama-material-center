@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" role="img" aria-labelledby="title desc">
+  <title id="title">AI 视频分镜提示词的五层结构</title>
+  <desc id="desc">从叙事目的、景别与角度、人物动作、摄影机运动、环境运动五层逐步写成可执行提示词。</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7f4ef"/><stop offset="1" stop-color="#e8eef2"/></linearGradient>
+    <style>.h{font:800 34px system-ui,sans-serif;fill:#15232d}.p{font:600 24px system-ui,sans-serif;fill:#263a47}.s{font:500 20px system-ui,sans-serif;fill:#667985}.n{font:800 28px system-ui,sans-serif;fill:#fff}.box{fill:#fff;stroke:#c9d3da;stroke-width:2}.accent{fill:#ff6755}.arrow{stroke:#ff6755;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}</style>
+  </defs>
+  <rect width="1440" height="780" rx="42" fill="url(#bg2)"/>
+  <text x="70" y="72" class="h">不要堆形容词，按执行顺序写</text>
+  <text x="70" y="110" class="s">首帧图负责人物、构图和光线；视频提示词重点写运动与时间变化</text>
+  <g transform="translate(70 160)">
+    <g><rect class="box" width="250" height="140" rx="24"/><circle class="accent" cx="38" cy="38" r="24"/><text x="38" y="47" text-anchor="middle" class="n">1</text><text x="78" y="44" class="p">叙事任务</text><text x="28" y="88" class="s">她听见脚步</text><text x="28" y="118" class="s">由松弛转为警觉</text></g>
+    <path d="M260 70 H300 M288 57 L302 70 L288 83" class="arrow"/>
+    <g transform="translate(310 0)"><rect class="box" width="250" height="140" rx="24"/><circle class="accent" cx="38" cy="38" r="24"/><text x="38" y="47" text-anchor="middle" class="n">2</text><text x="78" y="44" class="p">景别 × 角度</text><text x="28" y="88" class="s">近景 × 平视</text><text x="28" y="118" class="s">先锁定观看关系</text></g>
+    <path d="M570 70 H610 M598 57 L612 70 L598 83" class="arrow"/>
+    <g transform="translate(620 0)"><rect class="box" width="250" height="140" rx="24"/><circle class="accent" cx="38" cy="38" r="24"/><text x="38" y="47" text-anchor="middle" class="n">3</text><text x="78" y="44" class="p">主体动作</text><text x="28" y="88" class="s">停步，缓慢回头</text><text x="28" y="118" class="s">手指攥紧钥匙</text></g>
+    <path d="M880 70 H920 M908 57 L922 70 L908 83" class="arrow"/>
+    <g transform="translate(930 0)"><rect class="box" width="250" height="140" rx="24"/><circle class="accent" cx="38" cy="38" r="24"/><text x="38" y="47" text-anchor="middle" class="n">4</text><text x="78" y="44" class="p">摄影机运动</text><text x="28" y="88" class="s">锁定机位</text><text x="28" y="118" class="s">只让人物动</text></g>
+  </g>
+  <g transform="translate(70 360)">
+    <rect x="0" y="0" width="1180" height="110" rx="24" fill="#172833"/>
+    <text x="34" y="42" class="n">可直接复制的运动提示词</text>
+    <text x="34" y="80" style="font:500 23px system-ui,sans-serif;fill:#f6f3ed">锁定机位。女人突然停步，听见身后脚步后缓慢回头，右手逐渐攥紧钥匙；只有头发和衣摆被微弱穿堂风吹动。</text>
+  </g>
+  <g transform="translate(70 510)">
+    <rect class="box" width="1180" height="150" rx="24"/>
+    <text x="32" y="46" class="p">为什么不再重复写“黑发、风衣、停车场、冷色灯光”？</text>
+    <text x="32" y="88" class="s">如果采用图生视频，这些静态事实已经由首帧图提供。重复描述会挤占运动信息，甚至诱发重绘。</text>
+    <text x="32" y="122" class="s">只有文生视频时，才把人物、场景、光线和构图补回同一条完整提示词。</text>
+  </g>
+  <text x="1290" y="714" text-anchor="end" class="s">依据 Runway 官方图生视频提示指南整理</text>
+</svg>

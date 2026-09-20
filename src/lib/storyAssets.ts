@@ -2,6 +2,8 @@ import type { SceneReadModel, StoryAssetLink } from "../types/story";
 
 const naturalCollator = new Intl.Collator("zh-CN", { numeric: true, sensitivity: "base" });
 const shotTokenPattern = /(?:^|[-_/])U(\d+)([A-Z]?)(?=[-_.]|$)/i;
+const transitionTokenPattern = /(?:^|[-_/])T(\d+)(?=[-_.]|$)/i;
+const shotDurationPattern = /总时长\s*[:：]\s*(?:约\s*)?(\d+(?:\.\d+)?)\s*秒/i;
 
 function isCurrentAsset(asset: StoryAssetLink | undefined): asset is StoryAssetLink {
   return Boolean(asset)
@@ -28,13 +30,24 @@ function shotTokenFor(asset: StoryAssetLink) {
 
 export function shotPromptLabel(asset: StoryAssetLink) {
   const token = shotTokenFor(asset)?.token;
+  const transition = `${asset.path}/${asset.name}`.match(transitionTokenPattern)?.[1];
+  if (transition && token) return `转场 T${transition} · ${token}`;
+  if (transition) return `转场 T${transition}`;
   return token ? `片段 ${token}` : "分镜提示词";
+}
+
+export function shotPromptDuration(content: string) {
+  const duration = content.match(shotDurationPattern)?.[1];
+  return duration ? `${duration} 秒` : undefined;
 }
 
 export function sortCurrentShotPrompts(assets: Array<StoryAssetLink | undefined>) {
   return deduplicateCurrentStoryAssets(assets)
     .filter((asset) => asset.materialType === "prompt.video")
     .sort((left, right) => {
+      const leftTransition = transitionTokenPattern.test(`${left.path}/${left.name}`);
+      const rightTransition = transitionTokenPattern.test(`${right.path}/${right.name}`);
+      if (leftTransition !== rightTransition) return leftTransition ? 1 : -1;
       const leftToken = shotTokenFor(left);
       const rightToken = shotTokenFor(right);
       if (leftToken && rightToken) {

@@ -638,6 +638,24 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
 }
+.story-asset-duration {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.14rem 0.38rem;
+  color: var(--blue-dark);
+  font-size: 0.68rem;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  background: var(--blue-soft);
+  border: 1px solid color-mix(in srgb, var(--blue) 22%, var(--line));
+  border-radius: 0.32rem;
+}
+.story-asset-card:has(.story-asset-duration) .story-asset-copy { padding-bottom: 2rem; }
 .story-asset-placeholder small { color: var(--muted); font-size: 0.78rem; }
 .story-asset-copy { min-width: 0; display: grid; gap: 0.25rem; padding: 0.7rem; }
 .story-asset-type { color: var(--blue); font-size: 0.72rem; font-weight: 760; letter-spacing: 0.04em; line-height: 1.4; overflow-wrap: anywhere; }
@@ -714,6 +732,40 @@
 .episode-scenes-section .story-material-section { box-shadow: none; }
 .episode-reusable-section > header,
 .episode-scenes-section > header { min-width: 0; }
+
+.episode-materials-section {
+  min-width: 0;
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+}
+.episode-materials-section > header h2 { margin: 0.15rem 0 0; font-family: "Songti SC", STSong, serif; font-size: 1.35rem; }
+.episode-materials-section > header p { margin: 0.3rem 0 0; color: var(--muted); font-size: 0.875rem; }
+.episode-material-group { min-width: 0; display: grid; gap: 0.8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.episode-material-group > header { min-width: 0; display: flex; align-items: flex-start; gap: 0.75rem; }
+.episode-material-group > header > span,
+.episode-sequence-number { min-width: 2.25rem; height: 2.25rem; display: grid; place-items: center; flex: 0 0 auto; color: var(--blue); font-size: 0.78rem; font-weight: 800; background: var(--blue-soft); border-radius: 0.58rem; }
+.episode-material-group > header h3 { margin: 0; font-family: "Songti SC", STSong, serif; font-size: 1.18rem; }
+.episode-material-group > header p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.84rem; line-height: 1.5; }
+.episode-material-group > .story-asset-gallery-wrap { padding-left: 3rem; }
+.episode-prompt-sequence { min-width: 0; display: grid; gap: 0.85rem; }
+.episode-prompt-scene { min-width: 0; display: grid; gap: 0.7rem; padding: 0.85rem; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.72rem; }
+.episode-prompt-scene > header { min-width: 0; display: flex; align-items: flex-start; gap: 0.7rem; }
+.episode-prompt-scene > header > div { min-width: 0; }
+.episode-prompt-scene > header h4 { margin: 0.1rem 0 0; font-family: "Songti SC", STSong, serif; font-size: 1rem; }
+.episode-prompt-scene > header p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.8rem; line-height: 1.5; }
+.episode-script-excerpt { margin-left: 3rem; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 0.55rem; }
+.episode-script-excerpt > summary { min-height: 2.75rem; display: flex; align-items: center; padding: 0.5rem 0.7rem; color: var(--blue); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.episode-script-excerpt blockquote { margin: 0; padding: 0.75rem; color: var(--muted); font-size: 0.8rem; line-height: 1.65; white-space: pre-line; border-top: 1px solid var(--line); }
+.episode-prompt-scene > .story-material-section { margin-left: 3rem; padding: 0; background: transparent; border: 0; }
+.episode-prompt-scene > .story-material-section > header { align-items: baseline; }
+.episode-prompt-scene > .story-material-section > header p { display: none; }
+.episode-secondary-info { min-width: 0; overflow: hidden; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.8rem; }
+.episode-secondary-info > summary { min-height: 3rem; display: flex; align-items: center; padding: 0.65rem 0.9rem; color: var(--muted); font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+.episode-secondary-info > div { display: grid; gap: 0.85rem; padding: 0 0.85rem 0.85rem; }
 
 .scene-dedicated-resources { min-width: 0; display: grid; gap: 0.85rem; }
 .scene-dedicated-resources > header { min-width: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
@@ -799,7 +851,8 @@
   .story-asset-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
   .story-material-section,
   .episode-reusable-section,
-  .episode-scenes-section { padding: 0.75rem; }
+  .episode-scenes-section,
+  .episode-materials-section { padding: 0.75rem; }
   .story-material-section > header { align-items: flex-start; }
   .story-asset-copy { padding: 0.58rem; }
   .story-asset-document { padding: 0.55rem; }
@@ -807,6 +860,9 @@
   .story-audio-card > button { grid-template-columns: 3.6rem minmax(0, 1fr); min-height: 7rem; }
   .story-audio-visual { min-height: 7rem; }
   .scene-production-state > summary { align-items: flex-start; flex-direction: column; }
+  .episode-material-group > .story-asset-gallery-wrap,
+  .episode-script-excerpt,
+  .episode-prompt-scene > .story-material-section { margin-left: 0; padding-left: 0; }
 }
 
 @media (max-width: 1179px) {

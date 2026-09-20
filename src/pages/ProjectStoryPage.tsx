@@ -22,6 +22,7 @@ import { BrandMark } from "../components/BrandMark";
 import { ProjectViewTabs } from "../components/ProjectViewTabs";
 import { StoryAssetGallery, StoryAssetModal, type StoryAssetOpenHandler } from "../components/StoryAssetGallery";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { WeeklyRadarNavLink } from "../components/WeeklyRadarNavLink";
 import { getProjects } from "../lib/materials";
 import {
   compactScheduleDate,
@@ -307,6 +308,7 @@ function StoryHeader({ story, projects, projectId }: { story?: ProjectStoryReadM
             </select>
           )}
           <ThemeToggle />
+          <WeeklyRadarNavLink compact />
           <Link className="course-link" to="/knowledge"><BrainCircuit size={18} /><span className="responsive-action-label" data-compact-label="知识库">导演知识库</span></Link>
           <Link className="course-link" to="/"><ArrowLeft size={18} /><span className="responsive-action-label" data-compact-label="项目">所有项目</span></Link>
         </div>
@@ -468,6 +470,43 @@ function SceneCard({ story, episodeId, scene, focused, onOpen }: { story: Projec
   );
 }
 
+function collectEpisodeDedicatedImages(episode: EpisodeDetailReadModel) {
+  const assetsByPath = new Map<string, StoryAssetLink>();
+  const labels: Record<string, string> = {};
+  const add = (asset: StoryAssetLink, label: string) => {
+    if (asset.kind !== "image" || !asset.materialType.startsWith("image.")) return;
+    if (assetsByPath.has(asset.path)) return;
+    assetsByPath.set(asset.path, asset);
+    labels[asset.assetId] = label;
+  };
+  for (const asset of [...episode.relatedFiles, ...episode.assets]) add(asset, "本集 · 图片素材");
+  for (const scene of episode.scenes) {
+    for (const asset of [...scene.relatedFiles, ...scene.assets, ...scene.derivedAssets]) add(asset, `${scene.id} · 图片素材`);
+    for (const prop of scene.props) for (const asset of prop.assets) add(asset, `${scene.id} · 道具图片`);
+  }
+  return { assets: deduplicateAssets([...assetsByPath.values()]), labels };
+}
+
+function EpisodePromptSequence({ story, episode, onOpen }: { story: ProjectStoryReadModel; episode: EpisodeDetailReadModel; onOpen: StoryAssetOpenHandler }) {
+  return (
+    <div className="episode-prompt-sequence">
+      {episode.scenes.map((scene, index) => {
+        const prompts = collectSceneDedicatedAssets(scene);
+        return (
+          <article className="episode-prompt-scene" key={scene.id}>
+            <header>
+              <span className="episode-sequence-number">{String(index + 1).padStart(2, "0")}</span>
+              <div><span className="story-eyebrow">{scene.id}</span><h4>{scene.heading}</h4>{scene.summary && <p>{scene.summary}</p>}</div>
+            </header>
+            {scene.scriptExcerpt && <details className="episode-script-excerpt"><summary>查看对应剧本段落</summary><blockquote>{scene.scriptExcerpt}</blockquote></details>}
+            <MaterialSection projectId={story.project.id} title="分镜提示词" description="已按本场实际执行顺序排列。" assets={prompts.textAssets} labels={prompts.textLabels} onOpen={onOpen} headingLevel="h4" showEmpty emptyCopy="本场尚未登记分镜提示词。" />
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
 function collectEpisodeReusableAssets(story: ProjectStoryReadModel, episode: EpisodeDetailReadModel) {
   const lookIdsByCharacter = new Map<string, Set<string>>();
   const speakingCharacterIds = new Set<string>();
@@ -492,7 +531,9 @@ function collectEpisodeReusableAssets(story: ProjectStoryReadModel, episode: Epi
       characterAssets.push(asset);
       characterLabels[asset.assetId] = `${character.name} · ${look.name}`;
     }
-    if (speakingCharacterIds.has(characterId)) for (const asset of character.voiceAssets) {
+    const acceptedVoices = character.voiceAssets.filter((asset) => asset.status === "ACCEPTED");
+    const voices = acceptedVoices.length ? acceptedVoices : character.voiceAssets;
+    if (speakingCharacterIds.has(characterId)) for (const asset of voices) {
       characterAssets.push(asset);
       characterLabels[asset.assetId] = `${character.name} · 人物声音`;
     }
@@ -503,6 +544,8 @@ function collectEpisodeReusableAssets(story: ProjectStoryReadModel, episode: Epi
     const storyLocation = story.locations.find((candidate) => candidate.id === locationId);
     if (!storyLocation) continue;
     for (const asset of [...storyLocation.images, ...storyLocation.ambientAudio]) {
+      const explicitEpisode = `${asset.path}/${asset.name}`.match(/(?:^|[-_/])(EP\d{2})(?=[-_.]|$)/i)?.[1]?.toUpperCase();
+      if (explicitEpisode && explicitEpisode !== episode.id.toUpperCase()) continue;
       locationAssets.push(asset);
       locationLabels[asset.assetId] = `${storyLocation.name} · ${asset.kind === "audio" ? "环境声音" : "场景图片"}`;
     }
@@ -549,7 +592,14 @@ function EpisodeDetail({ story, sceneId, onOpen }: { story: ProjectStoryReadMode
   const selectedScene = sceneId ? episode.scenes.find((scene) => scene.id === sceneId) : undefined;
   const scenes = sceneId ? (selectedScene ? [selectedScene] : []) : episode.scenes;
   const documents = deduplicateAssets([episode.script, ...episode.relatedFiles]);
-  const reusableGroups = collectEpisodeReusableAssets(story, episode);
+  const supportingDocuments = documents.filter((asset) => asset.assetId !== episode.script?.assetId);
+  const dedicatedImages = collectEpisodeDedicatedImages(episode);
+  const dedicatedImagePaths = new Set(dedicatedImages.assets.map((asset) => asset.path));
+  const reusableSource = collectEpisodeReusableAssets(story, episode);
+  const reusableGroups = {
+    ...reusableSource,
+    locationAssets: reusableSource.locationAssets.filter((asset) => !dedicatedImagePaths.has(asset.path)),
+  };
   const dedicatedAssets = episode.scenes.map(collectSceneDedicatedAssets);
   const acceptanceAssets = deduplicateAssets([
     ...documents,
@@ -564,10 +614,25 @@ function EpisodeDetail({ story, sceneId, onOpen }: { story: ProjectStoryReadMode
       <header className="detail-heading"><div><span className="story-eyebrow">{episode.id}</span><h1>{sceneId ? selectedScene?.heading ?? "场次不存在" : episode.title}</h1><p>{sceneId ? selectedScene?.summary ?? "这个场次不在当前分集索引中。" : episode.summary}</p></div>{sceneId && selectedScene && <CompletionLine completion={selectedScene.completion} />}</header>
       {!sceneId && <div className="episode-fact-row"><span><Users size={16} />{episode.characterIds.length} 位人物</span><span><MapPin size={16} />{episode.locationIds.length} 个场景</span><span><BookOpenText size={16} />{episode.sceneCount} 场</span></div>}
       {!sceneId && <EpisodeReusableAssets story={story} groups={reusableGroups} onOpen={onOpen} />}
-      {!sceneId && <EpisodeAcceptanceSummary episode={episode} assets={acceptanceAssets} />}
-      {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="COPY" title="本集文案" description="卡片显示摘要；点击后在同页弹窗查看剧本与素材计划全文。" assets={documents} onOpen={onOpen} showEmpty emptyCopy="本集还没有绑定文案文件。" />}
-      <section className="episode-scenes-section"><header><div><span className="story-eyebrow">SCENES</span><h2>{sceneId ? "场次详情" : "场次与逐镜提示词"}</h2><p>{sceneId ? "查看本场剧本、人物和专属制作资源。" : "已按场次自动关联分镜提示词；每场依次展示当前有效的 U01、U02…，再展示关键帧与道具。"}</p></div></header><div className="scene-list">{scenes.map((scene) => <SceneCard key={scene.id} story={story} episodeId={episode.id} scene={scene} focused={Boolean(sceneId)} onOpen={onOpen} />)}</div></section>
-      {!sceneId && <MaterialSection projectId={story.project.id} eyebrow="EPISODE OUTPUT" title="本集成片与声音" description="本集的成片、BGM 与声音素材。" assets={episode.assets.filter((asset) => asset.kind === "video" || asset.kind === "audio")} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记分集级成片或声音。" />}
+      {!sceneId && (
+        <section className="episode-materials-section" aria-labelledby="episode-materials-title">
+          <header><div><span className="story-eyebrow">EPISODE ASSETS</span><h2 id="episode-materials-title">本集素材</h2><p>按剧本阅读顺序组织本集专属内容。</p></div></header>
+          <section className="episode-material-group">
+            <header><span>2.1</span><div><h3>剧本</h3><p>本集当前绑定的正式剧本。</p></div></header>
+            <StoryAssetGallery projectId={story.project.id} assets={episode.script ? [episode.script] : []} onOpen={onOpen} showEmpty emptyCopy="本集还没有绑定剧本。" />
+          </section>
+          <section className="episode-material-group">
+            <header><span>2.2</span><div><h3>本集图片素材</h3><p>只展示本集专属的场景、道具与衍生图片；通用人物和场景母版在上方查看。</p></div></header>
+            <StoryAssetGallery projectId={story.project.id} assets={dedicatedImages.assets} labels={dedicatedImages.labels} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记专属图片素材。" />
+          </section>
+          <section className="episode-material-group">
+            <header><span>2.3</span><div><h3>分镜提示词</h3><p>按剧本场次顺序排列；每场内部按 U 编号顺序展示，转场置于本场末尾。</p></div></header>
+            <EpisodePromptSequence story={story} episode={episode} onOpen={onOpen} />
+          </section>
+        </section>
+      )}
+      {sceneId && <section className="episode-scenes-section"><header><div><span className="story-eyebrow">SCENE</span><h2>场次详情</h2><p>查看本场剧本、人物和专属制作资源。</p></div></header><div className="scene-list">{scenes.map((scene) => <SceneCard key={scene.id} story={story} episodeId={episode.id} scene={scene} focused onOpen={onOpen} />)}</div></section>}
+      {!sceneId && <details className="episode-secondary-info"><summary>制作状态与其他资料</summary><div><EpisodeAcceptanceSummary episode={episode} assets={acceptanceAssets} /><MaterialSection projectId={story.project.id} title="其他生产资料" description="素材计划、台词合同、引用计划和预审记录。" assets={supportingDocuments} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记其他生产资料。" /><MaterialSection projectId={story.project.id} title="成片与声音" description="本集的成片、BGM 与声音素材。" assets={episode.assets.filter((asset) => asset.kind === "video" || asset.kind === "audio")} onOpen={onOpen} showEmpty emptyCopy="本集尚未登记分集级成片或声音。" /></div></details>}
       {sceneId && !selectedScene && <div className="story-inline-error" role="alert">场次 {sceneId} 不存在。<Link to={projectEpisodePath(story.project.id, episode.id)}>查看本集全部场次</Link></div>}
     </article>
   );

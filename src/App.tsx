@@ -6,6 +6,8 @@ import { ProjectStoryPage } from "./pages/ProjectStoryPage";
 import { NotFoundPage, ProjectsPage } from "./pages/ProjectsPage";
 
 const DirectorKnowledgePage = lazy(() => import("./pages/DirectorKnowledgePage").then((module) => ({ default: module.DirectorKnowledgePage })));
+const WeeklyRadarListPage = lazy(() => import("./pages/WeeklyRadarPage").then((module) => ({ default: module.WeeklyRadarListPage })));
+const WeeklyRadarDetailPage = lazy(() => import("./pages/WeeklyRadarPage").then((module) => ({ default: module.WeeklyRadarDetailPage })));
 
 function ProjectRedirect() {
   const { projectId = "" } = useParams();
@@ -17,6 +19,8 @@ export default function App() {
     <Routes>
       <Route path="/" element={<ProjectsPage />} />
       <Route path="/knowledge/*" element={<Suspense fallback={<div className="route-error-page"><p>正在打开导演知识库…</p></div>}><DirectorKnowledgePage /></Suspense>} />
+      <Route path="/ai-video-radar" element={<Suspense fallback={<div className="route-error-page"><p>正在打开 AI 视频一周雷达…</p></div>}><WeeklyRadarListPage /></Suspense>} />
+      <Route path="/ai-video-radar/reports/:reportId" element={<Suspense fallback={<div className="route-error-page"><p>正在打开 AI 视频一周雷达…</p></div>}><WeeklyRadarDetailPage /></Suspense>} />
       <Route path="/projects/:projectId" element={<ProjectRedirect />} />
       <Route path="/projects/:projectId/story" element={<ProjectStoryPage />} />
       <Route path="/projects/:projectId/story/characters/:characterId" element={<ProjectStoryPage />} />

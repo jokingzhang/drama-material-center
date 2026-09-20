@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-09-14--2026-09-20-v01",
+  "title": "AI 视频一周雷达 · 2026.09.20",
+  "summary": "这周不追大制作，优先做一条能复刻、还能继续拆成教学内容的闭环。",
+  "period": {
+    "start": "2026-09-14",
+    "end": "2026-09-20",
+    "timezone": "Asia/Shanghai"
+  },
+  "generatedAt": "2026-09-20T15:10:00+08:00",
+  "status": "READY",
+  "counts": {
+    "strictWeekSamples": 8,
+    "detailVerified": 6,
+    "shortCandidates": 5,
+    "teachingTopics": 13
+  },
+  "picks": {
+    "primary": {
+      "title": "说谎的人就会爆炸",
+      "angle": "只复刻“说谎触发可见后果”的高概念结构，替换角色、台词和具体爆炸设计。"
+    },
+    "secondary": {
+      "title": "AI漫剧你们还有多少种人设",
+      "angle": "用同一原创角色做 5–6 种职业或性格人设，形成低积分蒙太奇和评论接龙。"
+    }
+  },
+  "evidenceNote": "北京时间 2026-09-14 至 09-20 的公开搜索抽样，不是平台全量榜单；缺失指标未补猜。",
+  "reportFile": "report.html",
+  "reportSha256": "8a986c19ce0f712f58ce34cd048af4a1141f83579763a45847c716a21d4717ef",
+  "evidenceFile": "evidence.json",
+  "evidenceSha256": "29b043aa88e7d232a779f35fcf14071a7f425d06367533a0d64b4a26d2fc48ff"
+}

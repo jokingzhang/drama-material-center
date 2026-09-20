@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { WeeklyRadarNavLink } from "../components/WeeklyRadarNavLink";
 import { createProject, getProjects, uploadProjectCover } from "../lib/materials";
 import { projectStoryOverviewPath } from "../lib/routes";
 import type { ProjectSummary } from "../types";
@@ -130,6 +131,7 @@ export function ProjectsPage() {
         </div>
         <div className="header-actions">
           <ThemeToggle />
+          <WeeklyRadarNavLink />
           <Link className="course-link" to="/knowledge"><BrainCircuit size={18} />导演知识库</Link>
           <button className="secondary-button" type="button" disabled={loading} onClick={() => void refresh()}>
             <RefreshCw size={18} className={loading ? "spinning" : ""} />刷新

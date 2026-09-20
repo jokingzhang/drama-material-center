@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">景别与镜头角度是两个独立维度</title>
+  <desc id="desc">横轴为景别，纵轴为角度，同一人物在全景、中景、特写以及俯拍、平视、仰拍组合中的示意。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d1721"/><stop offset="1" stop-color="#162938"/></linearGradient>
+    <style>
+      .label{font:700 28px system-ui,sans-serif;fill:#f6f3ed}.small{font:500 20px system-ui,sans-serif;fill:#aab9c4}.axis{font:700 22px system-ui,sans-serif;fill:#ff725d}.cell{fill:#1d303e;stroke:#405462;stroke-width:2}.person{fill:#f2b49f}.coat{fill:#617789}.line{stroke:#ff725d;stroke-width:5;stroke-linecap:round}.cam{fill:#ff725d}
+    </style>
+  </defs>
+  <rect width="1440" height="900" rx="42" fill="url(#bg)"/>
+  <text x="72" y="78" class="label">每个镜头 = 一个景别 × 一个角度</text>
+  <text x="72" y="116" class="small">横向改变“拍多近”，纵向改变“从哪里看”</text>
+  <text x="680" y="164" text-anchor="middle" class="axis">景别：全景 → 中景 → 特写</text>
+  <text x="105" y="515" text-anchor="middle" class="axis" transform="rotate(-90 105 515)">角度：俯拍 → 平视 → 仰拍</text>
+  <g transform="translate(190 190)">
+    <g>
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">全景 + 俯拍</text>
+      <ellipse cx="178" cy="78" rx="15" ry="13" class="person"/>
+      <path d="M163 94 Q178 84 193 94 L205 154 L151 154 Z" class="coat"/>
+      <path d="M178 151 L165 176 M178 151 L192 176" class="line"/>
+      <path d="M35 48 L78 72" class="line"/><rect x="19" y="33" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(370 0)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">中景 + 俯拍</text>
+      <ellipse cx="178" cy="76" rx="28" ry="24" class="person"/>
+      <path d="M145 103 Q178 85 211 103 L226 190 L130 190 Z" class="coat"/>
+      <path d="M35 48 L78 72" class="line"/><rect x="19" y="33" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(740 0)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">特写 + 俯拍</text>
+      <ellipse cx="184" cy="110" rx="74" ry="65" class="person"/>
+      <path d="M112 167 Q184 139 256 167 L265 190 L103 190 Z" class="coat"/>
+      <path d="M35 48 L78 72" class="line"/><rect x="19" y="33" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(0 210)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">全景 + 平视</text>
+      <ellipse cx="178" cy="60" rx="17" ry="18" class="person"/>
+      <path d="M156 81 Q178 70 200 81 L211 155 L145 155 Z" class="coat"/>
+      <path d="M170 155 L163 184 M187 155 L194 184" class="line"/>
+      <path d="M35 110 L82 110" class="line"/><rect x="19" y="98" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(370 210)">
+      <rect class="cell" width="350" height="190" rx="22" stroke="#ff725d" stroke-width="5"/>
+      <text x="22" y="34" class="small">中景 + 平视</text>
+      <ellipse cx="178" cy="68" rx="34" ry="36" class="person"/>
+      <path d="M132 107 Q178 88 224 107 L239 190 L117 190 Z" class="coat"/>
+      <path d="M35 110 L82 110" class="line"/><rect x="19" y="98" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(740 210)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">特写 + 平视</text>
+      <ellipse cx="184" cy="100" rx="78" ry="75" class="person"/>
+      <path d="M103 165 Q184 135 265 165 L273 190 L95 190 Z" class="coat"/>
+      <path d="M35 110 L82 110" class="line"/><rect x="19" y="98" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(0 420)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">全景 + 仰拍</text>
+      <ellipse cx="178" cy="48" rx="17" ry="18" class="person"/>
+      <path d="M156 70 Q178 60 200 70 L211 147 L145 147 Z" class="coat"/>
+      <path d="M170 147 L163 180 M187 147 L194 180" class="line"/>
+      <path d="M35 155 L82 130" class="line"/><rect x="19" y="148" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(370 420)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">中景 + 仰拍</text>
+      <ellipse cx="178" cy="62" rx="34" ry="36" class="person"/>
+      <path d="M132 101 Q178 82 224 101 L239 190 L117 190 Z" class="coat"/>
+      <path d="M35 155 L82 130" class="line"/><rect x="19" y="148" width="34" height="23" rx="5" class="cam"/>
+    </g>
+    <g transform="translate(740 420)">
+      <rect class="cell" width="350" height="190" rx="22"/>
+      <text x="22" y="34" class="small">特写 + 仰拍</text>
+      <ellipse cx="184" cy="90" rx="78" ry="75" class="person"/>
+      <path d="M103 160 Q184 130 265 160 L273 190 L95 190 Z" class="coat"/>
+      <path d="M35 155 L82 130" class="line"/><rect x="19" y="148" width="34" height="23" rx="5" class="cam"/>
+    </g>
+  </g>
+  <text x="720" y="850" text-anchor="middle" class="small">不要只写“电影感”：至少明确一个景别和一个角度</text>
+</svg>

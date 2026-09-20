@@ -1,0 +1,7 @@
+interface:
+  display_name: "AI 视频一周雷达"
+  short_description: "每周调研 AI 视频热度，生成复刻、教学选题与历史报告"
+  brand_color: "#F26A4F"
+  default_prompt: "Use $ai-video-weekly-radar to research this week's AI video trends and register a new local radar report."
+policy:
+  allow_implicit_invocation: true

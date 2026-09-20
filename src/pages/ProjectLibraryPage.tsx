@@ -19,6 +19,7 @@ import { PreviewPane } from "../components/PreviewPane";
 import { ProjectViewTabs } from "../components/ProjectViewTabs";
 import { Sidebar } from "../components/Sidebar";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { WeeklyRadarNavLink } from "../components/WeeklyRadarNavLink";
 import {
   assetsWithinDirectory,
   directoriesAtDirectory,
@@ -324,6 +325,7 @@ export function ProjectLibraryPage() {
             </select>
           )}
           <ThemeToggle />
+          <WeeklyRadarNavLink compact />
           <Link className="course-link knowledge-link" to="/knowledge"><BrainCircuit size={18} /><span className="responsive-action-label" data-compact-label="知识库">导演知识库</span></Link>
           <Link className="course-link all-projects-link" to="/"><ArrowLeft size={18} /><span className="responsive-action-label" data-compact-label="项目">所有项目</span></Link>
           <button className="primary-button open-library-button" type="button" onClick={openLibrary}><FolderOpen size={18} /><span className="responsive-action-label" data-compact-label="素材">打开素材文件夹</span></button>

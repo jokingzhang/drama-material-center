@@ -6,6 +6,7 @@ import { initializeTheme } from "./lib/theme";
 import "./styles.css";
 import "./story.css";
 import "./knowledge.css";
+import "./radar.css";
 
 initializeTheme();
 

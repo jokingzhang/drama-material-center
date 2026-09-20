@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getMaterialSummary } from "../lib/materials";
-import { deduplicateCurrentStoryAssets } from "../lib/storyAssets";
+import { deduplicateCurrentStoryAssets, shotPromptDuration } from "../lib/storyAssets";
 import type { MaterialAsset } from "../types";
 import type { StoryAssetLink } from "../types/story";
 import { AssetModifiedTime } from "./AssetModifiedTime";
@@ -62,20 +62,23 @@ function plainSummary(value: string) {
 }
 
 function DocumentSummary({ projectId, asset }: { projectId: string; asset: StoryAssetLink }) {
-  const [summary, setSummary] = useState("");
+  const [preview, setPreview] = useState({ summary: "", duration: "" });
 
   useEffect(() => {
     if (!asset.url) return;
     const controller = new AbortController();
     getMaterialSummary(projectId, asset.path, controller.signal)
-      .then((result) => setSummary(plainSummary(result.content).slice(0, 150)))
+      .then((result) => setPreview({
+        summary: plainSummary(result.content).slice(0, 150),
+        duration: asset.materialType === "prompt.video" ? shotPromptDuration(result.content) ?? "" : "",
+      }))
       .catch((reason: unknown) => {
-        if (!(reason instanceof DOMException && reason.name === "AbortError")) setSummary("");
+        if (!(reason instanceof DOMException && reason.name === "AbortError")) setPreview({ summary: "", duration: "" });
       });
     return () => controller.abort();
   }, [asset.path, asset.url, projectId]);
 
-  return <p>{summary || "点击查看文档内容与完整详情"}</p>;
+  return <>{preview.duration && <strong className="story-asset-duration" aria-label={`总时长 ${preview.duration}`}>{preview.duration}</strong>}<p>{preview.summary || "点击查看文档内容与完整详情"}</p></>;
 }
 
 function AssetVisual({ projectId, asset }: { projectId: string; asset: StoryAssetLink }) {

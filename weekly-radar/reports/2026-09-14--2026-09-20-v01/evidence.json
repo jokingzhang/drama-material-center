@@ -1,0 +1,496 @@
+{
+  "surface": "dashboard",
+  "title": "AI 视频一周雷达",
+  "generatedAt": "2026-09-20T15:10:00+08:00",
+  "buildStatus": "complete",
+  "status": "observed",
+  "filters": [],
+  "queries": {
+    "weekly_videos": {
+      "rows": [
+        {
+          "id": "dy-7686438796111400218",
+          "title": "说谎的人就会爆炸",
+          "author": "AI体验官",
+          "publishedAt": "2026-09-18 07:30",
+          "ageLabel": "2天内",
+          "durationSeconds": 52,
+          "likes": 231000,
+          "comments": 4835,
+          "favorites": 7422,
+          "shares": 301000,
+          "category": "情感反转",
+          "format": "单规则剧情",
+          "effort": "中",
+          "creditCost": "中",
+          "fit": "首选",
+          "fitRank": 1,
+          "evidence": "详情页核对",
+          "inStrictWeek": true,
+          "shortFit": true,
+          "url": "https://www.douyin.com/video/7686438796111400218",
+          "whyItWorks": "一句话就能讲清世界规则，情侣对话负责加码，最后用情感反转完成记忆点。",
+          "recreate": "复刻“说谎会触发可见后果”的结构，不复刻角色、台词和爆炸造型；控制在 5–7 个镜头。",
+          "learn": "高概念设定、递进、可视化因果、最后一击",
+          "tutorial": "一条世界规则，怎么写成 60 秒、6 个镜头"
+        },
+        {
+          "id": "dy-7687178674755358003",
+          "title": "AI漫剧你们还有多少种人设",
+          "author": "奈小妹",
+          "publishedAt": "2026-09-19 17:39",
+          "ageLabel": "21小时",
+          "durationSeconds": 62,
+          "likes": 52000,
+          "comments": 273,
+          "favorites": 4224,
+          "shares": 23000,
+          "category": "人设梗",
+          "format": "模板化蒙太奇",
+          "effort": "低",
+          "creditCost": "低",
+          "fit": "首选",
+          "fitRank": 2,
+          "evidence": "详情页核对",
+          "inStrictWeek": true,
+          "shortFit": true,
+          "url": "https://www.douyin.com/video/7687178674755358003",
+          "whyItWorks": "观众会主动补充人设，重复结构容易看懂，也天然适合评论区接龙。",
+          "recreate": "用同一人物做 5–6 个原创职业或性格人设，每段只保留一个标志动作与一句标签。",
+          "learn": "锁定角色、造型差异、节奏卡点、评论钩子",
+          "tutorial": "同一张角色图，怎么稳定生成 6 种人设"
+        },
+        {
+          "id": "dy-7686727644498382130",
+          "title": "容颜",
+          "author": "嘤言",
+          "publishedAt": "2026-09-18 14:30",
+          "ageLabel": "2天内",
+          "durationSeconds": 61,
+          "likes": 53000,
+          "comments": 1069,
+          "favorites": 5970,
+          "shares": 3550,
+          "category": "情绪氛围",
+          "format": "唯美短片",
+          "effort": "中",
+          "creditCost": "中",
+          "fit": "次选",
+          "fitRank": 3,
+          "evidence": "详情页核对",
+          "inStrictWeek": true,
+          "shortFit": true,
+          "url": "https://www.douyin.com/video/7686727644498382130",
+          "whyItWorks": "时长贴近一分钟，以人脸、服饰、光影和音乐形成统一审美，收藏意图明显。",
+          "recreate": "不要照搬主题，改成一个明确母题，例如“旧照片里的她”或“一生只换三次发型”。",
+          "learn": "景别变化、慢推、逆光、色彩统一、音乐段落",
+          "tutorial": "为什么同样是美女镜头，有的像电影、有的像相册"
+        },
+        {
+          "id": "dy-7685753363707004773",
+          "title": "这好运甩都甩不掉，我就不能倒霉一次吗",
+          "author": "班长AI频道",
+          "publishedAt": "2026-09-15 21:28",
+          "ageLabel": "4天",
+          "durationSeconds": 78,
+          "likes": 106000,
+          "comments": 27000,
+          "favorites": 7229,
+          "shares": 51000,
+          "category": "荒诞喜剧",
+          "format": "反常识小剧场",
+          "effort": "中",
+          "creditCost": "中",
+          "fit": "次选",
+          "fitRank": 4,
+          "evidence": "详情页核对",
+          "inStrictWeek": true,
+          "shortFit": false,
+          "url": "https://www.douyin.com/video/7685753363707004773",
+          "whyItWorks": "反常识愿望可以不断升级；评论量很高，说明设定本身会刺激观众接梗。",
+          "recreate": "只学“愿望反向兑现”的结构，做成 3 次升级，不承接原系列人物。",
+          "learn": "喜剧预期、三段升级、表演反应、结尾反转",
+          "tutorial": "反常识喜剧的四步：期待—违背—加码—回收"
+        },
+        {
+          "id": "dy-7686527972248997139",
+          "title": "零号教室无人语，一言不合琵琶曲",
+          "author": "Double豆宝宝",
+          "publishedAt": null,
+          "ageLabel": "搜索页显示2天前",
+          "durationSeconds": 62,
+          "likes": 215000,
+          "comments": null,
+          "favorites": null,
+          "shares": null,
+          "category": "反差喜剧",
+          "format": "音乐反差",
+          "effort": "中",
+          "creditCost": "中",
+          "fit": "谨慎",
+          "fitRank": 5,
+          "evidence": "搜索页样本",
+          "inStrictWeek": true,
+          "shortFit": true,
+          "url": "https://www.douyin.com/video/7686527972248997139",
+          "whyItWorks": "严肃教室与突发琵琶曲形成强烈反差，观众无需理解背景就能进入情绪。",
+          "recreate": "只复刻“严肃空间＋不合时宜声音”的原创结构；不要复刻原 MV、角色或音乐。",
+          "learn": "音画反差、群像反应、节奏停顿、版权边界",
+          "tutorial": "声音如何把普通画面变成笑点"
+        },
+        {
+          "id": "dy-7685577843825236325",
+          "title": "AI短片《挺好的》",
+          "author": "站立起来的影子",
+          "publishedAt": "2026-09-15 17:00",
+          "ageLabel": "4天",
+          "durationSeconds": 193,
+          "likes": 821000,
+          "comments": 8279,
+          "favorites": 45000,
+          "shares": 186000,
+          "category": "亲情共鸣",
+          "format": "品牌叙事短片",
+          "effort": "高",
+          "creditCost": "高",
+          "fit": "学习样本",
+          "fitRank": 6,
+          "evidence": "详情页核对",
+          "inStrictWeek": true,
+          "shortFit": false,
+          "url": "https://www.douyin.com/video/7685577843825236325",
+          "whyItWorks": "“挺好的”是高共识中文语境，克制台词与亲情议题共同支撑转发。",
+          "recreate": "本周不做整片复刻；只提炼一句日常口头禅，先写一个 30 秒微场景。",
+          "learn": "文化共识、潜台词、留白、克制表演、品牌融入",
+          "tutorial": "台词越少越有情绪：AI演员的停顿怎么写"
+        },
+        {
+          "id": "dy-7686479786583018802",
+          "title": "AI短片《领航标》",
+          "author": "2XLabs",
+          "publishedAt": "2026-09-17 23:01",
+          "ageLabel": "2天",
+          "durationSeconds": 176,
+          "likes": 202000,
+          "comments": 1937,
+          "favorites": 7914,
+          "shares": 4093,
+          "category": "科幻隐喻",
+          "format": "商业短片",
+          "effort": "高",
+          "creditCost": "高",
+          "fit": "学习样本",
+          "fitRank": 7,
+          "evidence": "详情页核对",
+          "inStrictWeek": true,
+          "shortFit": false,
+          "url": "https://www.douyin.com/video/7686479786583018802",
+          "whyItWorks": "清楚的世界观隐喻、视觉尺度和品牌命题协同，完成度高。",
+          "recreate": "不建议单人周更直接复刻；拆成一个“偏离既定路线”的 15 秒镜头练习。",
+          "learn": "世界观、视觉隐喻、尺度变化、商业命题",
+          "tutorial": "如何把抽象主题翻译成一个能拍的视觉动作"
+        },
+        {
+          "id": "dy-7686415978099428651",
+          "title": "《末法道士·人物篇》07",
+          "author": "正经的鲨鱼辣椒",
+          "publishedAt": null,
+          "ageLabel": "搜索页显示2天前",
+          "durationSeconds": 205,
+          "likes": 98000,
+          "comments": null,
+          "favorites": null,
+          "shares": null,
+          "category": "东方奇幻",
+          "format": "系列人物篇",
+          "effort": "高",
+          "creditCost": "高",
+          "fit": "学习样本",
+          "fitRank": 8,
+          "evidence": "搜索页样本",
+          "inStrictWeek": true,
+          "shortFit": false,
+          "url": "https://www.douyin.com/video/7686415978099428651",
+          "whyItWorks": "稳定系列世界观与角色资产让观众持续追更，人物篇同时承担设定扩展。",
+          "recreate": "把它当长期资产经营案例，不当作本周一次性复刻目标。",
+          "learn": "角色资产、系列化、世界观信息分配",
+          "tutorial": "人物标准图为什么要先于连续剧镜头"
+        },
+        {
+          "id": "dy-7683191197351606248",
+          "title": "让我们先打开地图…",
+          "author": "原来是陶阿狗君",
+          "publishedAt": "2026-09-10 09:00",
+          "ageLabel": "10天",
+          "durationSeconds": 12,
+          "likes": 595000,
+          "comments": 1351,
+          "favorites": 22000,
+          "shares": 33000,
+          "category": "旅行转场",
+          "format": "3D地图转场",
+          "effort": "低",
+          "creditCost": "低",
+          "fit": "窗口外对照",
+          "fitRank": 9,
+          "evidence": "详情页核对",
+          "inStrictWeek": false,
+          "shortFit": true,
+          "url": "https://www.douyin.com/video/7683191197351606248",
+          "whyItWorks": "12 秒内完成“地点—路线—实景”的信息闭环，强视觉变化且容易理解。",
+          "recreate": "发布时间已超出严格 7 天窗口，仅作为低成本短视频形态对照。",
+          "learn": "地图揭示、匹配转场、节奏压缩",
+          "tutorial": "12 秒地图转场拆解：三段画面如何无缝接上"
+        }
+      ],
+      "source": {
+        "label": "抖音网页版公开搜索与作品详情页，人工复核快照",
+        "executedAt": "2026-09-20T15:10:00+08:00",
+        "filters": [
+          "核心窗口：2026-09-14 至 2026-09-20（北京时间）",
+          "搜索词包括 AI视频、AI短片、AI搞笑视频、AI情感短片、LibTV、AI编剧、AI转场",
+          "只选与 AI 视频创作、短剧、创意转场直接相关且具有复刻或学习价值的样本"
+        ],
+        "caveats": [
+          "这是搜索页抽样，不是抖音全量排行榜；搜索排序受账号、时间和平台算法影响。",
+          "公开页面未提供播放量，因此不把点赞当播放量，也不计算完播率。",
+          "搜索页样本只保留页面实际显示的指标；缺失评论、收藏、分享保持为空。",
+          "复刻适配度、制作难度和积分成本为编辑判断，不是抖音提供的数据。"
+        ],
+        "sourceLinks": [
+          {"label": "抖音 AI 视频搜索", "url": "https://www.douyin.com/search/AI%E8%A7%86%E9%A2%91?type=video"},
+          {"label": "抖音 AI 短片搜索", "url": "https://www.douyin.com/search/AI%E7%9F%AD%E7%89%87?type=video"},
+          {"label": "抖音 LibTV 搜索", "url": "https://www.douyin.com/search/LibTV?type=video"}
+        ],
+        "evidenceFlow": [
+          {"title": "搜索抽样", "detail": "在已登录的抖音网页版读取相关搜索结果的标题、作者、时长、点赞与相对发布时间。"},
+          {"title": "详情核对", "detail": "对主要候选逐条打开作品详情页，核对发布时间、点赞、评论、收藏、分享与时长。"},
+          {"title": "编辑判断", "detail": "按时长、资产数量、连续性难度、积分消耗和可二次教学性评估复刻适配度。"}
+        ],
+        "metricDefinitions": [
+          {"label": "互动指标", "definition": "作品详情页在 2026-09-20 抓取时显示的累计点赞、评论、收藏和分享；不是播放量。", "componentIds": ["weekly-video-table", "weekly-shortlist"]},
+          {"label": "复刻适配度", "definition": "结合用户每周 1–2 条内容与有限视频积分，对制作复杂度、时长、可迁移技巧和教学复用价值进行的编辑判断。", "componentIds": ["weekly-shortlist"]}
+        ]
+      }
+    },
+    "teaching_samples": {
+      "rows": [
+        {
+          "id": "teach-7686897292577705243",
+          "title": "怎么做 AI 面部检查视频",
+          "author": "朗姆（断档ai教学）",
+          "durationSeconds": 85,
+          "likes": 3353,
+          "ageLabel": "1天前",
+          "topic": "热点复刻",
+          "scope": "本周样本",
+          "url": "https://www.douyin.com/video/7686897292577705243"
+        },
+        {
+          "id": "teach-7686772676370730249",
+          "title": "AI 电影：表演停顿的方法与实测",
+          "author": "AIGC制作宝典",
+          "durationSeconds": 366,
+          "likes": 154,
+          "ageLabel": "1天前",
+          "topic": "表演",
+          "scope": "本周样本",
+          "url": "https://www.douyin.com/video/7686772676370730249"
+        },
+        {
+          "id": "teach-7686917070344211746",
+          "title": "爆款视频复刻工作流（省钱版）",
+          "author": "Yuuhann",
+          "durationSeconds": 347,
+          "likes": 244,
+          "ageLabel": "1天前",
+          "topic": "工作流",
+          "scope": "本周样本",
+          "url": "https://www.douyin.com/video/7686917070344211746"
+        },
+        {
+          "id": "teach-7686764162022016507",
+          "title": "不用蒙版和关键帧做 AI 画中画运镜",
+          "author": "一页枝鸥",
+          "durationSeconds": 124,
+          "likes": 317,
+          "ageLabel": "1天前",
+          "topic": "后期运镜",
+          "scope": "本周样本",
+          "url": "https://www.douyin.com/video/7686764162022016507"
+        },
+        {
+          "id": "teach-7686521957550868475",
+          "title": "AI 直接变出全部机位？Atlas 世界模型",
+          "author": "光年小凡",
+          "durationSeconds": 74,
+          "likes": 59,
+          "ageLabel": "2天前",
+          "topic": "机位",
+          "scope": "本周样本",
+          "url": "https://www.douyin.com/video/7686521957550868475"
+        },
+        {
+          "id": "teach-7669045435386013638",
+          "title": "让 AI 视频开始叙事：景别与镜头角度",
+          "author": "Shine Ai",
+          "durationSeconds": 496,
+          "likes": 64000,
+          "ageLabel": "1月前",
+          "topic": "镜头语言",
+          "scope": "常青对照",
+          "url": "https://www.douyin.com/video/7669045435386013638"
+        },
+        {
+          "id": "teach-7595814311688146176",
+          "title": "6 大影视级布光技巧",
+          "author": "Xuan酱",
+          "durationSeconds": 379,
+          "likes": 63000,
+          "ageLabel": "8月前",
+          "topic": "灯光",
+          "scope": "常青对照",
+          "url": "https://www.douyin.com/video/7595814311688146176"
+        },
+        {
+          "id": "teach-7663331447876455707",
+          "title": "微表情",
+          "author": "虫二Ai",
+          "durationSeconds": 99,
+          "likes": 37000,
+          "ageLabel": "2月前",
+          "topic": "表演",
+          "scope": "常青对照",
+          "url": "https://www.douyin.com/video/7663331447876455707"
+        },
+        {
+          "id": "teach-7687198089408417059",
+          "title": "AI 漫剧 0–1 全流程教学",
+          "author": "在逃精品肥牛",
+          "durationSeconds": 1689,
+          "likes": 174,
+          "ageLabel": "19小时前",
+          "topic": "全流程",
+          "scope": "本周样本",
+          "url": "https://www.douyin.com/video/7687198089408417059"
+        }
+      ],
+      "source": {
+        "label": "抖音 AI 视频教学相关搜索抽样",
+        "executedAt": "2026-09-20T15:10:00+08:00",
+        "filters": [
+          "搜索词包括 AI视频教学、AI运镜教程、AI镜头角度、AI视频灯光、AI编剧、AI转场",
+          "本周样本与历史常青对照分开标记"
+        ],
+        "caveats": [
+          "本周作品仍在累积互动，不能把当前点赞直接当最终表现。",
+          "历史样本用于验证题材是否具备长期需求，不与本周新发作品做同龄比较。",
+          "搜索结果不是全量教育内容榜单。"
+        ],
+        "sourceLinks": [
+          {"label": "AI 视频教学搜索", "url": "https://www.douyin.com/search/AI%E8%A7%86%E9%A2%91%E6%95%99%E5%AD%A6?type=video"},
+          {"label": "AI 镜头角度搜索", "url": "https://www.douyin.com/search/AI%E9%95%9C%E5%A4%B4%E8%A7%92%E5%BA%A6?type=video"},
+          {"label": "AI 视频灯光搜索", "url": "https://www.douyin.com/search/AI%E8%A7%86%E9%A2%91%E7%81%AF%E5%85%89?type=video"}
+        ],
+        "evidenceFlow": [
+          {"title": "近期题材", "detail": "记录近一周搜索结果里仍在发布的细分教程。"},
+          {"title": "常青对照", "detail": "保留镜头语言、灯光、微表情等历史高互动样本，判断长期学习需求。"},
+          {"title": "内容结论", "detail": "只在抽样范围内比较“细分问题”与“泛全流程教程”的内容形态，不做因果归因。"}
+        ],
+        "metricDefinitions": [
+          {"label": "本周样本", "definition": "抖音搜索页在快照时显示为 1–2 天前或 19 小时前发布的教学作品。", "componentIds": ["teaching-evidence"]},
+          {"label": "常青对照", "definition": "超出本周窗口、但主题与账号知识体系高度相关的历史公开作品。", "componentIds": ["teaching-evidence"]}
+        ]
+      }
+    },
+    "teaching_map": {
+      "rows": [
+        {"id":"t01","level":"基础","pillar":"镜头语言","topic":"景别 vs 镜头角度","format":"图文优先","creditCost":"零","priority":"高","hook":"同一个人，为什么换个角度就像换了命运？","practice":"用同一角色对比平视、俯拍、仰拍"},
+        {"id":"t02","level":"基础","pillar":"镜头语言","topic":"9 种常用机位","format":"图文优先","creditCost":"零","priority":"高","hook":"9 个词，让 AI 不再只会正面平拍","practice":"平视、高低角、鸟瞰、虫视、荷兰角、过肩、POV、极端特写"},
+        {"id":"t03","level":"基础","pillar":"运镜","topic":"推、拉、环绕、跟拍、希区柯克变焦","format":"短视频","creditCost":"低","priority":"高","hook":"5 种运镜，分别在什么情绪下用？","practice":"同一场景生成 5 个 3–5 秒对照片段"},
+        {"id":"t04","level":"基础","pillar":"提示词","topic":"动作＋摄影机＋光线公式","format":"图文优先","creditCost":"零","priority":"高","hook":"提示词越长越好吗？先把这三件事写清","practice":"展示错误写法与可执行写法"},
+        {"id":"t05","level":"基础","pillar":"构图","topic":"主体位置、前景与留白","format":"图文优先","creditCost":"零","priority":"中","hook":"画面空，不等于留白","practice":"三分法、居中、框中框各做一页"},
+        {"id":"t06","level":"基础","pillar":"剪辑","topic":"慢动作、抽帧、冻帧、延时","format":"图文/短视频","creditCost":"低","priority":"中","hook":"不是所有慢动作都高级：四种帧处理怎么选","practice":"用同一动作做四种处理"},
+        {"id":"t07","level":"进阶","pillar":"灯光","topic":"主光、补光、轮廓光与动机光","format":"图文优先","creditCost":"零","priority":"高","hook":"AI 画面脏，不一定是模型差，可能是没有光源逻辑","practice":"一张人物图标注光位与情绪"},
+        {"id":"t08","level":"进阶","pillar":"灯光","topic":"伦勃朗光、逆光、顶光、体积光","format":"短视频","creditCost":"低","priority":"高","hook":"四种电影光，分别适合主角、反派和悬疑","practice":"一人四光位 A/B 测试"},
+        {"id":"t09","level":"进阶","pillar":"连续性","topic":"180 度规则与过肩反打","format":"图文优先","creditCost":"零","priority":"高","hook":"人物没变，观众为什么突然觉得站反了？","practice":"画轴线、错误机位和正确机位"},
+        {"id":"t10","level":"进阶","pillar":"连续性","topic":"视线、动作、道具接续","format":"短视频","creditCost":"低","priority":"高","hook":"AI 短剧最容易穿帮的三个连续性问题","practice":"开门、递物、转身各做一组反例"},
+        {"id":"t11","level":"进阶","pillar":"转场","topic":"匹配剪辑、甩镜、变形转场","format":"短视频","creditCost":"低","priority":"中","hook":"转场不是特效，是前后两个镜头的关系","practice":"圆形、动作方向、颜色各做一例"},
+        {"id":"t12","level":"进阶","pillar":"声音","topic":"环境声、拟音、音乐节拍","format":"图文/短视频","creditCost":"零","priority":"高","hook":"同一画面，换一条声音就变成另一种故事","practice":"恐怖、喜剧、温情三版声音设计"},
+        {"id":"t13","level":"进阶","pillar":"表演","topic":"微表情与有效停顿","format":"图文优先","creditCost":"零","priority":"高","hook":"别只写“沉默三秒”，让沉默里发生一件事","practice":"失焦回焦、吞咽、动作中断、状态变化"},
+        {"id":"t14","level":"进阶","pillar":"调度","topic":"双人站位与镜头覆盖","format":"图文优先","creditCost":"零","priority":"中","hook":"两个人对话，为什么 AI 总在乱换位置？","practice":"主镜头、过肩、反打、双人中景四格图"},
+        {"id":"t15","level":"高级","pillar":"编剧","topic":"一句高概念到 6 个镜头","format":"图文优先","creditCost":"零","priority":"高","hook":"先写规则，再写故事：60 秒短片最快起稿法","practice":"规则、例外、升级、代价、反转、余味"},
+        {"id":"t16","level":"高级","pillar":"编剧","topic":"60 秒结构：钩子、加码、反转、回收","format":"图文优先","creditCost":"零","priority":"高","hook":"为什么有的 60 秒像故事，有的只是镜头合集？","practice":"用本周高概念样本做结构拆解"},
+        {"id":"t17","level":"高级","pillar":"导演","topic":"长镜头、FPV 与跨尺度运镜","format":"短视频","creditCost":"中","priority":"中","hook":"复杂运镜不是越多越好，先看它解决什么叙事任务","practice":"同一动作设计切镜版与一镜到底版"},
+        {"id":"t18","level":"高级","pillar":"动作","topic":"打斗与物理反馈","format":"短视频","creditCost":"中","priority":"中","hook":"打斗不像大片，通常不是因为没有特效","practice":"动量连续、受力反馈、视角锚点"},
+        {"id":"t19","level":"高级","pillar":"资产","topic":"角色、场景、道具一致性","format":"图文优先","creditCost":"零","priority":"高","hook":"先做哪些图，才能少抽卡？","practice":"人物标准图、场景母版、道具状态表"},
+        {"id":"t20","level":"高级","pillar":"制作管理","topic":"积分预算与视频 QA","format":"图文优先","creditCost":"零","priority":"高","hook":"平台显示成功，不等于镜头能剪进去","practice":"动作逻辑、首尾帧、人物重复、穿模、字幕、水印清单"}
+      ],
+      "source": {
+        "label": "基于用户示例、抖音教学样本与影视基础知识整理的选题地图",
+        "executedAt": "2026-09-20T15:10:00+08:00",
+        "caveats": [
+          "这是课程与内容选题结构，不代表每个主题都必须做成视频。",
+          "零积分表示可以用图文、分镜图或已有素材讲清，不代表制作时间为零。",
+          "优先级结合用户当前目标与公开内容样本，是编辑判断。"
+        ],
+        "evidenceFlow": [
+          {"title": "用户示例", "detail": "三条本地示例覆盖主持人口播、电影案例、图解、提示词和工具演示。"},
+          {"title": "公开样本", "detail": "抖音历史常青样本显示镜头语言、灯光、微表情具备长期学习需求。"},
+          {"title": "低成本重排", "detail": "将大多数基础与进阶主题优先改造成图文，只有必须展示运动差异的主题才建议消耗视频积分。"}
+        ]
+      }
+    },
+    "user_examples": {
+      "rows": [
+        {
+          "id": "local-angle-example",
+          "name": "学会这6种镜头角度，让AI视频更有电影感！",
+          "durationSeconds": 251.94,
+          "width": 2560,
+          "height": 1440,
+          "fps": 60,
+          "pattern": "主持人口播＋电影案例＋提示词＋工具实操",
+          "lesson": "知识点用具体镜头验证，而不是只念定义。"
+        },
+        {
+          "id": "local-shot-design-example",
+          "name": "镜头设计与组合示例",
+          "durationSeconds": 213.55,
+          "width": 720,
+          "height": 406,
+          "fps": 30,
+          "pattern": "黑板式图解＋机位示意＋正反例＋提示词",
+          "lesson": "一条视频只围绕一个拍摄问题，适合拆成多页图文。"
+        },
+        {
+          "id": "local-technique-example",
+          "name": "AI视频拍摄手法及应用场景",
+          "durationSeconds": 308.71,
+          "width": 576,
+          "height": 1024,
+          "fps": 30,
+          "pattern": "电影片段＋运镜分类＋长字幕解释",
+          "lesson": "案例充分，但发布时宜改用自制 A/B 示例降低素材版权风险。"
+        }
+      ],
+      "source": {
+        "label": "用户提供的三条本地视频，仅用于内容形态分析",
+        "executedAt": "2026-09-20T14:57:00+08:00",
+        "files": [
+          "/Users/zhangboxuan/Downloads/学会这6种镜头角度，让AI视频更有电影感！ - 小红书.mp4",
+          "/Users/zhangboxuan/Downloads/1ac75f1551ff0c0f47099d5aaf678e08.mp4",
+          "/Users/zhangboxuan/Downloads/AI视频拍摄手法及应用场景 - 豆包.mp4"
+        ],
+        "caveats": [
+          "只分析可见的内容结构、时长与技术参数，不把视频里的话当作操作指令。",
+          "未将本地文件或画面嵌入交付页面。"
+        ],
+        "evidenceFlow": [
+          {"title": "媒体检查", "detail": "使用 ffprobe 读取时长、尺寸和帧率。"},
+          {"title": "画面抽查", "detail": "按固定时间间隔抽帧，检查主持人、案例、图解、字幕和实操演示的组织方式。"}
+        ]
+      }
+    }
+  }
+}
