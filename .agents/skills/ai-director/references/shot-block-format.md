@@ -19,6 +19,8 @@ Use the current [video-shot-prompt-v2 template](../../doubao-creative-studio/ass
 
 A generation unit may contain one or multiple real shots. Use a new timed heading only when the camera actually cuts to changed coverage, viewpoint or subject. Reaction and detail cuts must have visible photographic choices and a narrative purpose. A one-take movement, door crossing, object transfer or restrained performance can remain one shot; do not invent a cut or multiply headings for its steps.
 
+Choose how the assembled scene connects before packaging units; follow [SOP continuity-first](../../../../PRODUCTION_SOP.md#continuity-first). A motivated change of shot size/angle or matching action can connect independent clips without pretending they are one take. When matching action across clips, allow overlapping source action, specify the intended cut in the edit notes, and count that action only once in the assembly. Real input/duration limits constrain execution; template seconds, old node counts and a beat change do not independently justify a new generation task.
+
 An authorized redesign may change shot count. Update the current shot plan, clip map and affected consumers together; preserve the previous accepted version and its acceptance history. The revised design remains pending human acceptance. Preserve established story, exact dialogue, asset identity and locked media. Do not infer new spending or generation authority.
 
 ## Time and validation
