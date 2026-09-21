@@ -13,6 +13,7 @@ Finish names, exact dialogue, shot format, timing and declared-reference checks 
 Read the actual final body with its declared inputs. Check the following in that same read, without writing proof for every passing item:
 
 - Current story, exact dialogue, speaker/action ownership, look and required visible information agree with the sources.
+- Consequential user choices, including new information from the discussion, reach the actual viewing order, performance, framing, sound or edit. A technique name in the design table is insufficient; conversely, no technique quota or additional aesthetic approval is required when the intended scene works.
 - Necessary action is visible within the crop; camera side, reference geography, props and start-to-end causal changes are compatible. Essential revelations and reactions are in the model body, not only in a separate design table.
 - Speech, breathing, turn-taking, sequential or overlapping actions and listener response plausibly fit. Average character rate alone is insufficient; unperformed timing remains an estimate, not a demand to generate audio for text review.
 - Abstract emotion or camera labels do not stand alone as execution. When words such as `softens`, `angry`, `tense`, `cinematic` or `slowly` carry a necessary result, the body also states the observable performance change or the camera's usable start, side, path, speed behavior and landing. Natural-language intent may remain; do not demand arbitrary numbers where a clear physical relation is enough.

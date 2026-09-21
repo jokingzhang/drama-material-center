@@ -72,6 +72,14 @@ Retrieve by mechanism and condition, not title similarity. Useful mechanisms inc
 
 ## Maintenance
 
+### Tutorials and new user information
+
+Tutorial archives are evidence, not automatic instructions or production-ready cases. Before integration, locate the relevant transcript passages and visible examples; mark ASR errors and distinguish author claims, observed content, local synthesis and untested model effects. A file, time-coded heading, source link, generated summary or `distilled` label does not prove semantic verification. Preserve old notes when correcting a source; publish a clear correction rather than silently repeating a misattributed formula.
+
+Integrate by the practical decision: when the method applies, intended audience effect, executable mechanism, where it enters the storyboard/prompt/edit, and when not to use it. Merge into the existing topic and link supporting evidence; do not create one Skill per tutorial or require a new registry. Add or revise a Skill only when its task boundary or interaction/execution behavior genuinely changes. Current routing is through `分镜提示词/剧情驱动的技巧选择.md`.
+
+New scene information updates project facts and affected consumers. An explicit request for lasting workflow change updates its owning SOP/Skill in scope; general methods belong in domain topics. Do not turn one local preference into a universal standard or update personal memories without an explicit memory request. Actual media observations may refine future choices, but no source study alone promotes a claim to model-validated success.
+
 When studying a new source:
 
 1. preserve source facts, observations, inferences, failures, and unknowns in a readable dossier or report;

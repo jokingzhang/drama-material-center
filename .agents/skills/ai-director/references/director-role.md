@@ -10,10 +10,11 @@ Read methods for the decision at hand; reuse already-read unchanged content. Pat
 
 | Current need | Read only the relevant method |
 | --- | --- |
-| New scene or genuinely unsettled directing choices | `导演设计方法.md`; use `镜头类型索引.md` when selecting or comparing shot types. |
+| New scene or genuinely unsettled directing choices | [storyboard-discussion.md](storyboard-discussion.md), then `剧情驱动的技巧选择.md`; follow its relevant topic links rather than loading all methods. |
 | New prompt format or a format question | `分镜提示词写法.md` and the current [shot-block format](shot-block-format.md). |
 | Dialogue, comedy or emotional timing | `对白、梗与情绪的分镜写法.md`; reuse current Writer analysis and consult [sw-dialogue](../../sw-dialogue/SKILL.md) only when needed to interpret performance. Do not change approved lines through staging. |
 | A camera-movement decision | `运镜选择与执行.md`. |
+| Sound continuity, music entry/exit or contrast | `声音与配乐设计.md`; transition skill only when the join needs explicit design. |
 | Screen, receipt or other readable insert | “互动主镜与可读插镜分责” in `导演设计方法.md`; read the image-domain relation-frame method only if choosing or repairing that reference. |
 | A concrete space, handoff or continuity issue | The relevant spatial/continuity passages and actual affected inputs, not all types and cases. |
 | Final check or local recheck | [review-mode.md](review-mode.md); no full knowledge bundle. |
@@ -30,7 +31,7 @@ Follow the [keyframe approval gate](../SKILL.md#keyframe-approval-gate): default
 
 Choose the scope before writing:
 
-- **New creation or requested redesign:** settle what the audience sees and how the scene changes from current facts. Ordinary design and prose may be completed in the same writing pass, with necessary decisions in the execution table. A separate Director Design is needed only when requested or useful for a complex plan, not as a writing prerequisite. Inspect old wording for regressions after making fresh choices.
+- **New creation or requested redesign:** settle what the audience sees and how the scene changes from current facts. Use [collaborative discussion](storyboard-discussion.md) when key viewing choices are unresolved or the user requests it; ask one question with a recommendation and wait. With settled choices or an explicit request to proceed directly, design and prose may be completed in the same writing pass. A separate Director Design is needed only when requested or useful for a complex plan, not as a prerequisite. Inspect old wording for regressions after making fresh choices.
 - **Local repair with stable inputs:** read the exact current prompt and bound design, locate the evidenced fault, and retain verified decisions elsewhere. Update only the affected design/text and continuity consumers; do not rebuild the whole scene merely to repair one line or crop boundary.
 - **Review only:** inspect the existing candidate against current facts without creating new prose or a replacement design.
 
@@ -39,6 +40,8 @@ If a local repair exposes a faulty upstream choice, reopen that choice and its c
 If the requested repair changes spoken wording, return to [Writer](writer-role.md) in the same main session, even for a request to change only the dialogue in a storyboard prompt. Within existing authorization, update the script and dialogue contract first, then synchronize affected prompts and bindings under the local publication flow. Recheck the changed lines' performance time, reactions and affected cuts, retaining valid design elsewhere. Preserve suggestions-only scope when revision is not authorized.
 
 Settle only the decisions needed by the unit: audience purpose; visible start, causal action/reaction and end; camera/crop and necessary geography; exact speech and listening; time and relevant sound; minimum compatible references and edit connection. Record them in the requested work, without a field-completion exercise.
+
+Translate agreed audience effects into actual prompt fields and edit decisions, not a list of technique names. When new information changes a choice, briefly explain the consequence and revise only affected mechanisms, text and joins; do not rerun an interview or preserve obsolete choices just because prose already exists.
 
 Preserve [canonical full names](../SKILL.md#use-canonical-full-character-names) and the [story-driven shot structure](shot-block-format.md#story-driven-shot-count). For state-changing actions establish contact through completion and who is on which physical side. Ordinary dialogue does not need an invented hazard, route or irreversible event. A wide shot cannot promise every tiny gesture and lip movement simultaneously; use meaningful information priority and cuts.
 

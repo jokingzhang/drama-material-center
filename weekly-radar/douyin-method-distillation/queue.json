@@ -1,0 +1,497 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-21T10:50:24.000Z",
+  "scope": {
+    "source": "douyin-liked-page",
+    "sourceUrl": "https://www.douyin.com/user/self?from_tab_name=main&showTab=like",
+    "account": "兜导AIGC",
+    "author": {
+      "name": "李一帆",
+      "slug": "li-yifan",
+      "profileUrl": "https://www.douyin.com/user/MS4wLjABAAAAyi85GGeS9GCLBpS4JAJ-r4Kz0cPVz-b0wIiYaeg_icU"
+    },
+    "observedAt": "2026-09-21T11:20:00+08:00",
+    "inclusionRule": "The item was visible in the logged-in account's liked list and its displayed author was 李一帆.",
+    "exclusionRule": "Do not add videos that are only present in the author's collection or profile but are not visible in the liked list snapshot.",
+    "observedMatchCount": 29
+  },
+  "localOutputRoot": "weekly-radar/.local/douyin-method-distillation",
+  "statusValues": [
+    "queued",
+    "downloaded",
+    "media_ready",
+    "transcribed",
+    "distilled",
+    "blocked"
+  ],
+  "videos": [
+    {
+      "order": 1,
+      "videoId": "7676068375394728817",
+      "url": "https://www.douyin.com/video/7676068375394728817",
+      "title": "别再靠抽卡，白模让AI视频更听话！",
+      "focus": [
+        "白模",
+        "空间关系",
+        "复杂运镜"
+      ],
+      "status": {
+        "stage": "distilled",
+        "note": "媒体、转写与方法蒸馏已完成；结论含时间证据和适用边界。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7676068375394728817/v01"
+    },
+    {
+      "order": 2,
+      "videoId": "7672390366163172849",
+      "url": "https://www.douyin.com/video/7672390366163172849",
+      "title": "AI视频开场这样做，5个黄金开场拯救废片！",
+      "focus": [
+        "开场",
+        "叙事钩子",
+        "提示词"
+      ],
+      "status": {
+        "stage": "distilled",
+        "note": "媒体、转写与方法蒸馏已完成；结论含时间证据和适用边界。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7672390366163172849/v01"
+    },
+    {
+      "order": 3,
+      "videoId": "7664884994812432869",
+      "url": "https://www.douyin.com/video/7664884994812432869",
+      "title": "不靠抽卡，做出稳定真实又会演的AI角色！",
+      "focus": [
+        "角色稳定",
+        "情绪控制",
+        "人像质感"
+      ],
+      "status": {
+        "stage": "distilled",
+        "note": "CocoCut 分轨已合并并完成全流解码；Whisper 初稿与关键画面已交叉校正，方法笔记已完成。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7664884994812432869/v01"
+    },
+    {
+      "order": 4,
+      "videoId": "7661625504865523313",
+      "url": "https://www.douyin.com/video/7661625504865523313",
+      "title": "AI视频人声、音效、背景音乐“无缝衔接”三步法！",
+      "focus": [
+        "人声",
+        "音效",
+        "背景音乐"
+      ],
+      "status": {
+        "stage": "distilled",
+        "note": "媒体、转写与方法蒸馏已完成；异常转写区间已排除。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7661625504865523313/v01"
+    },
+    {
+      "order": 5,
+      "videoId": "7660904900789128057",
+      "url": "https://www.douyin.com/video/7660904900789128057",
+      "title": "让AI视频瞬间拥有灵魂的AI配乐生成技巧！",
+      "focus": [
+        "配乐",
+        "情绪曲线",
+        "片段衔接"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7660904900789128057/v01"
+    },
+    {
+      "order": 6,
+      "videoId": "7659410961141817969",
+      "url": "https://www.douyin.com/video/7659410961141817969",
+      "title": "我发现了AI视频的“导演遥控器”：一根线就能控制镜头！",
+      "focus": [
+        "引导线",
+        "人物运动",
+        "镜头运动"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7659410961141817969/v01"
+    },
+    {
+      "order": 7,
+      "videoId": "7658676046082909425",
+      "url": "https://www.douyin.com/video/7658676046082909425",
+      "title": "只用一张图，就能告别AI视频无效“抽卡”！",
+      "focus": [
+        "俯视调度图",
+        "人物站位",
+        "空间规划"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7658676046082909425/v01"
+    },
+    {
+      "order": 8,
+      "videoId": "7657924748714648049",
+      "url": "https://www.douyin.com/video/7657924748714648049",
+      "title": "AI多人声音一致性问题终于被我解决了！",
+      "focus": [
+        "声纹",
+        "角色音色",
+        "多人对话"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7657924748714648049/v01"
+    },
+    {
+      "order": 9,
+      "videoId": "7657177146792877989",
+      "url": "https://www.douyin.com/video/7657177146792877989",
+      "title": "一个公式控制所有AI视频角色表情",
+      "focus": [
+        "表情",
+        "动作",
+        "语气",
+        "情绪原因"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7657177146792877989/v01"
+    },
+    {
+      "order": 10,
+      "videoId": "7654787335964153201",
+      "url": "https://www.douyin.com/video/7654787335964153201",
+      "title": "告别反复“抽卡”，工业化SOP工作流轻松搞定高品质 AI短剧",
+      "focus": [
+        "工业化SOP",
+        "资产控制",
+        "生成剪辑"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7654787335964153201/v01"
+    },
+    {
+      "order": 11,
+      "videoId": "7652366203256853489",
+      "url": "https://www.douyin.com/video/7652366203256853489",
+      "title": "AI视频电影质感底层逻辑，一条视频全讲清楚！",
+      "focus": [
+        "色彩",
+        "空间留白",
+        "材质"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7652366203256853489/v01"
+    },
+    {
+      "order": 12,
+      "videoId": "7649772554189949435",
+      "url": "https://www.douyin.com/video/7649772554189949435",
+      "title": "告别AI画面翻车！3招写对提示词",
+      "focus": [
+        "提示词污染",
+        "视觉生成",
+        "提示词约束"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7649772554189949435/v01"
+    },
+    {
+      "order": 13,
+      "videoId": "7648647193340092593",
+      "url": "https://www.douyin.com/video/7648647193340092593",
+      "title": "AI视频空间一致性调度秘籍，一条视频教会你导演台与景别调度！",
+      "focus": [
+        "导演台",
+        "空间一致性",
+        "景别"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7648647193340092593/v01"
+    },
+    {
+      "order": 14,
+      "videoId": "7647156949906176241",
+      "url": "https://www.douyin.com/video/7647156949906176241",
+      "title": "你做的AI短剧没人看？缺的不是提示词，而是导演思维！",
+      "focus": [
+        "选题钩子",
+        "角色一致性",
+        "成片流程"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7647156949906176241/v01"
+    },
+    {
+      "order": 15,
+      "videoId": "7642341763042745530",
+      "url": "https://www.douyin.com/video/7642341763042745530",
+      "title": "AI视频高级感的核心：7种故事感构图",
+      "focus": [
+        "构图",
+        "叙事",
+        "导演思维"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7642341763042745530/v01"
+    },
+    {
+      "order": 16,
+      "videoId": "7639011168836855803",
+      "url": "https://www.douyin.com/video/7639011168836855803",
+      "title": "AI 配音没感情？3 步调出演员级真实感！",
+      "focus": [
+        "配音",
+        "语气",
+        "节奏"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7639011168836855803/v01"
+    },
+    {
+      "order": 17,
+      "videoId": "7634553108752937913",
+      "url": "https://www.douyin.com/video/7634553108752937913",
+      "title": "90%的人都写错了，如何让你的AI视频情绪表情更像真人？",
+      "focus": [
+        "情绪过渡",
+        "微表情",
+        "提示词"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7634553108752937913/v01"
+    },
+    {
+      "order": 18,
+      "videoId": "7633067467129300465",
+      "url": "https://www.douyin.com/video/7633067467129300465",
+      "title": "16种AI视频电影感运镜！让你学会用镜头讲故事",
+      "focus": [
+        "运镜",
+        "镜头动机",
+        "叙事"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7633067467129300465/v01"
+    },
+    {
+      "order": 19,
+      "videoId": "7629357762208016817",
+      "url": "https://www.douyin.com/video/7629357762208016817",
+      "title": "如何让你的AI视频更有电影感",
+      "focus": [
+        "景别",
+        "光影",
+        "视听语言"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7629357762208016817/v01"
+    },
+    {
+      "order": 20,
+      "videoId": "7628618179870606961",
+      "url": "https://www.douyin.com/video/7628618179870606961",
+      "title": "3步打破AI 视频15 秒魔咒，硬控视频一致！",
+      "focus": [
+        "长视频",
+        "角色一致性",
+        "延续"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7628618179870606961/v01"
+    },
+    {
+      "order": 21,
+      "videoId": "7627115876001245297",
+      "url": "https://www.douyin.com/video/7627115876001245297",
+      "title": "3招让你的AI视频更有“活人感”",
+      "focus": [
+        "代入感",
+        "空间感",
+        "镜头运动"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7627115876001245297/v01"
+    },
+    {
+      "order": 22,
+      "videoId": "7674997110237134309",
+      "url": "https://www.douyin.com/video/7674997110237134309",
+      "title": "AI视频总差点电影感？学会焦距+光圈就懂了",
+      "focus": [
+        "焦距",
+        "光圈",
+        "景深"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7674997110237134309/v01"
+    },
+    {
+      "order": 23,
+      "videoId": "7646046438628015601",
+      "url": "https://www.douyin.com/video/7646046438628015601",
+      "title": "3招让你的 AI 视频拥有大师级电影感节奏",
+      "focus": [
+        "节奏",
+        "张弛",
+        "提示词"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7646046438628015601/v01"
+    },
+    {
+      "order": 24,
+      "videoId": "7641220860007694833",
+      "url": "https://www.douyin.com/video/7641220860007694833",
+      "title": "8 个光影技巧，让你的 AI 视频告别“塑料感”，注入电影感",
+      "focus": [
+        "光影",
+        "层次",
+        "氛围"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7641220860007694833/v01"
+    },
+    {
+      "order": 25,
+      "videoId": "7639371669090612411",
+      "url": "https://www.douyin.com/video/7639371669090612411",
+      "title": "AI视频细节一致性技巧",
+      "focus": [
+        "形象",
+        "声音",
+        "位置",
+        "动作"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7639371669090612411/v01"
+    },
+    {
+      "order": 26,
+      "videoId": "7687245074438586490",
+      "url": "https://www.douyin.com/video/7687245074438586490",
+      "title": "GPT6结合blender自制3D导演台",
+      "focus": [
+        "Blender",
+        "白模",
+        "参考视频",
+        "运镜"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7687245074438586490/v01"
+    },
+    {
+      "order": 27,
+      "videoId": "7653852870844464113",
+      "url": "https://www.douyin.com/video/7653852870844464113",
+      "title": "别再硬续15秒了！AI长视频丝滑连贯的3个方法",
+      "focus": [
+        "景别切换",
+        "动作衔接",
+        "分镜组接"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7653852870844464113/v01"
+    },
+    {
+      "order": 28,
+      "videoId": "7660151562710862843",
+      "url": "https://www.douyin.com/video/7660151562710862843",
+      "title": "4种电影级转场，让你的AI短片瞬间高级！",
+      "focus": [
+        "遮挡转场",
+        "甩镜转场",
+        "动作匹配",
+        "相似构图"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7660151562710862843/v01"
+    },
+    {
+      "order": 29,
+      "videoId": "7644936254349565883",
+      "url": "https://www.douyin.com/video/7644936254349565883",
+      "title": "AI视频没有电影感？分镜秘籍拯救你！",
+      "focus": [
+        "景别组接",
+        "蒙太奇",
+        "分镜"
+      ],
+      "status": {
+        "stage": "transcribed",
+        "note": "媒体、转写和旧详细稿保留；原批量“已复核”结论撤回，详细稿待逐条来源复核。当前可采纳部分见 director-knowledge-base/来源/2026-09-21-抖音导演方法整合与来源校正-v01.md；无需重新下载。"
+      },
+      "outputDir": "weekly-radar/.local/douyin-method-distillation/li-yifan/7644936254349565883/v01"
+    }
+  ]
+}

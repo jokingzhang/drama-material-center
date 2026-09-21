@@ -1,4 +1,4 @@
 interface:
   display_name: "AI短剧导演工作流"
-  short_description: "主会话创作并快速检查剧情、连续性与生产硬伤，无需审查子代理或逐镜评分"
-  default_prompt: "Use $ai-director to write and review in the main session, use Doubao only if I select it, fix major story, continuity and execution problems without review subagents or mandatory scoring, and continue authorized production after local publication and execution checks."
+  short_description: "一起讨论剧情与观看体验，按场景选择导演技巧，完成分镜、提示词与制作检查"
+  default_prompt: "使用 $ai-director 根据当前剧情和我的新信息设计分镜，关键选择一次讨论一个并给出推荐，再把合适的表演、摄影、剪辑和声音方法写入可执行提示词。"

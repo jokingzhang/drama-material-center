@@ -18,6 +18,9 @@ workspace/*
 .playwright-cli/
 output/
 
+# Downloaded third-party videos and local transcription runs for AI-video research.
+weekly-radar/.local/
+
 # Downloaded evidence media for the local-only director case viewer.
 director-knowledge-base/.media/
 

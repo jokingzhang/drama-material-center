@@ -1,6 +1,6 @@
 ---
 name: ai-director
-description: Develop stories, plan visual assets, and create or repair storyboard/video prompts in drama-material-center. One main session writes and reviews the work; use doubao-creative-studio only when the user explicitly selects Doubao as author. Route to independent narrative-storyboard, cinematic-long-take and micro-expression skills according to story needs; choose shot count from the scene, not a fixed minimum. Review for major story, continuity and execution problems without review subagents or mandatory scoring. Reuse checked work for authorized uploads, node binding and media production.
+description: Develop stories, discuss and design storyboards, plan visual assets, and write or repair video prompts in drama-material-center. For unsettled new scenes or major redesigns, discuss one consequential choice at a time with a recommendation, then apply techniques according to story and audience needs. Incorporate new user information into affected decisions. One main session writes and reviews; Doubao only on explicit selection. Route narrative, long-take, performance and transition methods without fixed shot counts or mandatory skill chains; reuse checked work for authorized production.
 ---
 
 # AI Director
@@ -64,13 +64,15 @@ Continue when no concrete blocker remains in the current authorized scope. Defer
 
 ## Choose a skill for the story
 
-Use AI Director as the overall entry point. Identify the current dramatic problem, then read and apply only the relevant independent skill in the same main session:
+Use AI Director as the overall entry point; the user need not choose skills. For collaborative design or unsettled new scenes/major redesigns, read [storyboard-discussion.md](references/storyboard-discussion.md): source-first, one consequential question with a recommendation, then wait for the answer. Reuse settled decisions and honor requests to proceed directly. Local repairs and pure execution do not restart an interview.
+
+For new directing choices, use [剧情驱动的技巧选择](../../../director-knowledge-base/分镜提示词/剧情驱动的技巧选择.md) to connect story purpose → audience experience → visible/audible mechanism → prompt or edit. Read only the relevant topic or independent skill below. Composition, lighting, opening hooks, depth of field and sound are methods in that library, not separate skills the user must select.
 
 | Story need | Skill | What it contributes |
 | --- | --- | --- |
 | Organize information, dramatic progression, scene coverage and Clip planning | [叙事短片导演分镜](../jimeng-narrative-director/SKILL.md) | Director brief, storyboard, asset needs, Clip mapping and prompts |
-| Preserve uninterrupted action, spatial discovery or accumulating emotion through an active camera | [电影级长镜头](../jimeng-cinematic-long-take/SKILL.md) | One continuous take, motivated camera path and opening/ending echo |
-| Convey subtext through a face, a held reaction, restrained speech or listening | [AI演员微表情导演](../jimeng-micro-expression-director/SKILL.md) | Actor card, performance options and 2–3 second expression beats |
+| Preserve uninterrupted action, spatial discovery or accumulating emotion | [电影级长镜头](../jimeng-cinematic-long-take/SKILL.md) | One continuous take and a motivated camera path; an opening/ending echo only when useful |
+| Convey subtext through a face, a held reaction, restrained speech or listening | [AI演员微表情导演](../jimeng-micro-expression-director/SKILL.md) | Reuse character facts; design causal performance and emotional residue within the chosen shot, without fixed beat durations |
 | Connect adjacent shots or scenes, repair an awkward join, or design a motivated generative transformation | [AI 视频转场导演](../video-transition-director/SKILL.md) | Junction contract, simplest viable route, transition prompt/edit split and join QA |
 
 These remain standalone skills and may also be invoked directly. Skill use means loading its instructions and applying its method, not spawning another agent or changing the creative author. Retain the user's selected author and current scene facts.
@@ -78,6 +80,8 @@ These remain standalone skills and may also be invoked directly. Skill use means
 Design for continuity of the assembled scene under [SOP continuity-first](../../../PRODUCTION_SOP.md#continuity-first): organize the dramatic progression, choose viewpoints and how adjacent shots connect, then package generation units within actual capacity. Motivated angle/shot-size changes and matching action across an edit can preserve continuity; fewer nodes and longer takes are not quality targets. A single unit can contain one or several shots. A request to merge nodes does not impose one take, and a template duration does not justify a boundary. Only a user's explicit requirement for the current scope makes a particular shot count or one-take treatment mandatory.
 
 Combine methods only where useful: plan an episode with the narrative skill, choose a long take for one pursuit, apply micro-expression beats to one reaction, and use the transition skill only at joins whose continuity or transformation needs explicit design. Do not force every skill into every task, reopen settled phases, or copy platform-specific tool/confirmation rules as local authority. Record a consequential choice briefly in the deliverable, not a new selection form or approval stage.
+
+New user information updates the affected story/design and consumers, not the whole settled workflow. Keep scene-specific choices in the current project. When the user explicitly requests a lasting workflow change, update its owning SOP/Skill in scope; reusable methods belong in knowledge topics under [knowledge-model.md](references/knowledge-model.md). Do not silently promote a one-scene preference into a universal rule.
 
 ## Select the creative author
 
