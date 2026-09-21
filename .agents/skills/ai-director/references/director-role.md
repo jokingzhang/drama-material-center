@@ -32,7 +32,7 @@ Follow the [keyframe approval gate](../SKILL.md#keyframe-approval-gate): default
 Choose the scope before writing:
 
 - **New creation or requested redesign:** settle what the audience sees and how the scene changes from current facts. Use [collaborative discussion](storyboard-discussion.md) when key viewing choices are unresolved or the user requests it; ask one question with a recommendation and wait. With settled choices or an explicit request to proceed directly, design and prose may be completed in the same writing pass. A separate Director Design is needed only when requested or useful for a complex plan, not as a prerequisite. Inspect old wording for regressions after making fresh choices.
-- **Local repair with stable inputs:** read the exact current prompt and bound design, locate the evidenced fault, and retain verified decisions elsewhere. Update only the affected design/text and continuity consumers; do not rebuild the whole scene merely to repair one line or crop boundary.
+- **Local repair with stable inputs:** read the exact current prompt and bound design; when media exists, inspect the selected neighboring tail/head around the faulty unit before writing. Follow the [repair window](../../../../PRODUCTION_SOP.md#repair-window), not an imagined match to the old prompt. Update only the affected design/text and continuity consumers; retain accepted neighbors and valid findings elsewhere.
 - **Review only:** inspect the existing candidate against current facts without creating new prose or a replacement design.
 
 If a local repair exposes a faulty upstream choice, reopen that choice and its consumers. State what may change and what must remain; do not combine a demand for full redesign with a freeze of every camera choice.
@@ -47,9 +47,13 @@ Preserve [canonical full names](../SKILL.md#use-canonical-full-character-names) 
 
 Budget speech, breathing, turn changes, listener response and sequential/overlapping action together. Use existing performance timing when available; otherwise label an estimate honestly. Redistribute or split at a dramatic boundary when needed without rushing, deleting approved lines or imposing the fewest nodes. Do not generate audio merely to certify a text estimate. An actual fixed-limit conflict still needs resolution. The optional fifteen-second profile applies only if the user adopts it.
 
+Use [generation-unit design](../../../../PRODUCTION_SOP.md#generation-unit-design) to distinguish story-bearing state changes from routine process that can be explicitly elided. Judge the combined action, framing and speech load before packaging tasks; more detailed prose does not create more performance time. For unstable speaker assignment, consider one continuous selected voice over listening coverage or a scoped dialogue split while preserving approved words and voices; a voice-reference count limit alone does not prove correct assignment or duration compliance.
+
 ## Whole-scene directing
 
 For new whole-scene work consider progression and emotional landing, motivated shot/viewpoint rhythm, speaker/listener coverage, sound bridges and edit connections. Local repair checks these only where affected. Choose stillness or movement for an audience purpose; specify relevant start, direction/speed, subject relationship and landing. Distinguish camera movement from subject movement, dolly from zoom and reverse time from reverse direction. Use the movement method when making that decision, not as another review round.
+
+For a required special effect, decide the observable result and which part generation versus editing must supply while designing it. Consult the relevant method before authoring, then link uncertain behavior to an authorized [risk trial](../../../../PRODUCTION_SOP.md#risk-trials). A technique name or correct prompt mechanics does not demonstrate the effect in a take. Change an evidenced failure's mechanism or route rather than repeatedly restating the name; preserve the requested effect and any explicit implementation constraint.
 
 ## Prompt authoring
 
@@ -57,7 +61,7 @@ Settle the relevant design while writing the requested prose; a separate freeze 
 
 Use [review-mode.md](review-mode.md) for the final read and name/dialogue/format/timing/reference checks before formal binding. Repair actual faults and recheck affected text/cuts only. The same read is prompt review, not a separate Coordinator or scoring round. Check camera crop against visible action, actual reference geography and sound against the necessary action/cut; prose must stand without missing facts supplied mentally from a design table.
 
-Gather directly affected execution links, bindings and current summaries for the scoped delivery, then complete [local publication](workflow-contract.md#local-first-libtv-order). Keep old versions; avoid copying mutable counts/paths/status into multiple new plans. Changed reference content needs affected semantic checks; equivalent token substitutions need execution checks. Pending future inputs do not invalidate text completion, but must be ready for their consumers.
+Gather directly affected execution links, bindings and current summaries for the scoped delivery, then complete [local publication](workflow-contract.md#local-first-libtv-order). Apply [current-state maintenance](../../../../PRODUCTION_SOP.md#current-production-state): correct affected active tables and totals instead of adding an overriding paragraph above stale values. Keep old versions; avoid copying mutable counts/paths/status into multiple new plans. Changed reference content needs affected semantic checks; equivalent token substitutions need execution checks. Pending future inputs do not invalidate text completion, but must be ready for their consumers.
 
 ## Complete-case use
 

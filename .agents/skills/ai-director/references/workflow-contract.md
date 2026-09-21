@@ -41,6 +41,8 @@ A responsibility change is not a new review or user checkpoint. Record only chan
 
 Complete names, exact dialogue, format, timing and declared-reference checks before formal binding, alongside the author's final read. Gather the directly affected bindings, execution links and current summaries for this delivery before writing them, then perform applicable API/page readback. Do not postpone a requested partial delivery until unrelated work is complete, overwrite an old version, or rebuild every document to match one version number.
 
+Apply [current-state maintenance](../../../../PRODUCTION_SOP.md#current-production-state) when publishing: the active summary must agree with the selected versions, shot counts, durations, reference links and actual pending work. Update affected existing sections in the new version; keep superseded conclusions in history rather than append conflicting precedence notes. Before merging scoped changes, re-read the latest formal indexes and preserve unrelated updates. If the base changed, reconcile the scoped difference before writing; a task-start snapshot is backup evidence, not a safe whole-index replacement. Maintain one writer for each shared formal file/node.
+
 ## Single-session topology
 
 - One main session owns Coordinator, Writer, Art, and Director responsibilities and performs only the stages required by dependency.
