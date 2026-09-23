@@ -8,6 +8,8 @@ Use the existing current context and approved or explicitly provisional story fa
 
 Inspect actual project files and formal bindings before calling an asset existing, current, accepted, or reusable. Other projects may be import sources but never production dependencies.
 
+Before generating or editing images, use the single default table and execution steps in [SOP image-generation routing](../../../../PRODUCTION_SOP.md#image-generation-routing), then read the selected tool's Skill. Asset purpose selects the tool; current user constraints select or restrict the input mode. The approved Lib Image defaults do not require another CLI confirmation for an authorized image task. Do not infer matched identity or scene geometry from similar text prompts, or infer video-input approval from a recommended keyframe tool.
+
 ## Work
 
 1. Enumerate the characters, exact looks or states, locations, props, and visual facts required by the Story Contract.

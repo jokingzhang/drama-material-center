@@ -52,7 +52,7 @@ The main session is the sole writer of formal scripts, knowledge, story/asset in
 ## Route by dependency
 
 - New or changed story/dialogue: use Writer, update the changed facts before their consumers, then continue only where needed.
-- Visual facts or references: use Art for the affected assets and consumers.
+- Visual facts or references: use Art for the affected assets and consumers. Before authorized image generation, follow the [project image-generation routing](../../../PRODUCTION_SOP.md#image-generation-routing) to select built-in `imagegen` or `libtv-cli` → Lib Image. This is the standing user-approved default; do not reopen tool selection or request CLI permission for an in-scope generation task. Keep explicit current overrides, input-mode constraints and the keyframe approval gate.
 - Current story and usable visual facts: use Director for new prompts or the requested local repair. Do not revisit Writer/Art without an upstream issue.
 - Already-checked uploads, node binding, layout, synchronization or runs: use [execution reuse](references/workflow-contract.md#review-scope-and-execution-reuse) and [local-first publication](references/workflow-contract.md#local-first-libtv-order). No new creative pass merely for a version number or verified token substitution.
 
