@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
-    "test": "npm run test:app && npm run test:skills && npm run test:research",
+    "test": "npm run test:app && npm run test:skills && npm run test:research && npm run test:video-format && npm run test:dialogue-gate",
     "test:app": "vitest run",
     "test:skills": "node --test .agents/skills/*/tests/*.test.mjs",
     "test:research": "node --test weekly-radar/douyin-method-distillation/scripts/*.node-test.mjs",
@@ -16,7 +16,9 @@
     "test:watch": "vitest",
     "audit:git-boundary": "node scripts/audit-git-boundary.mjs",
     "audit:story-assets": "node scripts/audit-story-asset-integration.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:video-format": "python3 scripts/video-format-gate.test.py",
+    "test:dialogue-gate": "python3 scripts/dialogue_gate.test.py"
   },
   "dependencies": {
     "lucide-react": "^1.31.0",

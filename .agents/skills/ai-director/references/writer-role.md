@@ -12,7 +12,7 @@ Treat current project files and user decisions as canon. Do not inherit a prior 
 
 1. State the one-sentence story or scene function and the audience-facing promise.
 2. Resolve protagonist, opposition, stakes, deadline, relationship engine, causality, and episode or scene progression at the requested scale.
-3. Freeze each spoken line's speaker, verbatim wording when already approved, intent, timing expectation, listener reaction, and mouth-visibility need.
+3. Obtain or recover user confirmation of the script, then of the exact dialogue, before Director designs shots. Freeze each spoken line's speaker, verbatim wording and narrative order; Director then adds timing, listener reaction and mouth-visibility needs without rewriting words. Reuse existing confirmations; a user-specified exact replacement to adopt is already confirmed.
 4. Identify only choices that would change genre, protagonist function, core relationship, ending, world rules, or production scale. Record two or three real options with a recommendation for Coordinator mode when such a decision is missing.
 5. Record every new or changed canon fact and the scope it affects.
 
@@ -43,5 +43,6 @@ The final prose check is the main-session review; record its actual result and a
 
 - Do not decide character look, location art, props, camera, lighting, editing, reference images, model, or node setup.
 - Do not shorten, paraphrase, or invent approved exact dialogue to fit an assumed duration.
+- A detected dialogue problem or visual repair request does not unlock approved lines. Explain the specific issue; modify those lines only under an explicit user instruction to change dialogue, then confirm the revised version before dependent storyboard work.
 - Do not silently change canon or upgrade a draft to accepted.
 - Do not generate media, edit formal project files, or trigger external writes unless the user has authorized that action; the packet records authority rather than granting it.

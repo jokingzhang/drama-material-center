@@ -23,7 +23,7 @@ Read only the relevant section of [workflow-contract.md](references/workflow-con
 - [references/director-role.md](references/director-role.md)
 - [references/review-mode.md](references/review-mode.md)
 
-Use [sw-dialogue](../sw-dialogue/SKILL.md) for dialogue creation, revision and diagnosis inside Writer. Director may reuse its action/reaction, subtext and listening methods to stage established lines; changing the words returns to Writer even when the target file is a storyboard prompt. Follow the role files for application. This is a method library for the same main session, with the existing author selection and project rules; it adds no role or review stage.
+Use [sw-dialogue](../sw-dialogue/SKILL.md) for dialogue creation, revision and diagnosis inside Writer. Director may reuse its action/reaction, subtext and listening methods to stage established lines. Returning to Writer does not itself authorize changing confirmed dialogue: first recover the user's explicit instruction to change those lines. Follow the role files for application. This is a method library for the same main session, with the existing author selection and project rules; it adds no role or review stage.
 
 Do not run every stage for appearance. Answer a small read-only fact question directly. For a deliverable, execute the shortest dependency path that preserves every applicable responsibility, gate, and acceptance boundary.
 
@@ -36,6 +36,18 @@ Follow the repository `AGENTS.md` before changing files or assets. Resolve the a
 Use `<repo-root>/director-knowledge-base` as the directing knowledge source; its `README.md` is the navigation entry. Follow the task-based reading map in [director-role.md](references/director-role.md#inputs), not a fixed bundle of long documents. In a still-valid context, do not reread unchanged methods at role changes or final checks. After context loss, recover the current artifact, short finding and relevant source passages; read more only where coverage is missing. Historical review/team instructions do not override this current workflow.
 
 Current user decisions, current project facts, approved story direction, and accepted assets override general knowledge, cases, old prompts, old task packets, and earlier chat. A label such as `READY`, a matching hash, or a successful node does not prove semantic or human acceptance.
+
+## Project video format lock
+
+Before storyboard design, enforce the repository [project format gate](../../../AGENTS.md#剧级画幅硬门禁). Every drama declares one locked portrait/landscape standard for all episodes and repairs. Read the single VIDEO_FORMAT_LOCK in the project's PRODUCTION_RULES.md; never inherit orientation from a template, scene reference or an accidental per-task request. Only an explicit project-wide standard change can unlock it. Use scripts/video-format-gate.py for video node create/run and downloaded/final media checks. Preserve existing narrative when repairing format.
+
+## Confirm script, then dialogue, then design shots
+
+Follow [剧本、台词确认与禁止擅改](../../../AGENTS.md#剧本台词确认与禁止擅改): user-confirmed script → user-confirmed dialogue → storyboard. Reuse existing version/scope-specific user decisions; do not ask again merely because the phase changed. A current binding, author self-check or assistant-authored “user approved” statement cannot replace the real decision.
+
+Freeze exact words, speakers and narrative order. Visual redesign, format/resolution changes, lip-sync or continuity repairs, a new model and broad “fix it” instructions do not authorize changing dialogue. Diagnose a line problem and explain it, but change confirmed words only after the user explicitly requests that change. Update the script and dialogue contract first, confirm the new lines, then update dependent shots. A user-supplied exact replacement with an instruction to adopt it already supplies that confirmation. Retain usable original speech for visual-only repairs.
+
+Before creating/syncing/running video nodes, use the combined format/dialogue gate and its [documented contract](../../../docs/VIDEO-PRODUCTION-GATES.md). No silent fallback when a dialogue source, confirmation, mapping or hash is missing. Mechanical checks block changed input before spending; they do not guarantee what a model will say.
 
 ## Start with a current Task Packet
 

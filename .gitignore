@@ -26,3 +26,6 @@ director-knowledge-base/.media/
 
 # Local LibTV CLI canvas binding.
 .libtv/
+
+# Python production-gate/test bytecode.
+__pycache__/
