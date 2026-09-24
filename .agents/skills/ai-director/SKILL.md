@@ -1,6 +1,6 @@
 ---
 name: ai-director
-description: Develop stories, discuss and design storyboards, plan visual assets, and write or repair video prompts in drama-material-center. For unsettled new scenes or major redesigns, discuss one consequential choice at a time with a recommendation, then apply techniques according to story and audience needs. Incorporate new user information into affected decisions. One main session writes and reviews; Doubao only on explicit selection. Route narrative, long-take, performance and transition methods without fixed shot counts or mandatory skill chains; reuse checked work for authorized production.
+description: Develop stories, design storyboards and assets, and write or repair video prompts in drama-material-center. Turn each new scene's audience purpose into concrete narrative, performance, cinematography and sound choices, routing relevant skills before authoring. Discuss only unsettled consequential choices; reuse checked work for production. One main session writes and reviews; Doubao only on explicit selection.
 ---
 
 # AI Director
@@ -83,11 +83,17 @@ For new directing choices, use [剧情驱动的技巧选择](../../../director-k
 | Story need | Skill | What it contributes |
 | --- | --- | --- |
 | Organize information, dramatic progression, scene coverage and Clip planning | [叙事短片导演分镜](../jimeng-narrative-director/SKILL.md) | Director brief, storyboard, asset needs, Clip mapping and prompts |
+| Choose framing, visible detail, focus, camera movement, lighting or material response | [摄影与光影设计](../cinematography-director/SKILL.md) | Concrete viewing geometry and lighting in the existing storyboard and four-field prompt |
+| Plan dialogue delivery, voice identity, ambience, action sound or music across clips | [声音与配乐设计](../sound-music-director/SKILL.md) | Speaker/source mapping, sound cues and actual post-production consumers |
 | Preserve uninterrupted action, spatial discovery or accumulating emotion | [电影级长镜头](../jimeng-cinematic-long-take/SKILL.md) | One continuous take and a motivated camera path; an opening/ending echo only when useful |
 | Convey subtext through a face, a held reaction, restrained speech or listening | [AI演员微表情导演](../jimeng-micro-expression-director/SKILL.md) | Reuse character facts; design causal performance and emotional residue within the chosen shot, without fixed beat durations |
 | Connect adjacent shots or scenes, repair an awkward join, or design a motivated generative transformation | [AI 视频转场导演](../video-transition-director/SKILL.md) | Junction contract, simplest viable route, transition prompt/edit split and join QA |
 
 These remain standalone skills and may also be invoked directly. Skill use means loading its instructions and applying its method, not spawning another agent or changing the creative author. Retain the user's selected author and current scene facts.
+
+For a new whole scene or major redesign, apply [本场导演设计](../../../PRODUCTION_SOP.md#scene-directing-design) during the existing writing pass. State the audience's information order, causal character response, relevant visual/sound choices and ending/join in the existing Director Design field. Read and apply the skill for a decision as it arises, before writing that part of the prompt; do not wait for a named technique or a failed take. Concrete camera/light decisions trigger cinematography; dialogue, environmental/action sound or music decisions trigger sound. Respect a silent or picture-only scope and reuse established choices. Long takes, special transitions and previs remain conditional.
+
+Carry each consequential choice into visible action, camera/light instructions, audible sound or a real edit consumer, then check that implementation in the same final read. A skill name or source link alone is not delivery. Retain one short reason where it helps the user understand the result; no usage ledger, technique quota, new design approval or mandatory full-library read. Repairs cover only affected choices; pure node sync does not reopen directing. Topic coverage and source limits live in [教程主题与制作入口](../../../director-knowledge-base/来源/2026-09-24-教程主题与制作入口-v01.md), not in every production prompt.
 
 Design for continuity of the assembled scene under [SOP continuity-first](../../../PRODUCTION_SOP.md#continuity-first): organize the dramatic progression, choose viewpoints and how adjacent shots connect, then package generation units within actual capacity. Motivated angle/shot-size changes and matching action across an edit can preserve continuity; fewer nodes and longer takes are not quality targets. A single unit can contain one or several shots. A request to merge nodes does not impose one take, and a template duration does not justify a boundary. Only a user's explicit requirement for the current scope makes a particular shot count or one-take treatment mandatory.
 

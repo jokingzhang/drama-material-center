@@ -11,10 +11,11 @@ Read methods for the decision at hand; reuse already-read unchanged content. Pat
 | Current need | Read only the relevant method |
 | --- | --- |
 | New scene or genuinely unsettled directing choices | [storyboard-discussion.md](storyboard-discussion.md), then `剧情驱动的技巧选择.md`; follow its relevant topic links rather than loading all methods. |
+| Framing, focus/depth, camera or lighting choices in a new scene or repair | [摄影与光影设计](../../cinematography-director/SKILL.md); open its topic references only for the decision being made. |
 | New prompt format or a format question | `分镜提示词写法.md` and the current [shot-block format](shot-block-format.md). |
 | Dialogue, comedy or emotional timing | `对白、梗与情绪的分镜写法.md`; reuse current Writer analysis and consult [sw-dialogue](../../sw-dialogue/SKILL.md) only when needed to interpret performance. Do not change approved lines through staging. |
 | A camera-movement decision | `运镜选择与执行.md`. |
-| Sound continuity, music entry/exit or contrast | `声音与配乐设计.md`; transition skill only when the join needs explicit design. |
+| Dialogue delivery/voice identity, ambience, action sound, music or sound joins | [声音与配乐设计](../../sound-music-director/SKILL.md); transition skill only when the picture join needs explicit design. |
 | Screen, receipt or other readable insert | “互动主镜与可读插镜分责” in `导演设计方法.md`; read the image-domain relation-frame method only if choosing or repairing that reference. |
 | A concrete space, handoff or continuity issue | The relevant spatial/continuity passages and actual affected inputs, not all types and cases. |
 | Final check or local recheck | [review-mode.md](review-mode.md); no full knowledge bundle. |
@@ -50,6 +51,8 @@ Budget speech, breathing, turn changes, listener response and sequential/overlap
 Use [generation-unit design](../../../../PRODUCTION_SOP.md#generation-unit-design) to distinguish story-bearing state changes from routine process that can be explicitly elided. Judge the combined action, framing and speech load before packaging tasks; more detailed prose does not create more performance time. For unstable speaker assignment, consider one continuous selected voice over listening coverage or a scoped dialogue split while preserving approved words and voices; a voice-reference count limit alone does not prove correct assignment or duration compliance.
 
 ## Whole-scene directing
+
+Use [本场导演设计](../../../../PRODUCTION_SOP.md#scene-directing-design) to connect the skills in the writing pass: audience purpose → relevant method → visible/audible mechanism → prompt/edit → observed result. Keep one short scene-level choice in the existing Director Design field and consequential reasons at their shots. Routine whole-scene work should resolve relevant camera/light and sound decisions before prompts, not wait for a later failure to trigger their skills. Already-established, silent or picture-only scope controls what needs work; no extra approval or universal technique bundle.
 
 For new whole-scene work consider progression and emotional landing, motivated shot/viewpoint rhythm, speaker/listener coverage, sound bridges and edit connections. Local repair checks these only where affected. Choose stillness or movement for an audience purpose; specify relevant start, direction/speed, subject relationship and landing. Distinguish camera movement from subject movement, dolly from zoom and reverse time from reverse direction. Use the movement method when making that decision, not as another review round.
 
