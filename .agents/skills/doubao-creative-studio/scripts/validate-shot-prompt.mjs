@@ -7,9 +7,13 @@ import { fileURLToPath } from "node:url";
 
 const referencePattern = /\{\{Mixed\s+\d+\}\}|@图片\d+|<Subject\s+\d+>|\{\{Node\s+[^{}\n]+\}\}/gi;
 const close = (left, right) => Math.abs(left - right) < 0.000_001;
+const lightingFormat = "single-level-shots-lighting";
+const lightingMarkers = /^(?:\*\*(?:人物资产|环境资产|物品资产|声音资产|视频资产|景别与镜头运动|画面与动作|光影表现)：\*\*|\[整体场景与氛围\]|【多分镜时间轴】)/m;
+const usesLightingFormat = (output, contract) => contract?.format === lightingFormat
+  || (!contract?.format && lightingMarkers.test(output));
 
 export function validateShotBlockPrompt(output, contract) {
-  if (contract?.format === "single-level-shots" || /^### \d+(?:\.\d+)?s–/m.test(output)) return validateSingleLevelShots(output, contract);
+  if (usesLightingFormat(output, contract) || contract?.format === "single-level-shots" || /^### \d+(?:\.\d+)?s–/m.test(output)) return validateSingleLevelShots(output, contract);
   const errors = [];
   const duration = Number(contract?.durationSeconds);
   if (!Number.isFinite(duration) || duration <= 0) errors.push("durationSeconds must be positive");
@@ -172,6 +176,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 export function validateSingleLevelShots(output, contract) {
   const errors = [];
+  const lighting = usesLightingFormat(output, contract);
   const duration = Number(contract?.durationSeconds);
   if (!Number.isFinite(duration) || duration <= 0) errors.push('durationSeconds must be positive');
   const summary = output.match(/^\*\*总时长：(\d+(?:\.\d+)?)秒｜([^\n]+)\*\*$/m);
@@ -180,18 +185,65 @@ export function validateSingleLevelShots(output, contract) {
   const pattern = /^### (\d+(?:\.\d+)?)s–(\d+(?:\.\d+)?)s｜镜头(\d+)：([^\n]+)$/gm;
   const shots = [...output.matchAll(pattern)];
   if (!shots.length || shots.length !== [...output.matchAll(/^### /gm)].length) errors.push('each real shot requires one valid timed heading');
+  if (lighting) errors.push(...validateLightingPrelude(output, shots[0]?.index ?? output.length));
   let cursor = 0;
   for (const [index, shot] of shots.entries()) {
     const start = Number(shot[1]), end = Number(shot[2]);
     if (Number(shot[3]) !== index + 1 || !close(start, cursor) || end <= start || end > duration) errors.push(`shot ${index + 1} has wrong numbering or cumulative interval`);
     const prose = output.slice(shot.index + shot[0].length, shots[index + 1]?.index ?? output.length);
-    const fields = [...prose.matchAll(/^\*\*(画面提示词|镜头|音效)：\*\*\s*(\S[^\n]*)/gm)];
-    if (fields.map(x => x[1]).join(',') !== '画面提示词,镜头,音效') errors.push(`shot ${index + 1} requires exactly 画面提示词, 镜头, 音效`);
+    const fieldPattern = lighting ? /^\*\*([^*\n]+)：\*\*([^\n]*)$/gm
+      : /^\*\*(画面提示词|镜头|音效|景别与镜头运动|画面与动作|光影表现)：\*\*([^\n]*)$/gm;
+    const fields = [...prose.matchAll(fieldPattern)];
+    const expected = lighting ? ['景别与镜头运动', '画面与动作', '光影表现', '音效'] : ['画面提示词', '镜头', '音效'];
+    if (fields.map(x => x[1]).join(',') !== expected.join(',')) errors.push(`shot ${index + 1} requires exactly ${expected.join(', ')}`);
+    for (const [fieldIndex, field] of fields.entries()) {
+      const content = field[2] + prose.slice(field.index + field[0].length, fields[fieldIndex + 1]?.index ?? prose.length);
+      if (!content.replace(/^\s*---+\s*$/gm, '').trim()) errors.push(`shot ${index + 1} requires nonempty ${field[1]}`);
+      if (lighting && field[1] === '画面与动作') {
+        const details = [...content.matchAll(/^(构图与主体|道具布局|动作与表演)：([^\n]*)$/gm)];
+        for (const [detailIndex, detail] of details.entries()) {
+          const detailContent = detail[2] + content.slice(detail.index + detail[0].length, details[detailIndex + 1]?.index ?? content.length);
+          if (!detailContent.replace(/^\s*---+\s*$/gm, '').trim()) errors.push(`shot ${index + 1} requires nonempty ${detail[1]} when included; omit unused details`);
+        }
+      }
+    }
     if (/\d{1,}:\d{2}|\d+(?:\.\d+)?\s*(?:s|秒)?\s*[—–~～-]\s*\d|\d+(?:\.\d+)?\s*(?:秒|s\b)|^#{1,6}\s|^\*\*[^\n]*(?:节拍|子镜头)/m.test(prose)) errors.push(`shot ${index + 1} contains forbidden inner timing or subshots`);
     cursor = end;
   }
   if (!close(cursor, duration)) errors.push('shots must cover the full duration');
   if (/【全局美学设定】|正文：分镜执行动作|^相机：|^画面：/m.test(output)) errors.push('superseded prompt format mixed into single-level shots');
+  if (lighting) {
+    const unresolved = [...output.matchAll(/<([^>\n]+)>/g)]
+      .map((match) => match[0]).filter((token) => !/^<Subject\s+\d+>$/i.test(token))
+      .concat([...output.matchAll(/\{\{[^{}\n]+\}\}/g)].map((match) => match[0])
+        .filter((token) => !/^\{\{(?:Mixed\s+\d+|Node\s+[^{}\n]+)\}\}$/i.test(token)));
+    if (unresolved.length) errors.push(`unresolved template instructions: ${[...new Set(unresolved)].join(', ')}`);
+  }
   errors.push(...validateReferences(output, contract));
+  return errors;
+}
+
+function validateLightingPrelude(output, firstShotIndex) {
+  const errors = [];
+  const assetHeadings = ['**人物资产：**', '**环境资产：**', '**物品资产：**', '**声音资产：**', '**视频资产：**'];
+  const ordered = [...assetHeadings, '[整体场景与氛围]', '【多分镜时间轴】'];
+  const sections = [...output.matchAll(/^(\*\*[^*\n]+：\*\*|\[[^\n]+\]|【[^\n]+】)([^\n]*)$/gm)];
+  let cursor = -1;
+  for (const heading of ordered) {
+    const matching = sections.filter((section) => section[1] === heading);
+    if (!matching.length && assetHeadings.includes(heading)) continue;
+    if (matching.length !== 1) {
+      errors.push(`exactly one ${heading} is required`);
+      continue;
+    }
+    const section = matching[0];
+    if (section.index <= cursor || section.index >= firstShotIndex) errors.push(`${heading} must appear in asset/atmosphere/timeline order before the shots`);
+    cursor = section.index;
+    if (heading === '【多分镜时间轴】') continue;
+    const nextSection = sections.find((candidate) => candidate.index > section.index);
+    const end = Math.min(nextSection?.index ?? output.length, firstShotIndex);
+    const content = section[2] + output.slice(section.index + section[0].length, end);
+    if (!content.replace(/^\s*---+\s*$/gm, '').trim()) errors.push(`${heading} requires nonempty content; omit unused asset categories`);
+  }
   return errors;
 }

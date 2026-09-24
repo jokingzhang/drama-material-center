@@ -63,7 +63,7 @@ const TEMPLATE_DEFINITIONS = new Map([
   [
     VIDEO_SHOT_TEMPLATE_ID,
     {
-      description: "统一视频提示词：开头引用、全局美学设定、逐镜相机/构图运镜/画面与对白；模型无关",
+      description: "统一视频提示词：按需分类资产、整体场景与氛围、逐镜景别运镜/画面动作/光影/音效；画面动作按需细分，模型无关",
       fileName: "video-shot-prompt-v2.md",
       outputFormat: "markdown",
       allowedKinds: ["storyboard", "video-prompts", "creative-repair"],
@@ -652,7 +652,7 @@ function buildPrompt(materializedJob) {
     ? "只输出一个合法 JSON 值，不要 Markdown 代码围栏、前言或后记。"
     : "只输出最终 Markdown 交付物，不要写调用过程、免责声明、前言或后记。";
   const templateInstruction = materializedJob.template
-    ? "template.content 是本轮强制输出骨架。当前新创作使用开头引用、【全局美学设定】和逐镜相机/构图运镜/画面；对白、声音和反应在镜内连贯展开，不输出旧五段式、状态标题或独立重复的声音段。用当前事实替换所有模板说明，按真实节拍增减镜头；不能照抄示例时长或加速台词。平台引用不是模板说明，按 referencePlan 保留。status/taskId/title/version 留在任务记录，durationSeconds/aspectRatio 决定正文时间与画幅。"
+    ? "template.content 是本轮强制输出骨架。当前新创作按需列出人物资产、环境资产、物品资产、声音资产、视频资产，再写[整体场景与氛围]和【多分镜时间轴】；每个真实镜头按景别与镜头运动、画面与动作、光影表现、音效四字段展开。资产按 referencePlan 如实分类，无该类外部参考则省略栏目，不填无或不适用，不为填栏目新增素材，计划内引用仍须全部覆盖。画面与动作内部可用普通段落标签“构图与主体：”“道具布局：”“动作与表演：”按需细分，无相关内容则省略子项，简单镜头也可写连续正文；不增设标题层级、时间码或新镜头，不为填子项增加道具或动作。焦段、机位与运镜留在景别与镜头运动，子项写人物位置、道具归属状态和自然连贯的动作、逐字对白及反应。全场写光源与氛围，每镜落实主体受光、落影及必要的材质反应。对白、声音和反应在镜内连贯展开，不输出旧五段式、状态标题或独立重复的声音段。用当前事实替换所有模板说明，按剧情确定真实镜头和切点，一个镜头只有一个时间范围，不拆镜内时间片；不能照抄示例时长或加速台词。平台引用不是模板说明，按 referencePlan 保留。status/taskId/title/version 留在任务记录，durationSeconds/aspectRatio 决定正文时间与画幅。"
     : "本轮没有指定输出模板；按 deliverables 选择最清楚的最终交付结构。";
   const referenceInstruction = materializedJob.referencePlan
     ? "referencePlan 是执行者核对后的输入合同。开头引用紧邻当前 subject；必要道具也可在画面句中引用，计划内引用可在实际需要处再次使用，不增加新资产。人物标准图负责身份与当前造型，场景负责空间和光色，其余只承担已核对的单一职责。使用相容的最小参考集合，不默认追加同一人物头像、标准图或关系帧，不引用 INTERNAL 或计划外素材；文字标签不能消除拼板、重复人物或背景冲突。"
@@ -986,10 +986,14 @@ function validateVideoShotPrompt(output, variables, referencePlan) {
   return errors;
 }
 
-function validateTemplateOutput(output, template, referencePlan) {
+function validateTemplateOutput(output, template, referencePlan, { currentAuthoring = false } = {}) {
   if (!template) return [];
   if (canonicalTemplateId(template.id) === VIDEO_SHOT_TEMPLATE_ID) {
-    return validateShotBlockPrompt(output, { ...template.variables, referencePlan });
+    return validateShotBlockPrompt(output, {
+      ...template.variables,
+      referencePlan,
+      ...(currentAuthoring ? { format: "single-level-shots-lighting" } : {}),
+    });
   }
   if (canonicalTemplateId(template.id) === LEGACY_VIDEO_SHOT_TEMPLATE_ID) {
     return validateVideoShotPrompt(output, template.variables, referencePlan);
@@ -1158,6 +1162,7 @@ async function main() {
     response.result,
     materializedJob.template,
     materializedJob.referencePlan,
+    { currentAuthoring: true },
   );
   if (templateErrors.length > 0) {
     await fs.writeFile(path.join(outputDir, "creative-output.invalid-template.md"), response.result, "utf8");

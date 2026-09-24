@@ -478,21 +478,24 @@ for (const videoPrompt of [false, true]) {
         jobValue: { ...job("READY"), referencePlan: {
           requiredScenes: ["404病区走廊"], requiredCharacters: [], assets: [referencePlan().assets[0]],
         } },
-        output: `{{Mixed 1}} 404病区走廊，空间与晨光参考。
-【全局美学设定】
-画幅：16:9，写实。
-影调：清晨冷光。
-摄影：固定观察，切镜跟随光线。
-地点：404病区走廊。
-正文：分镜执行动作
-镜头1｜00:00.0—00:04.0｜4秒
-相机：平视全景，在走廊东端朝西。
-构图／运镜：固定机位，走廊延伸至画面深处。
-画面：晨光照入空走廊，通风声持续，无对白。
-镜头2｜00:04.0—00:08.0｜4秒
-相机：地面近景，仍朝西。
-构图／运镜：切至晨光落在地面的细节，固定机位。
-画面：光斑停留，通风声跨切延续，结束于静止光斑。
+        output: `**总时长：8秒｜画幅：16:9｜无对白｜场景：404病区走廊**
+**环境资产：**
+{{Mixed 1}} 404病区走廊，空间与晨光参考。
+[整体场景与氛围]
+404病区空走廊，清晨冷光从北侧窗照入，安静写实，暗部保留墙面纹理。
+【多分镜时间轴】
+### 0.0s–4.0s｜镜头1：空走廊
+**景别与镜头运动：** 平视全景，在走廊东端朝西，固定机位，走廊延伸至画面深处。
+**画面与动作：**
+构图与主体：空走廊通向画面深处，两侧墙面围合空间。
+动作与表演：晨光照入空走廊，无人物经过。
+**光影表现：** 北侧窗光落在地面，墙面处于柔和阴影中，明暗过渡自然。
+**音效：** 通风声持续，无对白。
+### 4.0s–8.0s｜镜头2：晨光细节
+**景别与镜头运动：** 地面近景，仍朝西，切至晨光落在地面的细节，固定机位。
+**画面与动作：** 光斑停留，结束于静止光斑。
+**光影表现：** 延续北侧窗光方向，地面微亮反光保留纹理，光斑边缘柔和。
+**音效：** 通风声跨切延续。
 `,
       };
       fixture.jobValue.template.id = "video-shot-prompt-v2";
@@ -552,7 +555,15 @@ for (const videoPrompt of [false, true]) {
       if (videoPrompt) {
         assert.match(sentPrompt, /不设最低字数或推荐长度区间/);
         assert.match(sentPrompt, /听者反应/);
-        assert.match(sentPrompt, /【全局美学设定】/);
+        assert.match(sentPrompt, /\[整体场景与氛围\]/);
+        assert.match(sentPrompt, /人物资产、环境资产、物品资产/);
+        assert.match(sentPrompt, /景别与镜头运动、画面与动作、光影表现、音效四字段/);
+        assert.match(sentPrompt, /无该类外部参考则省略栏目，不填无或不适用/);
+        assert.match(sentPrompt, /计划内引用仍须全部覆盖/);
+        assert.match(sentPrompt, /普通段落标签“构图与主体：”“道具布局：”“动作与表演：”按需细分/);
+        assert.match(sentPrompt, /无相关内容则省略子项，简单镜头也可写连续正文/);
+        assert.match(sentPrompt, /不为填子项增加道具或动作/);
+        assert.doesNotMatch(sentPrompt, /【全局美学设定】/);
         assert.match(sentPrompt, /不另设重复声音段/);
         assert.doesNotMatch(sentPrompt, /〖参考〗|对白在时间轴和声音段的逐字登记/);
         assert.match(sentPrompt, /普通对话不虚构危险侧/);
