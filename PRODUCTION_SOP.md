@@ -15,6 +15,7 @@
 | 新人物外形、脸型区分、新造型或人物标准图一致性 | [人物外形设计](.agents/skills/character-visual-designer/SKILL.md) | 换装保留已确认身份，不默认追加定妆照、痣疤或多套候选图 |
 | 整场信息、节奏、切点和生成单元 | [叙事短片导演分镜](.agents/skills/jimeng-narrative-director/SKILL.md) | 不默认每句话拆一个视频节点 |
 | 新分镜的构图、清晰范围、光影、材质与相机选择，或相应返修 | [摄影与光影设计](.agents/skills/cinematography-director/SKILL.md) | 不因选构图就补关键帧，不把每镜都移动当成电影感 |
+| 指定八种电影镜头，或用推拉变焦、环绕、受限视点、主观时间、对称与通行路线表达剧情 | [八种电影镜头提示词](.agents/skills/cinematic-camera-prompts/SKILL.md) | 只选相关机制，保留四字段格式；不复制教程剧情、固定参数或工具推广，不自动试片 |
 | 新分镜的人声、环境／动作声、跨镜声音和配乐安排，或相应返修 | [声音与配乐设计](.agents/skills/sound-music-director/SKILL.md) | 不逐节点随机配乐，不默认新增音色、音频或选音实验 |
 | 连续动作、跟随或空间揭示 | [电影级长镜头](.agents/skills/jimeng-cinematic-long-take/SKILL.md) | 不强制加第二个镜头，不把两段未验证的拼接叫作一镜到底 |
 | 脸红、克制、停顿、忍笑等局部表演 | [AI演员微表情导演](.agents/skills/jimeng-micro-expression-director/SKILL.md) | 已有明确表演方向时，不再要求用户选一轮试戏方案 |

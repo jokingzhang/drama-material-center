@@ -1,0 +1,4 @@
+interface:
+  display_name: "八种电影镜头提示词"
+  short_description: "按剧情选择八种电影镜头，写清运镜、表演、空间关系和效果检查"
+  default_prompt: "使用 $cinematic-camera-prompts，根据当前剧情选择合适的电影镜头，写成项目规范的分镜提示词，并说明相机路径与成功标志。"

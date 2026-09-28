@@ -101,12 +101,12 @@
 | `expectedModel` | 是 | 本轮明确使用的豆包模型 ID，必须以 `doubao-` 开头。 |
 | `objective` | 是 | 本轮业务目标。只写要解决的问题，不替豆包写创意答案。 |
 | `userCreativeDirectives` | 否 | 用户原话或用户明确确认的创意偏好。 |
-| `canon` | 否 | 当前事实源列表。每项使用 `path` 或 `text` 二选一。 |
-| `deliverables` | 是 | 豆包应返回的完整交付物，至少一项。 |
+| `canon` | 否 | 当前事实源列表；必要写作方法摘录须以 `label` 明确标为方法建议，并与剧情事实、用户原话分开。每项使用 `path` 或 `text` 二选一。 |
+| `deliverables` | 是 | 豆包应返回的完整交付物，至少一项；首稿还写入本场适用的方法要求和交付前通读要求。 |
 | `hardConstraints` | 否 | 可客观检查的事实、规格、数量、禁止改变项和授权边界。 |
 | `template` | 否 | 内置输出模板 ID 与事实型变量。选择前读取 `template-catalog.md`；模板只固定结构。 |
-| `goldenSamples` | 否 | 用户认可的同类输入与输出，用于质量对照。 |
-| `repairFeedback` | 否 | 实际失败现象、证据和必须修正的结果；返修时使用。 |
+| `goldenSamples` | 否 | 有明确用户认可来源的同类输入与输出，用于相应范围的质量对照。没有则留空。 |
+| `repairFeedback` | 否 | 实际失败现象、原句／位置等证据和必须修正的结果；返修时使用，不只写“去 AI 味”。 |
 | `referencePlan` | 条件必填 | 使用 `video-shot-prompt-v2` 时必填；声明镜头实际场景、出镜人物和逐项生成输入，供 runner 校验覆盖、职责与引用顺序。 |
 | `output` | 是 | `format` 为 `markdown` 或 `json`；`language` 默认为 `zh-CN`。 |
 
@@ -126,6 +126,8 @@
 
 脚本只读取显式列出的文件，不遍历目录。单文件上限 256 KiB，全部外部文本合计上限 512 KiB；包含 NUL 字节的文件会被拒绝。
 任务 JSON 上限为 1 MiB；物化后的完整提示文本上限为 700,000 个字符，超过时必须按创作责任拆成多个任务。
+
+剧本／对白新写及授权改词时，`canon` 提供当前人物关系、已知信息和必要的相邻场景事实；`deliverables` 实际写入本场适用的写作方法与交付前通读要求。若需引用方法原文，在 `canon[].label` 标明“写作方法建议（非剧情事实、非用户原话）＋来源”，并在 `deliverables` 明确不得把方法示例当作本剧事实；`userCreativeDirectives` 仍只放真实用户指令。runner 会把显式 `path`／`text` 物化后的全文及任务字段写入 `claude-prompt.txt`，不会继承主会话读过的 Skill。沿用现有字段，不新增方法 schema；视频提示词中的已锁台词不适用改写要求。
 
 视频任务沿用以上字段：在 `canon` 中用清楚的 `label` 区分当前剧情与对白、导演决策、本镜适用条件；`deliverables` 要求完整模型正文，`hardConstraints` 只保留当前真实硬约束。不新增“镜头类型”等顶层字段，不设置最低字数或推荐长度区间。导演决策需给出观众任务、开场状态、因果节拍、信息优先级、对白与反应、结束状态；风险检查与评分用于审查，不要求照抄进模型正文。CLI 的 2500 字符上限仍按 Skill 写入 `deliverables` 与 `hardConstraints`。
 
@@ -243,7 +245,7 @@ node <skill-directory>/scripts/run-doubao-creative.mjs \
 }
 ```
 
-黄金样本是质量目标，不是让执行 Agent 摘抄后自行创作。
+在 `label` 注明真实认可来源和适用范围；黄金样本是质量目标，不是本剧新增事实，也不是让执行 Agent 摘抄后自行创作。没有用户明确认可的同类样本时传 `[]`，在当前授权内探索；runner 会标记 `GOLDEN_SAMPLE_PENDING`，不得补写虚假的用户认可。
 
 ## 返修反馈
 
@@ -257,7 +259,7 @@ node <skill-directory>/scripts/run-doubao-creative.mjs \
 }
 ```
 
-返修任务还应把上一版创作结果加入 `canon`，以便豆包输出完整修订版。不要由执行 Agent 直接改上一版措辞。
+对白返修的 `observedFailure` 要说明具体问题，`evidence` 定位原句／轮次及其与当前人物处境或前后回应的冲突，`mustCorrect` 写需要恢复的作用或关系，不能只要求“更自然、去 AI 味”。返修任务还应把上一版创作结果加入 `canon`，明确标为待修原文，以便豆包输出完整修订版；保留旧版，不由执行 Agent 直接改措辞，也不扩大已授权的改词范围。
 
 ## 输出文件
 
