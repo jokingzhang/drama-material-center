@@ -23,6 +23,8 @@ import {
   type WeeklyRadarReportsResponse,
 } from "../lib/weeklyRadar";
 
+import "../practice.css";
+
 function displayDate(value: string) {
   return new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit" }).format(new Date(`${value}T00:00:00+08:00`));
 }
@@ -120,6 +122,7 @@ export function WeeklyRadarListPage() {
     <div className="app-shell radar-shell radar-list-shell">
       <RadarHeader onRefresh={() => void refresh()} refreshing={loading} />
       <main className="radar-page">
+        <section className="practice-radar-entry"><div><h2>《我的妹妹不可爱》原片拆解训练</h2><p>按原片段落理解风格、表演与剪辑，再完成自己的 AI 短片。</p></div><Link className="primary-button" to="/ai-video-practice">打开练习室<ArrowRight size={17} /></Link></section>
         <section className="radar-page-intro">
           <div>
             <span><Radar size={15} /> WEEKLY SIGNAL DESK</span>

@@ -22,7 +22,7 @@ import { BrandMark } from "../components/BrandMark";
 import { ProjectViewTabs } from "../components/ProjectViewTabs";
 import { StoryAssetGallery, StoryAssetModal, type StoryAssetOpenHandler } from "../components/StoryAssetGallery";
 import { ThemeToggle } from "../components/ThemeToggle";
-import { WeeklyRadarNavLink } from "../components/WeeklyRadarNavLink";
+import { VideoPracticeNavLink } from "../components/VideoPracticeNavLink";
 import { getProjects } from "../lib/materials";
 import {
   compactScheduleDate,
@@ -308,7 +308,7 @@ function StoryHeader({ story, projects, projectId }: { story?: ProjectStoryReadM
             </select>
           )}
           <ThemeToggle />
-          <WeeklyRadarNavLink compact />
+          <VideoPracticeNavLink compact />
           <Link className="course-link" to="/knowledge"><BrainCircuit size={18} /><span className="responsive-action-label" data-compact-label="知识库">导演知识库</span></Link>
           <Link className="course-link" to="/"><ArrowLeft size={18} /><span className="responsive-action-label" data-compact-label="项目">所有项目</span></Link>
         </div>

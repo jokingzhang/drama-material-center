@@ -1,0 +1,4 @@
+interface:
+  display_name: "人物外形设计"
+  short_description: "设计有辨识度的人物脸型、五官和当前造型，形成一致的人物标准图提示词"
+  default_prompt: "使用 $character-visual-designer，根据当前剧本和已有素材设计人物外形，区分固定身份与当前造型，并写出人物标准图提示词。"

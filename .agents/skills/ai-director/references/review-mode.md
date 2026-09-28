@@ -6,11 +6,13 @@ This is the default review entry. The author’s final read is the main-session 
 
 Use the current artifact, sources, user choices and existing record. Distinguish prompt review from image/video/audio QA without requiring a new field or packet. A new batch needs all new or unverified content read; a resumed batch needs its missing coverage, not just the last edit and not the already-checked remainder. Missing an old review report is not a reason to block work.
 
-Finish names, exact dialogue, shot format, timing and declared-reference checks before switching formal bindings. Use the existing read-only [structural validator](../../doubao-creative-studio/scripts/validate-shot-prompt.mjs) where applicable; it checks format, timing and declared references, not story or media quality. Inspect suspected operational pronouns in context; never globally replace words inside approved speech or source quotations.
+Finish names, exact dialogue, shot format, timing, critical-asset coverage and declared-reference checks before switching formal bindings. Use the existing read-only [structural validator](../../doubao-creative-studio/scripts/validate-shot-prompt.mjs) where applicable; it checks format, timing and declared references, not whether the story's required assets were omitted or whether media quality is acceptable. Inspect suspected operational pronouns in context; never globally replace words inside approved speech or source quotations.
 
 ## Prompt preflight
 
 Read the actual final body with its declared inputs. Check the following in that same read, without writing proof for every passing item:
+
+- Derive required character looks, setting, critical props and applicable sound assets independently from the story, framing and visible states, then compare them with the prompt's asset references and each unit's reference plan under [critical asset coverage](../../../../PRODUCTION_SOP.md#critical-asset-coverage). Include critical props visible in dialogue/reaction shots and carried across unit boundaries. A consistent set of lists may still omit the same asset. Resolve missing coverage before dependent execution; at run time verify the actual model inputs, not merely an upload or a neighboring node. Recheck affected consumers after reference cleanup or changed framing/state, while preserving valid unchanged coverage and user-accepted results.
 
 - Current story, exact dialogue, speaker/action ownership, look and required visible information agree with the sources.
 - Consequential user choices, including new information from the discussion, reach the actual viewing order, performance, framing, sound or edit. A technique name in the design table is insufficient; conversely, no technique quota or additional aesthetic approval is required when the intended scene works.
@@ -54,6 +56,8 @@ For a required effect, inspect its visible/audible success condition as well as 
 Inspect actual reference content before use. After generation assess its declared effect only for what was really viewed/heard: followed, ignored, conflicted or contaminated. For character turnarounds, include duplication, pose/panel/text/background leakage and identity/look continuity. Uploads, edges and node text do not establish generated benefit. A baseline is needed before claiming that a reference caused an improvement or recommending broader reuse.
 
 ## Repair and continue
+
+When the feedback is “flat”, “unclear” or “feels wrong”, use [feedback diagnosis](../../../../director-knowledge-base/分镜提示词/导演设计方法.md#feedback-diagnosis) to locate an actual information, emphasis, framing, performance, continuity or sound problem in the current version. Inspect the available evidence first; ask a focused question only if the intended meaning remains unresolved. Diagnose the repair layer without changing acceptance thresholds or treating dissatisfaction as generation authority.
 
 Record one short finding in the existing record: scope/version, concrete faults or none, necessary repair and result. Evidence locates actual issues; do not add a report per unit or a table of all passing dimensions. Detailed scoring is optional only on the user’s request; find it through the [knowledge review entry](../../../../director-knowledge-base/分镜提示词/分镜提示词生产与交付前审查.md).
 
