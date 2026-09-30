@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Project-locked video generation through the official LibTV CLI (fail closed)."""
 import argparse, hashlib, json, pathlib, re, subprocess, sys
+from decimal import Decimal, InvalidOperation
 
 # Keep the same checks when this entry point is executed or imported for audits.
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
@@ -141,12 +142,92 @@ def validate_task(project, task):
     if task.get('localPublicationVerified') is not True:
         raise ValueError('Formal index, local API and page verification required before creation')
     validate_dialogue(project, task, body)
+    validate_audio_references(project, task)
     return lock, body
+
+
+def is_wan3(task):
+    return task.get('model') in ('Wan 3.0', 'wanx3.0')
+
+
+def probe_audio_seconds(path):
+    probe = read_json(subprocess.check_output([
+        'ffprobe', '-v', 'error', '-select_streams', 'a:0',
+        '-show_entries', 'stream=codec_type:format=duration', '-of', 'json', str(path),
+    ], text=True))
+    seconds = Decimal(str(probe.get('format', {}).get('duration')))
+    if not probe.get('streams') or not seconds.is_finite() or seconds <= 0:
+        raise ValueError('Audio duration must be measured from a readable audio file')
+    return seconds
+
+
+def validate_audio_references(project, task):
+    if not is_wan3(task):
+        return None
+    types = task.get('mediaTypes')
+    if (not isinstance(types, dict) or set(types) != set(task['mediaNodeIds'])
+            or any(kind not in ('image', 'audio', 'video') for kind in types.values())):
+        raise ValueError('Wan 3.0 requires complete mediaTypes; unknown inputs cannot bypass audio checks')
+    audio_ids = [node for node in task['mediaNodeIds'] if types[node] == 'audio']
+    refs = task.get('audioReferences', {})
+    if not isinstance(refs, dict) or set(refs) != set(audio_ids):
+        raise ValueError('Wan 3.0 audioReferences must map every audio node to its local path and sha256')
+    measured = []
+    total = Decimal(0)
+    for node in audio_ids:
+        ref = refs[node]
+        path = project_file(project, ref['path'])
+        data = path.read_bytes()
+        sha256 = hashlib.sha256(data).hexdigest()
+        if sha256 != ref.get('sha256'):
+            raise ValueError('Audio source hash mismatch; remeasure the actual reference version')
+        seconds = probe_audio_seconds(path)
+        total += seconds
+        measured.append({'nodeId': node, 'path': ref['path'], 'sha256': sha256,
+                         'sha1': hashlib.sha1(data).hexdigest(), 'seconds': float(seconds)})
+    if total > Decimal(15):
+        raise ValueError(f'WAN_AUDIO_LIMIT: cumulative reference audio {total}s exceeds 15s; split the unit')
+    return {'limitSeconds': 15, 'totalSeconds': float(total), 'items': measured}
+
+
+def validate_remote_audio(task, evidence, params=None):
+    if evidence is None:
+        return
+    # Creation reads all source types; run checks the actual typed input lists
+    # before this call, then verifies audio bytes against resource metadata.
+    measured = {item['nodeId']: item for item in evidence['items']}
+    nodes = task['mediaNodeIds'] if params is None else list(measured)
+    for node in nodes:
+        source = cli(['node', node, '-p', task['projectUuid']])
+        data = source['data']
+        if source.get('nodeKey') != node or data.get('type') != task['mediaTypes'][node]:
+            raise ValueError('Source node type differs from declared mediaTypes')
+        if node not in measured:
+            continue
+        urls = data.get('url', [])
+        items = data.get('resourceMeta', {}).get('items', [])
+        if (len(urls) != 1 or not nonempty_string(urls[0]) or len(items) != 1
+                or items[0].get('kind') != 'audio'
+                or items[0].get('hashSha1') != measured[node]['sha1']):
+            raise ValueError('Actual audio source cannot be matched to the measured local file')
+        if params is not None:
+            refs = [ref for ref in params.get('audioList', []) if ref['nodeId'] == node]
+            if len(refs) != 1 or refs[0].get('url') != urls[0]:
+                raise ValueError('Stale audio URL in actual video inputs')
+            if params.get('mixedList') is not None:
+                mixed = [ref for ref in params['mixedList'] if ref['nodeId'] == node]
+                if len(mixed) != 1 or mixed[0].get('url') != urls[0] or mixed[0].get('mediaType') != 'audio':
+                    raise ValueError('Stale audio in mixed media inputs')
 
 
 def cli(args):
     result = subprocess.run(['libtv', *args], text=True, capture_output=True, check=True)
     return read_json(result.stdout)
+
+
+def supports_extend_prompt(model):
+    # Seedance draft schema has searchEnabled/autoCompliance, not extendPrompt.
+    return model != 'Seedance 2.5（样片模式）'
 
 
 def preflight(project, task):
@@ -162,12 +243,19 @@ def preflight(project, task):
                 'duration': task['durationSeconds'], 'enableSound': 'on'}
     if params['settings'] != expected or params['model'] != task['model'] or params['modeType'] != 'mixed2video':
         raise ValueError('Node settings differ from project-locked task')
-    if params.get('advancedSettings', {}).get('extendPrompt') != 0:
+    advanced = params.get('advancedSettings', {})
+    if supports_extend_prompt(task['model']) and advanced.get('extendPrompt') != 0:
         raise ValueError('Unexpected prompt extension')
+    if not supports_extend_prompt(task['model']) and ('extendPrompt' in advanced or 'extendPrompt' in params):
+        raise ValueError('Unsupported prompt extension field')
     media = sum((params.get(k + 'List', []) for k in ['image', 'audio', 'video']), [])
     ids = [x['nodeId'] for x in media]
     if len(ids) != len(set(ids)) or set(ids) != set(task['mediaNodeIds']):
         raise ValueError('Actual media references differ')
+    if is_wan3(task):
+        for kind in ('image', 'audio', 'video'):
+            if any(task['mediaTypes'][ref['nodeId']] != kind for ref in params.get(kind + 'List', [])):
+                raise ValueError('Actual media types differ from local audio audit')
     expected_order = sorted(task['mediaNodeIds'], key=lambda n: {'image': 0, 'video': 1, 'audio': 2}[task.get('mediaTypes', {}).get(n, 'image')])
     if params.get('mixedListOrder') != expected_order:
         raise ValueError('Mixed reference order differs')
@@ -176,8 +264,10 @@ def preflight(project, task):
     incoming = {e['source'] for e in graph['edges'] if e['target'] == task['videoNodeId']}
     if incoming != set(task['mediaNodeIds'] + [task['textNodeId']]):
         raise ValueError('Actual graph edges differ')
+    audio = validate_audio_references(project, task)
+    validate_remote_audio(task, audio, params)
     return {'projectLock': lock, 'threePromptSha256': [hashlib.sha256(x.encode()).hexdigest() for x in bodies],
-            'settings': expected, 'mediaAndEdges': 'PASS'}
+            'settings': expected, 'mediaAndEdges': 'PASS', 'audioReferences': audio}
 
 
 def main():
@@ -200,12 +290,17 @@ def main():
     task = read_json(task_path.read_text(encoding='utf-8'))
     lock, body = validate_task(args.project_dir, task)
     if args.action == 'check':
-        print(json.dumps({'status': 'PASS', 'projectLock': lock}, ensure_ascii=False)); return
+        print(json.dumps({'status': 'PASS', 'projectLock': lock,
+                          'audioReferences': validate_audio_references(args.project_dir, task)}, ensure_ascii=False)); return
     if args.action == 'create':
         if task.get('videoNodeId'):
             raise ValueError('Task already has videoNodeId; no duplicate creation')
+        validate_remote_audio(task, validate_audio_references(args.project_dir, task))
         command = ['node', '--x', str(task['x']), '--y', str(task['y']), 'create', task['name'], '-p', task['projectUuid'], '-t', 'video']
-        for setting in [f"model={task['model']}", 'modeType=mixed2video', f"ratio={lock['aspectRatio']}", f"resolution={task['resolution']}", f"duration={task['durationSeconds']}", 'enableSound=on', 'extendPrompt=0', 'count=1']:
+        settings = [f"model={task['model']}", 'modeType=mixed2video', f"ratio={lock['aspectRatio']}", f"resolution={task['resolution']}", f"duration={task['durationSeconds']}", 'enableSound=on', 'count=1']
+        if supports_extend_prompt(task['model']):
+            settings.append('extendPrompt=0')
+        for setting in settings:
             command.extend(['-s', setting])
         for node in [task['textNodeId'], *task['mediaNodeIds']]:
             command.extend(['--left', node])
@@ -225,5 +320,5 @@ def main():
 
 if __name__ == '__main__':
     try: main()
-    except (ValueError, KeyError, TypeError, AttributeError, IndexError, OSError, subprocess.CalledProcessError) as exc:
+    except (ValueError, InvalidOperation, KeyError, TypeError, AttributeError, IndexError, OSError, subprocess.CalledProcessError) as exc:
         print(f'VIDEO_FORMAT_GATE_BLOCKED: {exc}', file=sys.stderr); sys.exit(1)

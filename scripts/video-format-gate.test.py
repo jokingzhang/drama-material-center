@@ -8,6 +8,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
+import wave
 from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
@@ -46,11 +47,113 @@ class GateTests(unittest.TestCase):
             'projectUuid': 'drama-canvas', 'promptPath': 'prompt.md',
             'promptSha256': hashlib.sha256(body.encode()).hexdigest(),
             'mediaNodeIds': ['person'], 'localPublicationVerified': True,
+            'mediaTypes': {'person': 'image'},
             'textNodeId': 'text', 'model': 'Wan 3.0', 'resolution': '720P',
             'durationSeconds': 8, 'x': 100, 'y': 200, 'name': 'scene',
         }
         task.update(overrides)
         return task
+
+    def audio_task(self, seconds=(8, 7), **overrides):
+        ids = [f'audio-{i}' for i in range(len(seconds))]
+        refs = {}
+        for node, duration in zip(ids, seconds):
+            path = self.root / (node + '.wav')
+            with wave.open(str(path), 'wb') as stream:
+                stream.setparams((1, 2, 8000, 0, 'NONE', 'not compressed'))
+                stream.writeframes(b'\x00\x00' * round(duration * 8000))
+            refs[node] = {'path': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+        body = '画幅：9:16\n' + '\n'.join('{{Node ' + node + '}}' for node in ['person', *ids])
+        return self.task(body, mediaNodeIds=['person', *ids],
+                         mediaTypes={'person': 'image', **{node: 'audio' for node in ids}},
+                         audioReferences=refs, **overrides)
+
+    def audio_node(self, task, node):
+        data = (self.root / task['audioReferences'][node]['path']).read_bytes()
+        return {'nodeKey': node, 'data': {'type': 'audio', 'url': ['https://example.test/' + node],
+                'resourceMeta': {'items': [{'kind': 'audio', 'hashSha1': hashlib.sha1(data).hexdigest()}]}}}
+
+    def audio_responses(self, task):
+        responses = self.node_responses(task)
+        params = responses[1]['data']['params']
+        ids = [node for node in task['mediaNodeIds'] if task['mediaTypes'][node] == 'audio']
+        params['audioList'] = [{'nodeId': node, 'url': 'https://example.test/' + node} for node in ids]
+        params['mixedListOrder'] = task['mediaNodeIds']
+        responses[2]['edges'] = [{'source': node, 'target': task['videoNodeId']} for node in [*task['mediaNodeIds'], 'text']]
+        return [*responses, *[self.audio_node(task, node) for node in ids]]
+
+    def test_audio_limit_uses_measured_total_and_allows_exactly_15_seconds(self):
+        task = self.audio_task()
+        self.assertEqual(gate.validate_audio_references(self.root, task)['totalSeconds'], 15)
+        task = self.audio_task((8, 7.001))
+        for action in ['check', 'create', 'run']:
+            with self.subTest(action=action), patch.object(gate, 'cli') as remote, self.assertRaisesRegex(ValueError, 'WAN_AUDIO_LIMIT'):
+                self.invoke(action, task)
+            remote.assert_not_called()
+        self.assertNotIn('runDispatched', json.loads((self.root / 'task.json').read_text()))
+
+    def test_audio_count_and_output_length_do_not_replace_reference_length(self):
+        task = self.audio_task((8, 8), durationSeconds=3)
+        with self.assertRaisesRegex(ValueError, 'WAN_AUDIO_LIMIT'):
+            gate.validate_task(self.root, task)
+        task = self.audio_task((5, 7), durationSeconds=30)
+        gate.validate_task(self.root, task)
+        self.assertEqual(gate.validate_audio_references(self.root, task)['totalSeconds'], 12)
+
+    def test_wan_audio_limit_is_not_applied_to_other_models(self):
+        task = self.audio_task((8, 8), model='Seedance 2.5（样片模式）')
+        self.assertIsNone(gate.validate_audio_references(self.root, task))
+
+    def test_audio_duration_cannot_be_unknown_nonfinite_or_without_audio(self):
+        task = self.audio_task((8,))
+        path = self.root / task['audioReferences']['audio-0']['path']
+        for probe in [{'streams': [], 'format': {'duration': '8'}},
+                      {'streams': [{}], 'format': {}},
+                      {'streams': [{}], 'format': {'duration': 'NaN'}},
+                      {'streams': [{}], 'format': {'duration': '0'}}]:
+            with self.subTest(probe=probe), patch.object(gate.subprocess, 'check_output', return_value=json.dumps(probe)):
+                with self.assertRaises((ValueError, gate.InvalidOperation)):
+                    gate.probe_audio_seconds(path)
+
+    def test_missing_mapping_changed_file_and_cross_project_audio_are_blocked(self):
+        task = self.audio_task((8,))
+        for change in [{'audioReferences': {}}, {'mediaTypes': {}},
+                       {'audioReferences': {'audio-0': {'path': '../other.wav', 'sha256': 'bad'}}}]:
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                gate.validate_task(self.root, {**task, **change})
+        (self.root / 'audio-0.wav').write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+            gate.validate_task(self.root, task)
+
+    def test_audio_source_metadata_and_video_cache_are_verified_before_run(self):
+        task = self.audio_task((8, 7), videoNodeId='video')
+        with patch.object(gate, 'cli', side_effect=self.audio_responses(task)):
+            self.assertEqual(gate.preflight(self.root, task)['audioReferences']['totalSeconds'], 15)
+        for conflict in ['source-hash', 'missing-source-metadata', 'cached-url', 'mixed-url', 'wrong-type']:
+            responses = self.audio_responses(task)
+            params = responses[1]['data']['params']
+            if conflict == 'source-hash':
+                responses[3]['data']['resourceMeta']['items'][0]['hashSha1'] = 'changed'
+            elif conflict == 'missing-source-metadata':
+                del responses[3]['data']['resourceMeta']
+            elif conflict == 'cached-url':
+                params['audioList'][0]['url'] = 'https://example.test/stale'
+            elif conflict == 'mixed-url':
+                params['mixedList'] = [{'nodeId': node, 'mediaType': task['mediaTypes'][node], 'url': 'stale'} for node in task['mediaNodeIds']]
+            else:
+                params['imageList'].append(params['audioList'].pop())
+            with self.subTest(conflict=conflict), patch.object(gate, 'cli', side_effect=responses), patch.object(gate, 'probe_audio_seconds', side_effect=lambda path: gate.Decimal(8 if path.stem == 'audio-0' else 7)), patch.object(gate.subprocess, 'run') as paid_run:
+                with self.assertRaises(ValueError):
+                    self.invoke('run', task)
+                paid_run.assert_not_called()
+                self.assertNotIn('runDispatched', json.loads((self.root / 'task.json').read_text()))
+
+    def test_creation_verifies_actual_source_type_before_mutation(self):
+        task = self.task()
+        with patch.object(gate, 'cli', return_value={'nodeKey': 'person', 'data': {'type': 'audio'}}) as remote:
+            with self.assertRaisesRegex(ValueError, 'Source node type'):
+                self.invoke('create', task)
+        self.assertFalse(any('create' in call.args[0] for call in remote.call_args_list))
 
     def invoke(self, action, task):
         (self.root / 'task.json').write_text(json.dumps(task), encoding='utf-8')
@@ -72,6 +175,24 @@ class GateTests(unittest.TestCase):
             {'data': {'content': [body]}}, {'data': {'params': params}},
             {'edges': [{'source': node, 'target': task['videoNodeId']} for node in ['person', 'text']]},
         ]
+
+    def test_seedance_draft_uses_schema_without_wan_extension(self):
+        task = self.task(model='Seedance 2.5（样片模式）', resolution='480p')
+        with patch.object(gate, 'cli', return_value={'nodeKey': 'created'}) as remote:
+            self.invoke('create', task)
+        command = remote.call_args.args[0]
+        self.assertNotIn('extendPrompt=0', command)
+        self.assertIn('resolution=480p', command)
+        task['videoNodeId'] = 'created'
+        responses = self.node_responses(task)
+        params = responses[1]['data']['params']
+        params['settings']['resolution'] = '480p'
+        params['advancedSettings'] = {'autoCompliance': 1}
+        with patch.object(gate, 'cli', side_effect=responses):
+            gate.preflight(self.root, task)
+        params['advancedSettings']['extendPrompt'] = 0
+        with patch.object(gate, 'cli', side_effect=responses), self.assertRaisesRegex(ValueError, 'Unsupported'):
+            gate.preflight(self.root, task)
 
     def test_missing_lock_has_no_default(self):
         (self.root / 'PRODUCTION_RULES.md').write_text('no format', encoding='utf-8')
@@ -201,7 +322,7 @@ class GateTests(unittest.TestCase):
             with self.subTest(orientation=orientation):
                 self.lock.update(orientation=orientation, aspectRatio=ratio, timelineWidth=width, timelineHeight=height)
                 self.write_lock()
-                with patch.object(gate, 'cli', return_value={'nodeKey': 'created'}) as remote:
+                with patch.object(gate, 'cli', side_effect=lambda args: {'nodeKey': 'created'} if 'create' in args else {'nodeKey': 'person', 'data': {'type': 'image'}}) as remote:
                     self.invoke('create', self.task())
                 command = remote.call_args.args[0]
                 self.assertEqual([item for item in command if item.startswith('ratio=')], ['ratio=' + ratio])
