@@ -1,0 +1,66 @@
+.prompt-reference-context { min-width: 0; margin-bottom: 1rem; }
+.prompt-reference-message { margin: 0; padding: 0.75rem 0.875rem; color: var(--muted); font-size: 0.875rem; line-height: 1.5; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.5rem; overflow-wrap: anywhere; }
+.prompt-reference-chip { display: inline-flex; align-items: center; gap: 0.25rem; min-height: 1.75em; margin: 0 0.125rem; padding: 0.0625rem 0.375rem; color: var(--blue); font: inherit; font-size: 0.92em; line-height: 1.4; vertical-align: baseline; white-space: nowrap; background: var(--blue-soft); border: 1px solid var(--line); border-radius: 0.3125rem; cursor: pointer; }
+.prompt-reference-chip > svg { flex: 0 0 auto; }
+.prompt-reference-chip:hover:not(:disabled) { border-color: var(--blue); }
+.prompt-reference-chip.is-unavailable, .prompt-reference-chip:disabled { color: var(--muted); background: var(--surface-soft); border-style: dashed; cursor: default; }
+.prompt-reference-strip { width: 100%; min-width: 0; padding: 0.75rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 0.625rem; }
+.prompt-reference-strip-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 0.75rem; margin-bottom: 0.5rem; }
+.prompt-reference-strip-heading > button { min-height: 2.75rem; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0 0.25rem; color: var(--ink); font-size: 0.875rem; background: transparent; border: 0; cursor: pointer; }
+.prompt-reference-strip-heading strong span { color: var(--muted); font-weight: 500; }
+.prompt-reference-strip-hint { color: var(--muted); font-size: 0.875rem; }
+.prompt-reference-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.625rem; margin: 0; padding: 0; list-style: none; }
+.prompt-reference-item { min-width: 0; display: flex; flex-direction: column; }
+.prompt-reference-card { flex: 1; width: 100%; min-width: 0; min-height: 2.75rem; display: flex; flex-direction: column; overflow: hidden; padding: 0; color: var(--ink); text-align: left; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.5rem; cursor: pointer; }
+.prompt-reference-card:hover:not(:disabled) { background: var(--blue-soft); border-color: var(--blue); }
+.prompt-reference-card:disabled { color: var(--muted); cursor: default; }
+.prompt-reference-visual { position: relative; width: 100%; height: 5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--blue); background: var(--surface-soft); border-bottom: 1px solid var(--line); }
+.prompt-reference-visual img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.prompt-reference-number { position: absolute; bottom: 0.25rem; left: 0.25rem; max-width: calc(100% - 0.5rem); overflow: hidden; padding: 0.125rem 0.375rem; color: var(--ink); font-size: 0.75rem; font-weight: 650; line-height: 1.4; white-space: nowrap; text-overflow: ellipsis; background: var(--surface); border: 1px solid var(--line); border-radius: 0.25rem; }
+.prompt-reference-card-copy { width: 100%; min-width: 0; display: grid; gap: 0.125rem; padding: 0.5rem; }
+.prompt-reference-card-copy strong { overflow: hidden; font-size: 0.875rem; font-weight: 650; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.prompt-reference-card-copy small { color: var(--muted); font-size: 0.8125rem; line-height: 1.4; }
+.prompt-reference-unavailable-reason { display: block; margin-top: 0.25rem; color: var(--muted); font-size: 0.8125rem; line-height: 1.5; overflow-wrap: anywhere; }
+.prompt-reference-show-all { min-height: 2.75rem; display: flex; align-items: center; justify-content: center; gap: 0.375rem; margin: 0.5rem auto 0; padding: 0 0.75rem; color: var(--blue); font-size: 0.875rem; background: transparent; border: 0; border-radius: 0.375rem; cursor: pointer; }
+
+.reference-media-dialog { width: calc(100vw - 1.5rem); max-width: 80rem; height: min(90dvh, 60rem); max-height: calc(100dvh - 1.5rem); margin: auto; padding: 0; overflow: hidden; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 0.75rem; box-shadow: 0 2rem 6rem rgb(0 0 0 / 38%); }
+.reference-media-dialog::backdrop { background: rgb(5 9 16 / 76%); backdrop-filter: blur(4px); }
+.reference-media-content { height: 100%; min-height: 0; display: flex; flex-direction: column; }
+.reference-media-header { flex: 0 0 auto; display: flex; align-items: start; justify-content: space-between; gap: 0.75rem; padding: 0.875rem; border-bottom: 1px solid var(--line); }
+.reference-media-heading { min-width: 0; }
+.reference-media-kind { color: var(--muted); font-size: 0.8125rem; line-height: 1.5; }
+.reference-media-heading h2 { margin: 0.125rem 0 0.375rem; color: var(--ink); font-size: 1rem; line-height: 1.45; overflow-wrap: anywhere; }
+.reference-media-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem 0.75rem; margin: 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.5; }
+.reference-media-status { padding: 0.0625rem 0.375rem; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.25rem; }
+.reference-media-status.is-caution { color: #a94727; background: #fff2e9; border-color: #edbfaa; }
+.reference-media-close { flex: 0 0 auto; min-width: 2.75rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0 0.625rem; color: var(--ink); font-size: 0.875rem; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.5rem; cursor: pointer; }
+.reference-media-close:hover, .reference-media-image-tools > button:hover { color: var(--blue); background: var(--blue-soft); border-color: var(--blue); }
+.reference-media-responsibility { flex: 0 0 auto; max-height: 5.5rem; margin: 0; padding: 0.625rem 0.875rem; overflow-y: auto; color: var(--muted); font-size: 0.875rem; line-height: 1.5; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.reference-media-image-tools { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.375rem 0.875rem; color: var(--muted); font-size: 0.8125rem; }
+.reference-media-image-tools > button { flex: 0 0 auto; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; padding: 0 0.625rem; color: var(--ink); font-size: 0.875rem; background: var(--surface-soft); border: 1px solid var(--line); border-radius: 0.375rem; cursor: pointer; }
+.reference-media-image-tools > button:disabled { opacity: 0.5; cursor: default; }
+.reference-media-image-viewport { flex: 1; min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0.75rem; background: var(--surface-soft); }
+.reference-media-image-viewport > img { width: 100%; height: 100%; min-width: 0; min-height: 0; display: block; object-fit: contain; }
+.reference-media-image-viewport.is-original-size { display: block; overflow: auto; overscroll-behavior: contain; }
+.reference-media-image-viewport.is-original-size > img { width: auto; height: auto; min-width: 0; min-height: 0; max-width: none; max-height: none; margin: auto; }
+.reference-media-image-error { display: grid; justify-items: center; gap: 0.75rem; color: var(--muted); font-size: 0.875rem; text-align: center; }
+.reference-media-error { margin: 0; padding: 1rem; color: var(--muted); font-size: 0.875rem; line-height: 1.5; overflow-wrap: anywhere; }
+.reference-media-dialog-audio { max-width: 40rem; height: auto; }
+.reference-media-dialog-audio .reference-media-content { height: auto; max-height: calc(100dvh - 1.5rem); overflow-y: auto; }
+.reference-media-audio { display: grid; justify-items: center; gap: 1rem; padding: 1.5rem 0.875rem; }
+.reference-media-audio-symbol { display: grid; place-items: center; width: 4.5rem; height: 4.5rem; color: var(--blue); background: var(--blue-soft); border: 1px solid var(--line); border-radius: 1rem; }
+.reference-media-load-audio { min-height: 2.75rem; display: flex; align-items: center; justify-content: center; gap: 0.375rem; padding: 0 1rem; color: var(--blue); font-size: 0.875rem; background: var(--blue-soft); border: 1px solid var(--line); border-radius: 0.5rem; cursor: pointer; }
+.reference-media-audio audio { width: 100%; max-width: 32rem; }
+.reference-media-audio-note { margin: 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.5; text-align: center; }
+
+@media (min-width: 640px) {
+  .prompt-reference-grid { grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); }
+  .reference-media-dialog { width: calc(100vw - 3rem); max-height: calc(100dvh - 3rem); }
+  .reference-media-header { padding: 1rem 1.25rem; }
+  .reference-media-heading h2 { font-size: 1.125rem; }
+  .reference-media-image-tools, .reference-media-responsibility { padding-right: 1.25rem; padding-left: 1.25rem; }
+  .reference-media-dialog-audio .reference-media-content { max-height: calc(100dvh - 3rem); }
+  .reference-media-audio { padding: 1.75rem 1.25rem; }
+}
+
+:root[data-theme="dark"] .reference-media-status.is-caution { color: #ffc4a5; background: #39261f; border-color: #6c4737; }

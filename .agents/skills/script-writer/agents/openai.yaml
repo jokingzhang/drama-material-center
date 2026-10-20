@@ -1,0 +1,4 @@
+interface:
+  display_name: "短剧编剧"
+  short_description: "创作和修改故事、分集剧本与对白，维护确认版本，衔接分镜与素材制作"
+  default_prompt: "使用 $script-writer 根据我的设想或现有文本创作、诊断或修改剧本，保留已确认事实，明确人物行动、因果和对白。"

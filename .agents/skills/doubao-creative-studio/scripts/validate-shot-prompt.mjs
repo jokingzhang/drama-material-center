@@ -207,7 +207,10 @@ export function validateSingleLevelShots(output, contract) {
         }
       }
     }
-    if (/\d{1,}:\d{2}|\d+(?:\.\d+)?\s*(?:s|秒)?\s*[—–~～-]\s*\d|\d+(?:\.\d+)?\s*(?:秒|s\b)|^#{1,6}\s|^\*\*[^\n]*(?:节拍|子镜头)/m.test(prose)) errors.push(`shot ${index + 1} contains forbidden inner timing or subshots`);
+    // Node UUIDs can contain digit-hyphen-digit fragments. Ignore reference
+    // tokens only for this timing check; validateReferences still checks them.
+    const timingProse = prose.replace(referencePattern, ' ');
+    if (/\d{1,}:\d{2}|\d+(?:\.\d+)?\s*(?:s|秒)?\s*[—–~～-]\s*\d|\d+(?:\.\d+)?\s*(?:秒|s\b)|^#{1,6}\s|^\*\*[^\n]*(?:节拍|子镜头)/m.test(timingProse)) errors.push(`shot ${index + 1} contains forbidden inner timing or subshots`);
     cursor = end;
   }
   if (!close(cursor, duration)) errors.push('shots must cover the full duration');

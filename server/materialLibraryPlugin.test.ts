@@ -1,4 +1,5 @@
-import type { IncomingMessage, ServerResponse } from "node:http";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -65,7 +66,101 @@ describe("bounded material summaries", () => {
   });
 });
 
+describe("material media HTTP streaming", () => {
+  it("supplies finite lengths and supports full, HEAD, partial and invalid range responses", async () => {
+    const root = await mkdtemp(join(tmpdir(), "material-stream-api-"));
+    const projectRoot = join(root, "stream-demo");
+    await mkdir(join(projectRoot, "library"), { recursive: true });
+    await Promise.all([
+      writeFile(join(projectRoot, "project.json"), JSON.stringify({ schemaVersion: 1, name: "流测试" })),
+      writeFile(join(projectRoot, "library/voice.wav"), "0123456789"),
+    ]);
+    const middleware = middlewareFor(root);
+    const server = createServer((request, response) => {
+      void middleware(request, response, () => { response.statusCode = 404; response.end(); });
+    });
+    try {
+      await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+      const address = server.address();
+      if (!address || typeof address === "string") throw new Error("test server did not bind");
+      const url = `http://127.0.0.1:${address.port}/api/projects/stream-demo/file?path=voice.wav`;
+      const full = await fetch(url);
+      expect(full.status).toBe(200);
+      expect(full.headers.get("Content-Type")).toBe("audio/wav");
+      expect(full.headers.get("Content-Length")).toBe("10");
+      expect(full.headers.get("Accept-Ranges")).toBe("bytes");
+      expect(await full.text()).toBe("0123456789");
+      const head = await fetch(url, { method: "HEAD" });
+      expect(head.status).toBe(200);
+      expect(head.headers.get("Content-Length")).toBe("10");
+      expect(await head.text()).toBe("");
+      for (const [requested, expectedBody, expectedRange] of [
+        ["bytes=2-5", "2345", "bytes 2-5/10"],
+        ["bytes=8-", "89", "bytes 8-9/10"],
+        ["bytes=-3", "789", "bytes 7-9/10"],
+        ["bytes=7-99", "789", "bytes 7-9/10"],
+      ]) {
+        const partial = await fetch(url, { headers: { Range: requested } });
+        expect(partial.status).toBe(206);
+        expect(partial.headers.get("Content-Range")).toBe(expectedRange);
+        expect(partial.headers.get("Content-Length")).toBe(String(expectedBody.length));
+        expect(await partial.text()).toBe(expectedBody);
+      }
+      const partialHead = await fetch(url, { method: "HEAD", headers: { Range: "bytes=2-5" } });
+      expect(partialHead.status).toBe(206);
+      expect(partialHead.headers.get("Content-Range")).toBe("bytes 2-5/10");
+      expect(partialHead.headers.get("Content-Length")).toBe("4");
+      expect(await partialHead.text()).toBe("");
+      for (const range of ["bytes=10-", "bytes=5-2", "bytes=0-1,4-5", "bytes=-0", "invalid"]) {
+        const invalid = await fetch(url, { headers: { Range: range } });
+        expect(invalid.status).toBe(416);
+        expect(invalid.headers.get("Content-Range")).toBe("bytes */10");
+        expect(await invalid.text()).toBe("");
+      }
+    } finally {
+      server.closeAllConnections();
+      await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("project story HTTP reads", () => {
+  it("serves exact prompt references through a read-only API and rejects traversal", async () => {
+    const root = await mkdtemp(join(tmpdir(), "material-references-api-"));
+    const projectRoot = join(root, "story-demo");
+    const hash = (value: string) => createHash("sha256").update(value).digest("hex");
+    try {
+      await Promise.all([
+        mkdir(join(projectRoot, "library"), { recursive: true }),
+        mkdir(join(projectRoot, "production"), { recursive: true }),
+      ]);
+      const body = "人物资产：{{Mixed 1}}";
+      const plan = JSON.stringify({ units: [{ unitId: "U1", bodyPath: "library/prompt.md", bodySha256: hash(body), referencePlan: { assets: [{ reference: "{{Mixed 1}}", assetId: "IMAGE", path: "library/image.png", sha256: hash("image") }] } }] });
+      await Promise.all([
+        writeFile(join(projectRoot, "project.json"), JSON.stringify({ schemaVersion: 1, name: "接口样板" })),
+        writeFile(join(projectRoot, "library/prompt.md"), body),
+        writeFile(join(projectRoot, "library/image.png"), "image"),
+        writeFile(join(projectRoot, "library/plan.json"), plan),
+        writeFile(join(projectRoot, "production/story-index.v1.json"), JSON.stringify({ schemaVersion: 1, documentBindings: [] })),
+        writeFile(join(projectRoot, "production/asset-bindings.v1.json"), JSON.stringify({ schemaVersion: 1, assets: [
+          { assetId: "PROMPT", materialType: "prompt.video", path: "prompt.md", sha256: hash(body), status: "DRAFT" },
+          { assetId: "PLAN", role: "reference-plan", path: "plan.json", sha256: hash(plan), status: "DRAFT" },
+          { assetId: "IMAGE", materialType: "image.character", path: "image.png", sha256: hash("image"), status: "DRAFT" },
+        ] })),
+      ]);
+      const middleware = middlewareFor(root);
+      expect(await requestJson(middleware, "/api/projects/story-demo/prompt-references?path=prompt.md")).toMatchObject({
+        status: 200,
+        body: { state: "RESOLVED", promptSha256: hash(body), references: [expect.objectContaining({ assetId: "IMAGE", kind: "image", assetStatus: "DRAFT", resolution: "RESOLVED", url: "/api/projects/story-demo/file?path=image.png" })] },
+      });
+      expect(await requestJson(middleware, "/api/projects/story-demo/prompt-references?path=..%2Fproject.json")).toMatchObject({ status: 404, body: { code: "invalid_path" } });
+      expect(await requestJson(middleware, "/api/projects/story-demo/prompt-references")).toMatchObject({ status: 404, body: { code: "invalid_path" } });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it("serves the story index and one requested episode through stable URLs", async () => {
     const root = await mkdtemp(join(tmpdir(), "material-story-api-"));
     const projectRoot = join(root, "story-demo");

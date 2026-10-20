@@ -310,6 +310,49 @@ test('lighting shots accept referenced asset categories without a prop category'
   assert.deepEqual(validateShotBlockPrompt(lightingBody, contract), []);
 });
 
+function withUuidNodeReferences(source, sourceContract) {
+  const value = structuredClone(sourceContract);
+  let modified = source;
+  for (const [index, asset] of value.referencePlan.assets.entries()) {
+    const token = `{{Node a1234567-1234-4123-a123-12345678901${index}}}`;
+    modified = modified.replaceAll(asset.reference, token);
+    asset.reference = token;
+  }
+  return { modified, value };
+}
+
+test('single-level shots allow UUID Node references inside shot prose', () => {
+  for (const [source, sourceContract, field] of [
+    [lightingBody, lightingContract, '**画面与动作：**'],
+    [singleLevelBody, singleLevelContract, '**画面提示词：**'],
+  ]) {
+    const { modified, value } = withUuidNodeReferences(source, sourceContract);
+    const shotBody = modified.replace(field, `${field} 以${value.referencePlan.assets[0].reference}中的走廊为背景。`);
+    assert.deepEqual(validateShotBlockPrompt(shotBody, value), []);
+  }
+});
+
+test('UUID Node references do not hide real inner timing or subshots', () => {
+  const { modified, value } = withUuidNodeReferences(lightingBody, lightingContract);
+  for (const detail of ['0–2秒停步。', '00:00–00:02停步。', '\n#### 子镜头：停步\n']) {
+    const shotBody = modified.replace('**画面与动作：**',
+      `**画面与动作：** 走廊${value.referencePlan.assets[0].reference}。${detail}`);
+    assert.match(validateShotBlockPrompt(shotBody, value).join('; '), /forbidden inner timing or subshots/);
+  }
+});
+
+test('UUID timing exemption preserves unplanned and invalid reference rejection', () => {
+  const { modified, value } = withUuidNodeReferences(lightingBody, lightingContract);
+  const unplanned = modified.replace('**画面与动作：**',
+    '**画面与动作：** 走廊{{Node b1234567-1234-4123-a123-123456789012}}。');
+  assert.match(validateShotBlockPrompt(unplanned, value).join('; '), /unplanned reference/);
+  const invalid = modified.replace('**画面与动作：**', '**画面与动作：** {{Mixed invalid}}');
+  assert.match(validateShotBlockPrompt(invalid, value).join('; '), /unresolved template/);
+  const invalidPlan = structuredClone(value);
+  invalidPlan.referencePlan.assets[0].reference = '{{Mixed invalid}}';
+  assert.match(validateShotBlockPrompt(modified, invalidPlan).join('; '), /invalid reference token/);
+});
+
 test('lighting shots allow audio assets and keep historical absence declarations readable', () => {
   const value = structuredClone(lightingContract);
   value.referencePlan.assets.push({ reference: '{{Mixed 4}}', subject: '通风声' });

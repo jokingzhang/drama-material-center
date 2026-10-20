@@ -117,6 +117,16 @@ class DialogueGateTests(unittest.TestCase):
     def test_nested_quotes_preserve_original_text(self):
         self.assertEqual(prompt_lines('甲：“别替我把“愿意”填上。”'), [{'speaker': '甲', 'text': '别替我把“愿意”填上。'}])
 
+    def test_collective_speaker_preserves_every_named_member(self):
+        self.rows = self.rows.replace('|甲|', '|甲、乙、丙（齐声）|')
+        self.write_contract()
+        body = self.body.replace('甲：“', '甲、乙、丙（齐声）：“')
+        self.assertEqual(prompt_lines(body)[0]['speaker'], '甲、乙、丙（齐声）')
+        validate_dialogue(self.root, self.task, body)
+        for changed in ('丙（齐声）', '甲、丙（齐声）', '乙、甲、丙（齐声）'):
+            with self.subTest(speaker=changed), self.assertRaisesRegex(ValueError, 'DIALOGUE_MISMATCH'):
+                validate_dialogue(self.root, self.task, body.replace('甲、乙、丙（齐声）', changed))
+
     def test_ambiguous_quote_and_unclosed_quote_block(self):
         for body in ('甲笑着说“我自己决定。”', '甲：“我自己决定。', '甲：“我自己决定。」'):
             with self.subTest(body=body), self.assertRaises(ValueError):

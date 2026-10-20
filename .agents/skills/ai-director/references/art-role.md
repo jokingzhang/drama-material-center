@@ -1,54 +1,59 @@
-# Art Role
+# Art Role｜镜头驱动的图片素材
 
-Act as the art director for characters, looks, locations, props, image responsibilities, and visual continuity inside `$ai-director`. Own the visual asset package; do not own story canon, camera/editing design, or final acceptance.
+这是 ai-director 的图片工作方法。当前主会话同时负责导演设计与美术素材，围绕镜头相互校正：镜头初设提出实际图像需求，真实图片反校机位、状态与拍法，再完成当前分镜和引用。没有独立美术交接、先做齐全剧素材或额外用户入口。
 
 ## Inputs
 
-Use the existing current context and approved or explicitly provisional story facts; neither requires a new packet or contract document. Read `director-knowledge-base/图片素材/README.md` and, for visible named characters, `director-knowledge-base/图片素材/人物标准图.md`. Read the scene, prop, state, keyframe, or continuity topic only when it appears in scope.
+恢复当前剧本、逐字台词、已定镜头／观看目的、角色与造型、场景、道具、已有图片和正式绑定。用户直接提供剧本同样可用；不要求 script-writer 先做一份交接稿。镜头尚未确定时先与 [导演方法](director-role.md) 作必要初设，不凭整场全部事实生成无消费者的素材。
 
-For a new character's appearance, a new look, similar-looking characters or character-sheet inconsistencies, use [人物外形设计](../../character-visual-designer/SKILL.md) before authoring the affected image prompt. Separate stable identity, current look and shot performance; preserve accepted faces during costume changes. Checked asset reuse, uploads and performance-only changes do not reopen character design.
-
-Inspect actual project files and formal bindings before calling an asset existing, current, accepted, or reusable. Other projects may be import sources but never production dependencies.
-
-Before generating or editing images, use the single default table and execution steps in [SOP image-generation routing](../../../../PRODUCTION_SOP.md#image-generation-routing), then read the selected tool's Skill. Asset purpose selects the tool; current user constraints select or restrict the input mode. The approved Lib Image defaults do not require another CLI confirmation for an authorized image task. Do not infer matched identity or scene geometry from similar text prompts, or infer video-input approval from a recommended keyframe tool.
+首次相关任务读 [图片素材入口](../../../../director-knowledge-base/图片素材/README.md)，人物图再读 [人物标准图](../../../../director-knowledge-base/图片素材/人物标准图.md)；场景、道具、状态、中文图层只查当前需要的主题。新外形、新造型、撞脸或四视图不一致，先用 [人物外形设计](../../character-visual-designer/SKILL.md)。普通换装保留已确认身份，表演变化不自动重开人物设计。
 
 ## Work
 
-1. Enumerate the characters, exact looks or states, locations, props, and visual facts required by the Story Contract.
-2. Give every candidate image exactly one primary responsibility: identity/current look, clean scene, prop/state, relationship keyframe, accepted continuity frame, or internal planning.
-3. Name the real consumer of every proposed image. Follow the parent Skill's “含文字图片素材标准”: freeze the full verbatim Chinese copy before generation, render all required content in the actual image, and visually check it after generation; diagrams, placeholders, pseudo-text or a title without its required body are not a completed text asset. For exact readable text, name the consuming shot or composite, visible interval, layer or tracking target, and entry/exit behavior.
-4. Prefer the smallest compatible reference set that still satisfies [critical asset coverage](../../../../PRODUCTION_SOP.md#critical-asset-coverage). Map a critical prop to every unit where it must remain visible, including dialogue coverage; do not limit consumers to prop close-ups. Compare visible content against the consumer's current look, action phase and camera side under [reference compatibility](../../../../PRODUCTION_SOP.md#reference-compatibility): footwear, held objects, prop count/state, furniture scale and doorway geography matter as well as identity. A correct hash or acceptance for another use does not settle these facts; repair an evidenced pixel conflict before generation. Reuse inspections when image, use and relevant facts are unchanged. Keep grids, floor plans, annotated boards, multi-panel action sheets, text-contaminated images, and other `INTERNAL` planning media out of generation inputs.
-5. Default to no keyframes under the [keyframe approval gate](../SKILL.md#keyframe-approval-gate). Prefer current-look character standards, compatible clean scene/prop references and staging/editing. A precise static relation is a reason to propose an exception, never permission to use a frame. Show the actual candidate and intended consumers; obtain explicit user approval before production use.
-6. Real screenshots, tail frames and continuity frames are also keyframes under that gate. A passed source video or main-session inspection does not authorize its extracted frame as a new input. Internal QA extraction may continue without promoting it to production.
-7. Do not assume that a relationship frame and separate character sheets bind to the same instances. Remove overlapping responsibilities or use one clean consolidated composition; keep only the minimum current-look identity input unless the actual model has a verified binding mechanism.
-8. After explicit user approval of the specific frame and use, use first/last-frame control only when the live model schema supports it and the shot is one simple visible `A → B` change. Split complex choreography instead of adding still images.
-9. Only after explicit user approval of the specific frame/use and separate generation authorization, if its value remains uncertain, use the smallest controlled A/B with the same prompt and settings. Remove the frame if it alone causes duplication or stiffness.
-10. Report current files, missing assets, conflicts, status changes, and every downstream consumer affected by a visual fact change.
+### 从镜头确定图片职责
 
-The character baseline is one character × one current look/state × one standard image containing full-body front, strict side, full-body back, and a clear portrait with consistent identity, clothing, hair, accessories, age, makeup, and injury state.
+按实际取景列出入画人物与当前造型、场景方向、关键道具及状态。每张拟用／拟生图片明确一个主要职责与真实消费者：哪些镜头、哪些生成单元，或哪个视频的后期图层。人物标准图管身份／造型，干净场景管建筑与当前状态，道具图管关键物件；不要让一张图同时硬塞整场调度、动作路径和所有空间信息。
 
-When asset-prompt prose is requested, freeze the current asset facts, responsibilities, consumers, hard constraints, acceptance criteria, and creative latitude, then use the [selected author](../SKILL.md#select-the-creative-author) inside this Art stage. Default to main-session writing and repair; use Doubao only when explicitly selected. Validate the prose and update the Asset Package before Director consumes it. Record the author, version, sources, and evidence; preserve raw Doubao returns in that branch. For every named operational subject use the exact canonical full name, not a shorthand or pronoun. When image generation is authorized, use the repository-approved flow, save a new versioned candidate, inspect it, and return evidence. The same main session completes authorized formal placement, bindings, API/page readback and status integration, without another creative review.
+普通背景陈设不因出现就各自生图。镜头已明确且所需细节现图可覆盖时直接复用；相容综合图已供给关键道具，不强制另做单品。每个仍可见的关键道具须覆盖所有消费者，包括对白和反应单元；画外事实不为凑清单强塞到图中。
+
+### 实际看图，决定复用、修图还是新建
+
+打开当前原图，对照具体用途核对身份、完整造型（包括鞋）、人数、持物、开合、道具数量、家具尺度、出口和门轴关系、光向、光质及文字。曾在别处接受或文件哈希正确，不证明适合新的机位和动作阶段。图片与用途均未变且检查仍有效时复用，不重复全项目验收。
+
+若模型直接继承图中可见事实会与镜头冲突，先修拍法或输入。开门完成态、已损坏／已污染道具、硬日光不能只靠“忽略这一部分”充当相反状态。多张图彼此冲突时不继续叠负面词；先判断有动机换机位、构图或剪辑是否可用，再决定补必要的干净视角／状态图。
+
+内部顶视图、箭头、机位标注、网格、编号、多格动作板仅用于规划，不能进入视频 imageList、入边或正文引用。默认不使用关键帧，包含关系帧、首尾帧和真实视频截图；确需例外按 [关键帧审核](../SKILL.md#keyframe-approval-gate) 展示实际候选及用途，用户明确通过后才成为生产输入。白模与内部 QA 帧也不自动取得输入资格。
+
+### 写图像提示词并在授权内制作
+
+明确实际主体、当前造型／状态、相机所需视角、必须呈现的细节、干净背景和消费方式，再写提示词。普通艺术选择在授权内完成；改变身份或剧情含义的事实先定位缺项。人物仍为“一人 × 一套可见造型／状态 × 一张标准图”，同时包含清晰头像、全身正面、严格侧面、全身背面，四视图完全一致，不默认为每镜补关键帧或头像组。
+
+遵循 [当前生图路由](../../../../PRODUCTION_SOP.md#image-generation-routing) 和项目／用户指定，再读取选定的 imagegen 或 libtv-cli Skill。已授权当前图片任务时完成该范围的生成／改图，不为既定路由重复询问工具许可；路由不授权额外候选、无限重试或视频生成。没有本次生成授权时，交付已完成的图像提示词、具体缺口和受影响消费者。
+
+使用新版本保留旧文件。图片问题只修相关项；每次返修定位实际错误、它怎样影响消费者、此次改变的输入或机制。同用法已有可用版本时保留，不因微小美学偏好重生。采用新图前重新检查受影响镜头、参考和接点。
+
+### 文字、后期和来源
+
+含字图片按 [中文素材要求](../SKILL.md#含文字图片素材标准) 写全真实正文、数字与单位，并实际打开核对；OCR仅辅助。后期文字／UI／clean plate 要有目标视频或镜头、可见区间、图层顺序、跟踪目标与进出方式；底图或独立文字层尚未合成时不能报告最终可用。
+
+跨项目图片只可作导入源。按根规范复制、校验并使用目标项目自己的版本和相对路径，不使用跨项目路径、符号链接或第三方旧节点形成生产依赖。
+
+### 完成正式接入
+
+沿用根 schema 的五字段与标准目录。核看后的真实文件以稳定 assetId、materialType、role、完整 subject、项目内相对路径、状态和 SHA-256 进入正式资产绑定，并补齐故事索引中的真实归属。通过故事／分集 API 和对应页面回读后，按具体消费者将正确版本接入 referencePlan；远端输入由本地已发布版本及实际 Node 映射派生。
+
+图片还需经过每个实际视频消费者的引用检查；只有落盘、上传或孤立节点不能算被镜头使用。正式绑定与媒体可用、人工接受分别记录，不把候选表或主会话核看自动提升为用户 ACCEPTED。
 
 ## Return an Asset Package
 
-For each requested item keep the relevant facts in the existing asset plan or bindings; do not duplicate them in a new package:
+用现有素材计划和绑定承载所需主体、当前状态、主要职责、具体消费者、真实路径／版本／哈希、可用性、缺口和受影响镜头；不另建 Package 或审批表。交付范围包含：图像提示词、已授权制作的实际图片及核看、本地接入和实际引用，或者准确标明未生成／未接入的范围。
 
-- stable subject and material type;
-- required current look or state;
-- required and forbidden visible content;
-- primary responsibility and real consumer;
-- actual current path, version, status, and hash when present;
-- `existing-needs-inspection`, `needs-generation`, `needs-repair`, or `awaiting-user-choice`;
-- reference eligibility and any conflict;
-- versioned prompt, actual author/model, and evidence location when text was requested;
-- `changedFacts`, `affectedScope`, and downstream invalidations.
-
-The same main session checks the requested work and current files/bindings within authorization; no Coordinator handoff or second creative review is required. Record actual results and any user choice still pending, without inventing acceptance.
+[当前作者选择](../SKILL.md#select-the-creative-author) 同样适用于图片提示词；明确豆包范围保留原文并由该作者返修。用户是最终接受者；技术成功、主会话检查、正式绑定和人工接受分别报告。
 
 ## Boundaries
 
-- Do not invent an asset, path, node, status, consumer, source, license, or inspection result.
-- Do not treat upload, generation success, a proposed binding, or a thumbnail as visual or human acceptance.
-- Do not make one image carry conflicting identity, scene, action, text, and continuity responsibilities.
-- Do not change story canon while resolving art questions. The main session may complete authorized formal binding and production operations under the workflow contract without a role-handoff ritual.
-- Do not generate or retry paid media without explicit authorization.
+- 不为解决素材问题改变剧情、逐字台词或已确认身份。
+- 不捏造图片、来源、许可、消费者、检查或接受状态。
+- 不先批量补图再找用途，不把多张参考的数量当作一致性保证。
+- 不将缺失、冲突、拒绝或 INTERNAL 图片作为有效生产输入，不绕过关键帧用户审核。
+- 图片任务授权不自动包含视频运行、付费扩批、可选精修或覆盖历史素材。

@@ -1,116 +1,73 @@
 ---
 name: ai-director
-description: Develop stories, design storyboards and assets, and write or repair video prompts in drama-material-center. Turn each new scene's audience purpose into concrete narrative, performance, cinematography and sound choices, routing relevant skills before authoring. Discuss only unsettled consequential choices; reuse checked work for production. One main session writes and reviews; Doubao only on explicit selection.
+description: 拆分镜与图片素材的主入口。接收用户直接提供或当前已确认的剧本，主动调用叙事、摄影、表演、声音、美术等方法，完成整场镜头设计、视频提示词、图片复用补齐与实际引用接入。用户要拆分镜、准备图片或返修镜头时使用；剧本与对白创作修改由 script-writer 负责。
 ---
 
-# AI Director
+# AI Director｜分镜与素材导演
 
-Act as the user-facing assistant and production coordinator. Treat the user as producer and final acceptor. The main session performs these professional responsibilities in dependency order:
+负责把当前剧本拍成观众看得懂、生成输入相容、能够剪接的戏。统一承担镜头设计与图片素材职责，当前主会话完成设计、提示词、检查和已授权的素材／生产接入；用户是制作人与最终接受者。
 
-- Writer: story, scenes, dialogue, and canon changes.
-- Art: characters, looks, locations, props, image responsibilities, and visual asset gaps.
-- Director: directing, blocking, cinematography, editing, sound, storyboard design, and prompt authoring.
-- Review: the same main session checks the actual text or media for major story, continuity and production problems, repairs within scope, and continues when no blocker remains.
-
-Photography, lighting, editing, and sound are Director responsibilities, not separate permanent agents. Each responsibility owns its decisions, contracts, creative text, and acceptance criteria within the user's scope. The main session is the default author, including storyboard/video prompts and repairs; the current preferred author is GPT-6. Use the Doubao branch only on an explicit user author selection. Image generation and LibTV are production tools, not decision-making roles.
-
-Writer, Art, Director and review are responsibilities inside the same main session. Do not create an Agent Team, shard scenes or shots across agents, or create a Reviewer subagent/separate review task. A review request, repair or new version does not authorize delegation.
-
-Read only the relevant section of [workflow-contract.md](references/workflow-contract.md) when resolving authority, source changes, publication or execution. Read a role file only when that responsibility is needed:
-
-- [references/writer-role.md](references/writer-role.md)
-- [references/art-role.md](references/art-role.md)
-- [references/director-role.md](references/director-role.md)
-- [references/review-mode.md](references/review-mode.md)
-
-Use [sw-dialogue](../sw-dialogue/SKILL.md) for dialogue creation, revision and diagnosis inside Writer. Director may reuse its action/reaction, subtext and listening methods to stage established lines. Returning to Writer does not itself authorize changing confirmed dialogue: first recover the user's explicit instruction to change those lines. Follow the role files for application. This is a method library for the same main session, with the existing author selection and project rules; it adds no role or review stage.
-
-Do not run every stage for appearance. Answer a small read-only fact question directly. For a deliverable, execute the shortest dependency path that preserves every applicable responsibility, gate, and acceptance boundary.
-
-The older Develop/Direct/Study modes, analysis schemas, and knowledge-card machinery under `references/` are historical material, not additional stages or prerequisites. Use the current role files and [knowledge-model.md](references/knowledge-model.md) for current routing and knowledge maintenance.
+这是后续拆分镜的主入口。用户直接提供剧本即可进入，不要求先运行 [script-writer](../script-writer/SKILL.md)，也不为交接重写剧本。只有用户要求创作或修改故事／对白时才进入该编剧 Skill；发现问题先说明具体影响，不能为方便拍摄擅改剧情或已确认台词。
 
 ## Resolve current truth
 
-Follow the repository `AGENTS.md` before changing files or assets. Resolve the actual workspace and inspect the target project's current files, formal story index, formal asset bindings, accepted assets, and user decisions before treating anything as fact.
+按仓库 [AGENTS.md](../../../AGENTS.md) 和 [制作 SOP](../../../PRODUCTION_SOP.md) 恢复实际工作区、当前剧本／台词来源与确认范围、正式索引、素材和授权。采用用户提供的当前文本或真实正式绑定，不凭最大版本号、旧报告或 READY 标签猜事实。已有确认直接复用；同一真实用户消息可确认剧本和台词，不由 Agent 补写确认。
 
-Use `<repo-root>/director-knowledge-base` as the directing knowledge source; its `README.md` is the navigation entry. Follow the task-based reading map in [director-role.md](references/director-role.md#inputs), not a fixed bundle of long documents. In a still-valid context, do not reread unchanged methods at role changes or final checks. After context loss, recover the current artifact, short finding and relevant source passages; read more only where coverage is missing. Historical review/team instructions do not override this current workflow.
+进入正式分镜前继承项目 PRODUCTION_RULES.md 的 VIDEO_FORMAT_LOCK；画幅不从模板或场景图推断。确认剧本 → 确认台词 → 设计分镜的边界继续有效；两入口不增加新审批。用户稿不缺这些事实时直接接手，确实缺失且影响下一动作时只定位该缺项。
 
-Current user decisions, current project facts, approved story direction, and accepted assets override general knowledge, cases, old prompts, old task packets, and earlier chat. A label such as `READY`, a matching hash, or a successful node does not prove semantic or human acceptance.
-
-## Project video format lock
-
-Before storyboard design, enforce the repository [project format gate](../../../AGENTS.md#剧级画幅硬门禁). Every drama declares one locked portrait/landscape standard for all episodes and repairs. Read the single VIDEO_FORMAT_LOCK in the project's PRODUCTION_RULES.md; never inherit orientation from a template, scene reference or an accidental per-task request. Only an explicit project-wide standard change can unlock it. Use scripts/video-format-gate.py for video node create/run and downloaded/final media checks. Preserve existing narrative when repairing format.
-
-## Confirm script, then dialogue, then design shots
-
-Follow [剧本、台词确认与禁止擅改](../../../AGENTS.md#剧本台词确认与禁止擅改): user-confirmed script → user-confirmed dialogue → storyboard. Reuse existing version/scope-specific user decisions; do not ask again merely because the phase changed. A current binding, author self-check or assistant-authored “user approved” statement cannot replace the real decision.
-
-Freeze exact words, speakers and narrative order. Visual redesign, format/resolution changes, lip-sync or continuity repairs, a new model and broad “fix it” instructions do not authorize changing dialogue. Diagnose a line problem and explain it, but change confirmed words only after the user explicitly requests that change. Update the script and dialogue contract first, confirm the new lines, then update dependent shots. A user-supplied exact replacement with an instruction to adopt it already supplies that confirmation. Retain usable original speech for visual-only repairs.
-
-Before creating/syncing/running video nodes, use the combined format/dialogue gate and its [documented contract](../../../docs/VIDEO-PRODUCTION-GATES.md). No silent fallback when a dialogue source, confirmation, mapping or hash is missing. Mechanical checks block changed input before spending; they do not guarantee what a model will say.
-
-## Start with a current Task Packet
-
-“Task Packet” means the compact current context in the existing record: requested scope and deliverable, current sources and protected user choices, relevant constraints, and action authority. It is not a required new JSON file or form. Omit irrelevant fields. Authorization comes from the user's instructions, not from a packet approving itself; a missing administrative field is not a reason to ask again.
-
-Recover current paths/versions and available hashes when relevant to reuse or execution. Check actual changes against prior work; inspect missing coverage rather than either assuming it passed or restarting the whole project. Maintain one context across responsibilities. Preserve explicit user checkpoints, spending boundaries and final acceptance.
-
-## Session topology
-
-Writer, Art and Director are professional responsibilities in the main session, not handoffs or separate approvals. Use the requested source and create the requested prose, resolve concrete problems, then update applicable formal facts for its consumers. Story Contract, Asset Package and Director Package describe the information needed; they need not be three additional documents. Ordinary directing decisions can be settled while writing in the same pass and recorded in the execution table. Deliver a separate design only when requested or when a complex scene needs an independently useful plan.
-
-The main session is the sole writer of formal scripts, knowledge, story/asset indexes and production state. A role change neither adds authority nor requires another inventory. A review-only request stays read-only; a scoped creation/repair request authorizes its ordinary local completion. Media generation, external writes and spending require the applicable user authorization.
-
-## Route by dependency
-
-- New or changed story/dialogue: use Writer, update the changed facts before their consumers, then continue only where needed.
-- Visual facts or references: use Art for the affected assets and consumers. For new character appearance, a new look, similar-looking characters or character-sheet inconsistencies, apply [人物外形设计](../character-visual-designer/SKILL.md) before writing or repairing the image prompt; reuse accepted identity for look-only changes. Before authorized image generation, follow the [project image-generation routing](../../../PRODUCTION_SOP.md#image-generation-routing) to select built-in `imagegen` or `libtv-cli` → Lib Image. This is the standing user-approved default; do not reopen tool selection or request CLI permission for an in-scope generation task. Keep explicit current overrides, input-mode constraints and the keyframe approval gate.
-- Current story and usable visual facts: use Director for new prompts or the requested local repair. Do not revisit Writer/Art without an upstream issue.
-- Already-checked uploads, node binding, layout, synchronization or runs: use [execution reuse](references/workflow-contract.md#review-scope-and-execution-reuse) and [local-first publication](references/workflow-contract.md#local-first-libtv-order). No new creative pass merely for a version number or verified token substitution.
-
-When directing prose uses an abstract emotion or camera adjective, keep it only as intent and add the observable or physical mechanism that carries it. `softens`, `angry`, `tense`, `cinematic`, `slowly` and similar labels cannot be the sole production instruction: specify the visible action or residual body state, or the camera start, side, path, speed behavior and landing that makes the instruction executable. Do not turn this into a ban on natural language or a requirement to quantify every aesthetic choice.
-
-Apply [critical asset coverage](../../../PRODUCTION_SOP.md#critical-asset-coverage) while writing storyboards: identify required assets from the story and visible states, and bind each visible critical prop to a compatible reference in every consuming generation unit, including dialogue/reaction coverage. Record its state and responsibility in the prompt and existing reference plan; another node's reference is not inherited. Minimum references must still cover required facts. Reuse suitable existing images; a missing input is a scoped dependency, not permission for extra generation.
-
-For each new or redesigned multi-person scene, prepare or reuse one internal top-view blocking diagram before shot prose under [actor state continuity](../../../PRODUCTION_SOP.md#actor-state-continuity). Base it on compatible scene masters, track posture/place/gaze/props through the scene, and put explicit start/end states in every relevant shot. Read [多人戏顶视图与首尾状态](../../../director-knowledge-base/分镜提示词/导演设计方法.md#multi-person-blocking) for the drawing method. Reuse the fixed layout and update changed states; preserve checked execution and accepted media. The diagram is INTERNAL planning evidence, not a generation reference, keyframe or authorization for trials.
-
-Finish name/dialogue/format/timing/reference checks and the author's final read before switching formal bindings. Check both critical-asset completeness against the story and consistency of the declared references; matching lists can share the same omission. Before running, trace required assets to actual model inputs under SOP §7. That read is the prompt review, under [review-mode.md](references/review-mode.md); repair evidenced faults and recheck only the changed parts and affected cuts. Gather directly affected indexes and current summaries for this delivery together, retaining old files. This does not require completing unrelated units or a whole episode first.
-
-Continue when no concrete blocker remains in the current authorized scope. Deferred sound, future continuity frames and pending Node IDs do not invalidate a text deliverable; they must be ready before the action that actually consumes them. A requested batch still needs coverage of all its new/unverified content, not only the last edited lines. Preserve valid coverage elsewhere.
+新写整场按下方流程进入；局部返修只处理受影响范围与接镜；已检查稿的上传、绑定和恢复按 [execution reuse](references/workflow-contract.md#review-scope-and-execution-reuse) 复用。只查进展、复盘或提建议时保持只读，不启动生产。
 
 ## Choose a skill for the story
 
-Use AI Director as the overall entry point; the user need not choose skills. For collaborative design or unsettled new scenes/major redesigns, read [storyboard-discussion.md](references/storyboard-discussion.md): source-first, one consequential question with a recommendation, then wait for the answer. Reuse settled decisions and honor requests to proceed directly. Local repairs and pure execution do not restart an interview.
+在作出相关决定前读取并使用对应 Skill，不等用户逐个点名，也不等生成失败。使用方法应改变实际的观看顺序、取景、调度、表演、声音、参考或剪辑选择；只列技能名不算应用。不为展示技巧增加动作、镜头、素材、试片或方法使用账本。
 
-For new directing choices, use [剧情驱动的技巧选择](../../../director-knowledge-base/分镜提示词/剧情驱动的技巧选择.md) to connect story purpose → audience experience → visible/audible mechanism → prompt or edit. Read only the relevant topic or independent skill below. Composition, lighting, opening hooks, depth of field and sound are methods in that library, not separate skills the user must select.
-
-| Story need | Skill | What it contributes |
+| 正在解决的问题 | 主动使用 | 应得到的决定 |
 | --- | --- | --- |
-| Organize information, dramatic progression, scene coverage and Clip planning | [叙事短片导演分镜](../jimeng-narrative-director/SKILL.md) | Director brief, storyboard, asset needs, Clip mapping and prompts |
-| Choose framing, visible detail, focus, camera movement, lighting or material response | [摄影与光影设计](../cinematography-director/SKILL.md) | Concrete viewing geometry and lighting in the existing storyboard and four-field prompt |
-| Request a named film-camera technique, or express perception shock, hero staging, impossible traversal, a confined viewpoint, subjective time, symmetry or social access through camera choices | [八种电影镜头提示词](../cinematic-camera-prompts/SKILL.md) | Choose the relevant camera mechanism, continuous blocking and observable result; read only the matching recipe and preserve the four-field format |
-| Plan dialogue delivery, voice identity, ambience, action sound or music across clips | [声音与配乐设计](../sound-music-director/SKILL.md) | Speaker/source mapping, sound cues and actual post-production consumers |
-| Preserve uninterrupted action, spatial discovery or accumulating emotion | [电影级长镜头](../jimeng-cinematic-long-take/SKILL.md) | One continuous take and a motivated camera path; an opening/ending echo only when useful |
-| Convey subtext through a face, a held reaction, restrained speech or listening | [AI演员微表情导演](../jimeng-micro-expression-director/SKILL.md) | Reuse character facts; design causal performance and emotional residue within the chosen shot, without fixed beat durations |
-| Connect adjacent shots or scenes, repair an awkward join, or design a motivated generative transformation | [AI 视频转场导演](../video-transition-director/SKILL.md) | Junction contract, simplest viable route, transition prompt/edit split and join QA |
+| 本场行动、反应、主次或转折尚不清楚 | [sw-scene-craft](../sw-scene-craft/SKILL.md)；动机问题按需查 [sw-character-conflict](../sw-character-conflict/SKILL.md) | 理解既定戏怎样推进，不重写已确认剧情；戏剧节拍不自动等于切镜 |
+| 新写／重设计整场观看顺序与覆盖 | [叙事分镜](../jimeng-narrative-director/SKILL.md) | 观众何时知道什么、跟谁看、关键反应和接点 |
+| 新取景、构图、清晰范围、光影或相机选择 | [摄影与光影](../cinematography-director/SKILL.md) | 从哪里看、必须看清什么、动作与光怎样落在画内 |
+| 需要不中断地看见动作、路径或空间发现 | [长镜头](../jimeng-cinematic-long-take/SKILL.md) | 人物与相机的相容路径、必要过程、完成态和出口 |
+| 态度变化、潜台词、克制表达与倾听 | [微表情](../jimeng-micro-expression-director/SKILL.md)；需要理解既定台词意图时用 [sw-dialogue](../sw-dialogue/SKILL.md) | 当前景别能读到的连续反应和余波，不新增改词 |
+| 对白表演、声音归属、环境／动作声、音乐 | [声音与配乐](../sound-music-director/SKILL.md) | 谁说谁听、声音各维度、跨切音轨及后期消费者 |
+| 相邻镜头／场景连接需要具体设计 | [转场](../video-transition-director/SKILL.md) | 两端状态与切点，最小有效的动作、视线、声音或画面连接 |
+| 剧情或用户要求特殊摄影机制 | [电影镜头提示词](../cinematic-camera-prompts/SKILL.md) | 具体相机机制及可观察效果，按需读对应类型 |
+| 新人物、新造型、撞脸或标准图不一致 | [人物外形设计](../character-visual-designer/SKILL.md) | 可复用的身份／造型标准和图像提示词 |
+| 文字与内部顶视图仍无法判断空间／运动 | [Blender](../blender/SKILL.md) | 必要局部的内部预演；不自动成为生产输入或新增生成授权 |
+| 已确定的剪辑、字幕、声音或合成需要实际后期 | [剪映](../jianying-editor/SKILL.md) | 真实消费者与实现路线；执行前核实当前环境，继承剧级画幅和项目目录 |
 
-These remain standalone skills and may also be invoked directly. Skill use means loading its instructions and applying its method, not spawning another agent or changing the creative author. Retain the user's selected author and current scene facts.
+普通新整场通常会涉及叙事、摄影和声音决定；已有方案、无声范围或局部任务决定实际需读内容，不强制固定技能套装。方法是同一主会话使用的工具，不创建角色团队或生产 Reviewer。
 
-For a new whole scene or major redesign, apply [本场导演设计](../../../PRODUCTION_SOP.md#scene-directing-design) during the existing writing pass. State the audience's information order, causal character response, relevant visual/sound choices and ending/join in the existing Director Design field. Read and apply the skill for a decision as it arises, before writing that part of the prompt; do not wait for a named technique or a failed take. Concrete camera/light decisions trigger cinematography; dialogue, environmental/action sound or music decisions trigger sound. Respect a silent or picture-only scope and reuse established choices. Long takes, special transitions and previs remain conditional.
+## 先设计整场，再确定图片与生成单元
 
-Within the requested scope, use [story weight](../../../director-knowledge-base/分镜提示词/导演设计方法.md#story-weight) to distinguish the main change from setup and connective action before allocating time and emphasis. When a consequential viewing choice remains open, compare [lightweight alternatives](../../../director-knowledge-base/分镜提示词/导演设计方法.md#lightweight-options) before expanding the selected prompt; preserve confirmed events, dialogue order and prop outcomes. Reuse settled decisions and keep ordinary choices in the existing writing pass. Neither method adds an approval, asset or shot quota.
+按 [director-role.md](references/director-role.md) 完成这个相互校正的过程，在现有分镜与素材计划中记录必要决定，不新增审批表：
 
-Carry each consequential choice into visible action, camera/light instructions, audible sound or a real edit consumer, then check that implementation in the same final read. A skill name or source link alone is not delivery. Retain one short reason where it helps the user understand the result; no usage ledger, technique quota, new design approval or mandatory full-library read. Repairs cover only affected choices; pure node sync does not reopen directing. Topic coverage and source limits live in [教程主题与制作入口](../../../director-knowledge-base/来源/2026-09-24-教程主题与制作入口-v01.md), not in every production prompt.
+1. **整场观看设计。** 明确事件与对白保护范围、观众的信息顺序、主要变化、人物行动／反应和结束落点。方向有实质歧义才按 [分镜讨论](references/storyboard-discussion.md) 讨论一个关键问题；已定方向或要求直接写时继续。
+2. **摄影镜头与接点。** 决定每镜必须让观众看见什么、哪里换视点，以及前后怎样接。新信息、反应或必要细节可以推动切镜；一句台词、一个动作节拍、旧节点编号或模板秒数不单独构成切镜理由。需要连续观看的过程保留完整镜头。
+3. **按实际入画倒推素材。** 同时查看现有人物、场景、道具的真实图片，核对机位、动作起点和状态。镜头可以暴露素材缺口，图片也可以暴露拍法冲突；先调整相容机位／调度与最小参考，必要时再补图，不要求先完成全套素材才设计镜头。
+4. **补齐本次需要的图片。** 按 [art-role.md](references/art-role.md) 负责从需求、图像提示词、授权生成／改图到核看和正式接入的闭环。每张图有明确职责和消费者；纯文本任务保留真实缺口，不能虚构已生成。
+5. **组合生成任务并定稿正文。** 镜头方案成立后，按表演时间、顺序动作、参考相容性、声音归属和实际模型能力组合单元。一个任务可含一个或多个真实镜头；另开任务要有具体容量、输入或叙事依据。同步检查受素材变更影响的镜头和接点，再按当前四字段格式写自包含正文。
 
-Design for continuity of the assembled scene under [SOP continuity-first](../../../PRODUCTION_SOP.md#continuity-first): organize the dramatic progression, choose viewpoints and how adjacent shots connect, then package generation units within actual capacity. Motivated angle/shot-size changes and matching action across an edit can preserve continuity; fewer nodes and longer takes are not quality targets. A single unit can contain one or several shots. A request to merge nodes does not impose one take, and a template duration does not justify a boundary. Only a user's explicit requirement for the current scope makes a particular shot count or one-take treatment mandatory.
+切摄影镜头回答“观众为什么此刻换视点”；拆生成任务回答“为什么需要另一次模型调用”。不把每句对白拆成任务，也不为了少建节点把复杂调度塞在一起。固定机位、画外处理和有动机的时间省略均可使用，但不能隐藏必须看懂的动作、删掉确认剧情或违背明确连续观看要求。
 
-Apply [generation-unit design](../../../PRODUCTION_SOP.md#generation-unit-design) to prioritize story-bearing actions, budget sequential work, and separate sound or post-production only where the actual risk warrants it. Before treating inputs as ready, check [visible reference compatibility](../../../PRODUCTION_SOP.md#reference-compatibility); file/hash validity is not suitability for a new use. A known conflict gets repaired before a trial. For genuinely uncertain model behavior, use [risk trials](../../../PRODUCTION_SOP.md#risk-trials) to name the observation and dependent work before expanding production. Local media repairs use the [affected join window](../../../PRODUCTION_SOP.md#repair-window), retaining accepted neighbors and checking the repaired result in context.
+定稿前按 [从导演设计到模型正文](references/shot-block-format.md#select-visible-facts) 筛选本镜信息。完整站位图、首尾状态和接点由导演推导与核对；正文只写当前输入下需要看见、听见和执行的事实，同一事实通常写一次。先判断动作是否服务剧情与接镜，再检查格式，不为补齐状态记录添加收纳、换手、整理或表演动作。
 
-Combine methods only where useful: plan an episode with the narrative skill, choose a long take for one pursuit, apply micro-expression beats to one reaction, and use the transition skill only at joins whose continuity or transformation needs explicit design. Do not force every skill into every task, reopen settled phases, or copy platform-specific tool/confirmation rules as local authority. Record a consequential choice briefly in the deliverable, not a new selection form or approval stage.
+## 图片素材是本入口的交付职责
 
-New user information updates the affected story/design and consumers, not the whole settled workflow. Keep scene-specific choices in the current project. When the user explicitly requests a lasting workflow change, update its owning SOP/Skill in scope; reusable methods belong in knowledge topics under [knowledge-model.md](references/knowledge-model.md). Do not silently promote a one-scene preference into a universal rule.
+只新增实际消费者需要的素材。实际看图后决定复用、改图或新建，参考必须覆盖 [关键素材](../../../PRODUCTION_SOP.md#critical-asset-coverage) 并满足 [可见相容性](../../../PRODUCTION_SOP.md#reference-compatibility)：身份／当前造型、空间地标、开合与持物状态、光向和动作阶段相容。人物标准图、干净场景、道具图各有职责；上传、哈希或同名标签不证明适用。内部顶视图、带箭头／网格／说明的动作板不能进模型，不能用“忽略文字”消除污染。
 
-Keep active execution summaries consistent under [current-production-state](../../../PRODUCTION_SOP.md#current-production-state). Revise affected current tables and links together; retain history in prior versions and production records instead of stacking contradictory overrides into the active document.
+新写／重设计多人戏先准备或复用 [内部顶视图及首尾状态](../../../PRODUCTION_SOP.md#actor-state-continuity)，随移动更新必要状态，用于导演推导机位而非生成参考。人物仍默认一人一造型一张含头像、全身正面／严格侧面／背面的标准图。
+
+本次已授权图片制作时，按 [生图路由](../../../PRODUCTION_SOP.md#image-generation-routing) 和当前项目选择使用 imagegen 或官方 libtv-cli → Lib Image，完成版本化保存、实际查看、必要局部返修、正式绑定和 API／页面回读，并把正确版本接入消费者。既有授权无需逐项再问；没有生图授权时交付图像提示词与缺口，不自动花费。关键帧仍受下方单独审核门槛保护。
+
+## 检查、执行与停止
+
+作者在同一次 [最终检查](references/review-mode.md) 中先按播放顺序看整场是否讲得通、动作是否可见、镜头能否接，再核对逐字台词、全名、格式、时间、关键素材和引用；结构通过不等于拍法成立。只修有证据的缺口，保持有效范围。
+
+所有正式成果沿用根素材 schema、版本目录和两份正式索引。视频／图片提示词、实际素材、运行证据分别登记；候选清单不代替正式绑定。按 [local-first order](references/workflow-contract.md#local-first-libtv-order) 完成本地当前稿、索引与 API／页面回读后，才做已授权的 LibTV 变更。视频创建／运行统一经项目画幅与台词门禁，不绕过官方 CLI。
+
+已有媒体返修先判断实际剪辑用途：具体哪处妨碍理解或接剪，现有入出点／原声能否解决，确需重生成时究竟改变什么。保留最好用版本；口音、音色、音量、语速和夸张程度分别判断，不把“别夸张”自动改为低声。无硬错误且可按既定用途使用时停止可选返修，用户已接受的版本受原范围保护。
+
+只读相关知识，按 [knowledge-model.md](references/knowledge-model.md) 检索；旧 Develop／Study／角色交接文档是历史资料。详尽授权、执行复用和变更传播按 [workflow-contract.md](references/workflow-contract.md) 的相关部分读取，不重新跑一遍已完成流程。
 
 ## Select the creative author
 
@@ -152,9 +109,9 @@ Before any LibTV mutation use [local-first order](references/workflow-contract.m
 
 ## Use canonical full character names
 
-In storyboards, execution tables, dialogue contracts, asset prompts, video prompts, creative repairs, reference responsibilities, and production-facing review notes, use the exact canonical full character name for every operational mention of a named character. Repeat the full name in camera positions, framing and crop boundaries, body parts, blocking, action ownership, gaze, speaker attribution, sound responsibility, and reference mapping. Do not substitute a surname-only shorthand such as `江` or `霍`, initials, a role label, or a pronoun for the named subject in those instructions, even when the preceding sentence used the full name.
+Use the exact canonical full character name when introducing a character in each independent generation unit, switching the acting subject, attributing speech, mapping references, or resolving ambiguous action, gaze, contact or sound ownership. Do not replace an established name with surname-only shorthand such as `江` or `霍`, initials or vague role labels.
 
-Verbatim source quotations and natural spoken dialogue are exempt; do not rewrite approved dialogue merely to repeat names. A production-facing prompt that abbreviates a named operational subject fails pre-production review and must be repaired as a new version rather than silently edited in place.
+Within an unambiguous continuous action by the same subject, allow grammatical subject omission or a clearly resolved pronoun. Do not repeat a full name mechanically for every verb, body part or ending state. Reintroduce the full name whenever another person could be the actor, listener, holder or recipient. Check meaning in context; a pronoun or omitted subject is not itself a failure. Verbatim source quotations and approved dialogue remain unchanged. Actual naming or ownership errors in formally published prose are repaired as new versions within the affected scope.
 
 ## Coordinator pre-production gate
 
@@ -174,7 +131,7 @@ After generation, inspect images by opening them, video by continuous playback, 
 
 ## Deliver one coherent result
 
-Deliver the requested story, asset work or prompt/execution table, with a concise account of changes, decisions the user actually needs to make, and the next available action. Keep technical readback and detailed evidence linked from the existing record. Do not make the user review every internal plan or reply “continue” at each professional responsibility.
+Deliver the requested storyboard, image asset work or prompt/execution table, with a concise account of changes, decisions the user actually needs to make, and the next available action. Keep technical readback and detailed evidence linked from the existing record. Do not make the user review every internal plan or reply “continue” at each professional responsibility.
 
 Use existing documents to carry source, author, reference and check facts. Prefer links to the current formal source over copying paths, shot counts, status and “next step” into multiple summaries. During this scoped delivery update direct consumers together; do not migrate historical files or overhaul other projects to tidy them.
 
@@ -191,7 +148,7 @@ Maintain knowledge only when requested to study or improve it, and when evidence
 - Do not silently change canon, exact dialogue, current assets, direction-changing decisions, or user acceptance.
 - Do not invent assets, file paths, node IDs, model capabilities, run results, or inspection evidence.
 - Do not silently change the selected author, overwrite a prior version, or misattribute creative prose. Use Doubao only within an explicit user selection.
-- Keep writing, directing and review in the main session; do not create review subagents or separate review tasks.
+- Keep storyboard/image authoring and review in the main session; do not create review subagents or separate review tasks. Story or dialogue changes use script-writer only within explicit authorization.
 - Do not label main-session checks as independent review or require historical independent-review paperwork to proceed after a current check.
 - Do not let two sessions edit the same formal file, project index, or production node.
 - Do not call a draft, generated file, HTTP success, decode result, or technical QA `ACCEPTED`.

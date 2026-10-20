@@ -8,6 +8,7 @@ interface FilePreviewDialogProps {
 
 export function FilePreviewDialog({ assetName, children, onClose }: FilePreviewDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const pointerStartedOutside = useRef(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -26,10 +27,20 @@ export function FilePreviewDialog({ assetName, children, onClose }: FilePreviewD
       aria-label={`文件预览：${assetName}`}
       onCancel={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         onClose();
       }}
+      onPointerDown={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        pointerStartedOutside.current = event.target === event.currentTarget
+          && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom);
+      }}
+      onPointerCancel={() => { pointerStartedOutside.current = false; }}
       onClick={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        const rect = event.currentTarget.getBoundingClientRect();
+        const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+        if (event.target === event.currentTarget && pointerStartedOutside.current && outside) onClose();
+        pointerStartedOutside.current = false;
       }}
     >
       {children}

@@ -1,9 +1,10 @@
-# AI Director Sequential Workflow Contract
+# AI Director Workflow Contract
 
 Consult the relevant section for source authority, changed inputs, formal publication or resumed execution. This is an internal reference, not a fixed orchestration, task registry or form to complete before work.
 
 ## Contents
 
+- Entry points and direct scripts
 - Authority order
 - Task Packet and stage checkpoint
 - Single-session topology
@@ -13,6 +14,14 @@ Consult the relevant section for source authority, changed inputs, formal public
 - Change impact and invalidation
 - Stage gates
 - Repair routing
+
+## Entry points and direct scripts
+
+[script-writer](../../script-writer/SKILL.md) owns requested screenplay, story and dialogue creation or revision. [ai-director](../SKILL.md) owns storyboards and image assets, including prompts, authorized image preparation, reference compatibility and actual consumer integration. These are two business entrances used by the same main session, not three sequential roles or new chats.
+
+A user-supplied script can enter ai-director directly. Recover its actual source, version and confirmation scope; do not require script-writer to rewrite it or manufacture a Story Contract handoff first. Existing script/dialogue confirmations remain valid. If a new story or line change is required, explain the concrete issue and use script-writer only within the user's writing authorization; a directing or image repair does not unlock confirmed text.
+
+Within ai-director, settle scene/shot intentions, derive image needs from visible consumers, inspect actual references and revise the affected design or images, then finalize prompts and generation units. Art and directing inform one another; there is no requirement to finish a whole asset package before shot design. Existing records and formal indexes carry these facts without a new approval or parallel registry.
 
 ## Authority order
 
@@ -45,14 +54,12 @@ Apply [current-state maintenance](../../../../PRODUCTION_SOP.md#current-producti
 
 ## Single-session topology
 
-- One main session owns Coordinator, Writer, Art, and Director responsibilities and performs only the stages required by dependency.
-- Review also stays in that main session. Do not create a review subagent, independent Reviewer task or fresh handoff packet.
-- Writer, Art, and Director are sequential modes, not subagents, separate tasks, or parallel workers. Do not shard episodes, scenes, shots, or documents among them.
-- A stage change does not cause a new repository inventory or a rewritten handoff packet. Reuse the current verified context, then check the preceding stage result and any invalidation before continuing.
-- The main session alone edits formal scripts, indexes, bindings, execution tables, knowledge documents, and production nodes.
-- The selected author writes inside each applicable stage: bind facts → write requested prose → validate → update that stage's contract. Default main-session writing and explicit Doubao writing share the same factual and review gates. In Doubao mode preserve its return verbatim and route creative repairs back to Doubao; in default mode the main session writes new versions with its own provenance.
-- A separately authorized production action may create a new versioned evidence run or candidate media file, but it may not overwrite an earlier version or promote its own acceptance.
-- Only one actor may hold external-write scope for the same project or canvas at a time.
+- One main session uses script-writer for authorized writing and ai-director for storyboards/image assets, retaining the same current facts and user decisions. Switching Skills does not require another chat, inventory, approval or handoff packet.
+- Review stays in that main session. Do not create production review subagents, role teams or separate Reviewer tasks, or shard episodes, scenes, shots and formal documents among them.
+- Inside ai-director, Director and Art are responsibilities in one design loop, not fixed sequential modes. Preserve unchanged checked work and update only actual differences and consumers.
+- The main session alone edits shared formal scripts, indexes, bindings, execution tables, knowledge documents and production nodes. Keep one writer for each shared formal file/node.
+- The selected author writes the requested prose within its approved scope. Default main-session writing and explicit Doubao writing share the same factual and review boundaries; preserve Doubao returns and return its creative repairs to that author.
+- Authorized production may create new versioned evidence or media, not overwrite earlier versions or promote its own acceptance. Only one actor holds external-write scope for the same project/canvas at a time.
 
 ## Review scope and execution reuse
 
@@ -62,7 +69,7 @@ Choose the route from the actual change, not the task phase, version number, fil
 | --- | --- |
 | Newly authored prompts or a requested redesign | Main session reads the actual final body for major problems once; that reading is both author self-check and prompt review |
 | Changed story/dialogue, action, camera/crop, edit, sound responsibility, reference content/use or a model parameter that changes the reviewed design assumptions | Same-session check of changed units and affected consumers/continuity boundaries; repair only evidenced problems |
-| Upload/re-upload of the same assets, verified Mixed/Node substitution, canvas layout, or administrative metadata outside the model body | Coordinator equivalence and execution checks; no repeated semantic review or scoring |
+| Upload/re-upload of the same assets, verified Mixed/Node substitution, canvas layout, or administrative metadata outside the model body | Main-session equivalence and execution checks; no repeated semantic review or scoring |
 | A node, edge, metadata or normalization error whose correction restores the exact reviewed contract | Repair that deterministic layer and repeat the failed checks; no new semantic review |
 | Requested generation using current checked inputs | Authorized production flow and actual media QA in the main session; no automatic return to creative stages |
 
@@ -93,7 +100,7 @@ Before reference publication or remote setup, apply the [keyframe approval gate]
 
 1. **Discover read-only.** Inspect current local truth and, when needed, the remote canvas, actual model schema and existing nodes. Do not create or change a canvas, upload assets, edit nodes/edges, sync prompts or run nodes yet.
 2. **Complete or verify the local creative scope.** Before directing, recover the locked project orientation and the user's script/dialogue confirmations. Then settle design, author the full shot-block bodies without changing confirmed words/speakers/order, inspect references and check the output in the main session. For already-checked work, verify reusable evidence and proceed. A requested creative batch must be complete locally before its remote writes; a production request does not reopen that batch. Local repairs affect only changed units and dependencies.
-3. **Publish current local truth.** Save versioned formal script changes if any, the shot plan/execution table, dialogue contract and prompt bodies in their standard `library/` locations. Update applicable stable story/asset bindings and hashes, keeping draft/review/acceptance states truthful. Verify the local story API, episode API and actual page show the new versions, shot count and dialogue coverage. A candidate manifest, creative-evidence folder or a plan to update indexes later does not satisfy this step. For a text-only task, deliver here with future production conditions explicit.
+3. **Publish current local truth.** Save any explicitly authorized script/dialogue changes through script-writer, plus the current shot plan/execution table, applicable dialogue contract, image prompts/assets and video prompt bodies in their standard `library/` locations. Update applicable stable story/asset bindings and hashes, keeping draft/review/acceptance states truthful. Verify the local story API, episode API and actual page show the new versions, shot count and dialogue coverage. A candidate manifest, creative-evidence folder or a plan to update indexes later does not satisfy this step. For a text-only task, deliver here with future production conditions explicit.
 4. **Set up authorized remote assets.** Only after step 3, create the intended canvas if needed and upload the verified current local assets through `libtv-cli`, following the requested layout. If a new canvas has no Node IDs yet, steps 2–3 use a local reference plan binding each logical `{{Mixed N}}` to a stable asset ID, project-relative path, version, hash and responsibility. Label it `NODE_BINDING_PENDING` in supporting records, never inside the model body. This is a local ordering token, not a claim that a remote node exists. Never fabricate Node IDs or upload first merely to obtain them. Missing actual media remains an explicit blocker, not a fake mapping.
 5. **Bind locally before syncing.** Read actual uploaded/existing Node IDs. Record the one-to-one mapping, then create a new local execution version containing the real `{{Node …}}` tokens and updated referencePlan. Do not rewrite prose in the sync command. For verified substitution of the same inputs, perform execution-reuse checks and retain the source findings. Substantive changes get a scoped main-session check. Update formal local bindings and verify the page; the exact validated local execution version is the sync source.
 6. **Sync, read back, then run.** Run the combined project-format/dialogue `check` before syncing. Read each standalone UTF-8 prompt body from disk into both its text node and video `data.params.prompt`. Verify both equal the local bytes and record all three hashes plus the actual media list and edges. Use the combined gate for video creation and every authorized run; it checks confirmed dialogue and repeats live readback before spending. If the correct local source is unchanged, restore remote mismatches from that source and recheck; if local content must change, version and validate it before sync, using the change classification above. Never make the remote canvas the source of a repair.
@@ -104,7 +111,7 @@ Do not create future continuity-frame dependencies by default. For a user-review
 
 ## Canonical character naming
 
-Apply [the full-name rule](../SKILL.md#use-canonical-full-character-names) to production-facing text before formal publication, exempting verbatim speech and source quotations. A suspected pronoun needs contextual inspection, not a global replacement inside dialogue. Repair violations as new versions and check the changed wording and affected meaning; naming repairs do not reopen unrelated creative decisions.
+Apply [the full-name rule](../SKILL.md#use-canonical-full-character-names) to production-facing text before formal publication, exempting verbatim speech and source quotations. Use canonical names to establish identity, mark subject changes and disambiguate ownership; continuous actions may use clear subject omission or pronouns. Their presence alone is not a violation. Repair actual identity or ownership errors as new versions and check the changed meaning, without global replacements or reopening unrelated creative decisions.
 
 ## Change impact and invalidation
 
@@ -131,12 +138,12 @@ Use only applicable dependencies. Local-first order and run-time readback remain
 
 ## Repair routing
 
-- Fact or user-decision conflict: main session in Coordinator mode, then user only when direction changes.
-- Story causality, scene function, dialogue contract, or canon problem: main session diagnoses in Writer mode. A problem does not authorize rewriting confirmed dialogue; require the user's explicit line-change instruction before updating the script/contract and dependent shots.
-- Missing or conflicting visual asset responsibility: main session in Art mode.
-- Blocking, camera, timing, edit, sound, spatial continuity, or overload problem: main session in Director mode.
+- Fact or user-decision conflict: recover current authority in the main session; ask only where an unresolved consequential decision is actually needed.
+- Story, causality, dialogue or canon problem: identify the concrete effect; use script-writer for authorized writing/diagnosis. A problem does not authorize changing confirmed lines; update source/contract and affected shots only within the user's explicit change scope.
+- Missing or conflicting visual asset: ai-director checks the real shot consumer, reference and design together, then repairs the smallest affected image/design scope.
+- Blocking, camera, timing, edit, sound, spatial continuity or overload: ai-director applies the relevant method and updates affected shots, image consumers and joins.
 - Correct contract or design translated incorrectly into creative prose: the selected author produces a bounded new version. Default: main-session repair. Explicit Doubao mode: new bounded Doubao job, with no main-session creative patching.
-- Hash, metadata, reference-token, node or edge mismatch: main session in Coordinator mode stops affected execution, restores the intended reviewed contract and repeats the failed deterministic checks. Substantive template rewrites or reference-content/use changes return the affected scope to creative review.
+- Hash, metadata, reference-token, node or edge mismatch: main session stops affected execution, restores the intended reviewed contract and repeats the failed deterministic checks. Substantive template rewrites or reference-content/use changes return the affected scope to creative review.
 - Media hard failure: preserve evidence and repair/rerun only within existing authorization and budget; never extend that authority for optional polish.
 
 For a major fault, note the observation, evidence, necessary fix and preserved decisions in the existing record. Repair the earliest faulty layer, then recheck the change in the same session. An execution-only repair repeats the failed deterministic checks. No separate repair brief or review report is needed for a straightforward in-scope fix.

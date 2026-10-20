@@ -68,6 +68,45 @@ class GateTests(unittest.TestCase):
                          mediaTypes={'person': 'image', **{node: 'audio' for node in ids}},
                          audioReferences=refs, **overrides)
 
+    def test_repeated_bound_assets_in_shots_create_only_one_input_per_asset(self):
+        body = ('画幅：9:16\n人物：{{Node person}}\n入口：{{Node door}}\n对街：{{Node street}}\n'
+                '镜头1以{{Node door}}为背景。\n镜头2以{{Node street}}为背景，拍{{Node person}}。')
+        task = self.task(body, mediaNodeIds=['person', 'door', 'street'],
+                         mediaTypes={node: 'image' for node in ['person', 'door', 'street']})
+
+        def response(args):
+            if 'create' in args:
+                return {'nodeKey': 'created'}
+            return {'nodeKey': args[1], 'data': {'type': 'image'}}
+
+        with patch.object(gate, 'cli', side_effect=response) as remote:
+            self.invoke('create', task)
+        command = next(call.args[0] for call in remote.call_args_list if 'create' in call.args[0])
+        inputs = [command[i + 1] for i, value in enumerate(command) if value == '--left']
+        self.assertEqual(inputs, ['text', 'person', 'door', 'street'])
+        self.assertEqual(command[command.index('--prompt') + 1], body)
+
+    def test_repeated_mentions_do_not_allow_unknown_missing_or_reordered_inputs(self):
+        for body in [
+            '画幅：9:16\n{{Node person}}\n{{Node door}}\n{{Node person}}\n{{Node unknown}}',
+            '画幅：9:16\n{{Node person}}\n{{Node person}}',
+            '画幅：9:16\n{{Node door}}\n{{Node person}}\n{{Node door}}',
+        ]:
+            task = self.task(body, mediaNodeIds=['person', 'door'],
+                             mediaTypes={'person': 'image', 'door': 'image'})
+            with self.subTest(body=body), patch.object(gate, 'cli') as remote:
+                with self.assertRaisesRegex(ValueError, 'Prompt references'):
+                    self.invoke('check', task)
+                remote.assert_not_called()
+
+    def test_repeated_mentions_cannot_duplicate_media_node_ids(self):
+        task = self.task('画幅：9:16\n{{Node person}}\n{{Node person}}',
+                         mediaNodeIds=['person', 'person'])
+        with patch.object(gate, 'cli') as remote:
+            with self.assertRaisesRegex(ValueError, 'mediaNodeIds must be a unique array'):
+                self.invoke('check', task)
+            remote.assert_not_called()
+
     def audio_node(self, task, node):
         data = (self.root / task['audioReferences'][node]['path']).read_bytes()
         return {'nodeKey': node, 'data': {'type': 'audio', 'url': ['https://example.test/' + node],
@@ -193,6 +232,132 @@ class GateTests(unittest.TestCase):
         params['advancedSettings']['extendPrompt'] = 0
         with patch.object(gate, 'cli', side_effect=responses), self.assertRaisesRegex(ValueError, 'Unsupported'):
             gate.preflight(self.root, task)
+
+    def test_text_voice_container_keeps_lock_dialogue_and_zero_media(self):
+        task = self.task('画幅：9:16\n声音样本', model='即梦1.5 Pro',
+                         modeType='text2video', mediaNodeIds=[], mediaTypes={})
+        with patch.object(gate, 'cli', return_value={'nodeKey': 'created'}) as remote:
+            self.invoke('create', task)
+        self.dialogue_check.assert_called()
+        command = remote.call_args.args[0]
+        self.assertIn('modeType=text2video', command)
+        self.assertIn('ratio=9:16', command)
+        self.assertNotIn('extendPrompt=0', command)
+        task['videoNodeId'] = 'created'
+        responses = self.node_responses(task)
+        params = responses[1]['data']['params']
+        params.update(model='seedance-1.5-pro', modeType='text2video', imageList=[], advancedSettings={})
+        del params['mixedListOrder']
+        responses[2]['edges'] = [{'source': 'text', 'target': 'created'}]
+        schema = {'modality': 'video', 'modelKey': 'seedance-1.5-pro'}
+        with patch.object(gate, 'cli', side_effect=[*responses, schema]):
+            gate.preflight(self.root, task)
+        for change in [{'modeType': 'mixed2video'}, {'model': 'different-model'}]:
+            wrong = {**params, **change}
+            bad = [responses[0], {'data': {'params': wrong}}, responses[2], schema]
+            with patch.object(gate, 'cli', side_effect=bad), self.assertRaises(ValueError):
+                gate.preflight(self.root, task)
+        with self.assertRaisesRegex(ValueError, 'must not contain media'):
+            gate.validate_task(self.root, {**task, 'mediaNodeIds': ['unexpected-image']})
+
+    def endpoint_task(self):
+        refs = {}
+        for node, role in [('start', 'first-frame'), ('end', 'last-frame')]:
+            path = self.root / (node + '.png')
+            path.write_bytes(node.encode())
+            refs[node] = {'path': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                          'role': role, 'approval': {'confirmed': True, 'source': 'user message',
+                                                   'quote': 'use these two frames'}}
+        return self.task('画幅：9:16\n{{Node start}}\n{{Node end}}', modeType='frames2video',
+                         mediaNodeIds=['start', 'end'], mediaTypes={'start': 'image', 'end': 'image'},
+                         frameReferences=refs, enableSound='off', videoNodeId='video')
+
+    def test_endpoints_require_approved_ordered_local_bytes(self):
+        task = self.endpoint_task()
+        probe = json.dumps({'streams': [{'width': 720, 'height': 1280}]})
+        with patch.object(gate.subprocess, 'check_output', return_value=probe):
+            gate.validate_task(self.root, task)
+            task['frameReferences']['start']['approval']['confirmed'] = False
+            with self.assertRaisesRegex(ValueError, 'approval'):
+                gate.validate_task(self.root, task)
+            task['frameReferences']['start']['approval']['confirmed'] = True
+            task['mediaNodeIds'].reverse()
+            with self.assertRaisesRegex(ValueError, 'references|order'):
+                gate.validate_task(self.root, task)
+            task['mediaNodeIds'].reverse()
+            (self.root / 'end.png').write_bytes(b'changed after approval')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                gate.validate_task(self.root, task)
+
+    def test_endpoint_preflight_checks_order_source_cache_and_silent_setting(self):
+        task = self.endpoint_task()
+        probe = json.dumps({'streams': [{'width': 720, 'height': 1280}]})
+        def responses():
+            result = self.node_responses(task)
+            params = result[1]['data']['params']
+            params.update(modeType='frames2video', imageList=[
+                {'nodeId': n, 'url': 'https://example.test/' + n} for n in task['mediaNodeIds']])
+            params.pop('mixedListOrder')
+            params['settings']['enableSound'] = 'off'
+            result[2]['edges'] = [{'source': n, 'target': 'video'} for n in ['text', 'start', 'end']]
+            for node in task['mediaNodeIds']:
+                result.append({'nodeKey': node, 'data': {'type': 'image',
+                    'url': ['https://example.test/' + node], 'resourceMeta': {'items': [
+                        {'kind': 'image', 'hashSha1': hashlib.sha1(node.encode()).hexdigest()}]}}})
+            return result
+        with patch.object(gate.subprocess, 'check_output', return_value=probe):
+            with patch.object(gate, 'cli', side_effect=responses()):
+                self.assertEqual(gate.preflight(self.root, task)['settings']['enableSound'], 'off')
+            for conflict in ['reversed', 'stale-url', 'source-bytes']:
+                data = responses()
+                if conflict == 'reversed':
+                    data[1]['data']['params']['imageList'].reverse()
+                elif conflict == 'stale-url':
+                    data[1]['data']['params']['imageList'][0]['url'] = 'stale'
+                else:
+                    data[3]['data']['resourceMeta']['items'][0]['hashSha1'] = 'changed'
+                with self.subTest(conflict=conflict), patch.object(gate, 'cli', side_effect=data):
+                    with self.assertRaises(ValueError):
+                        gate.preflight(self.root, task)
+
+    def test_silent_setting_cannot_drop_confirmed_dialogue(self):
+        task = self.task(enableSound='off')
+        self.dialogue_check.return_value = {'lineIds': ['D01']}
+        with self.assertRaisesRegex(ValueError, 'sound off'):
+            gate.validate_task(self.root, task)
+
+    def test_frame_integer_pixel_rounding_does_not_relax_video_output_lock(self):
+        task = self.endpoint_task()
+        for width, height, valid in [(941, 1672, True), (720, 1280, True),
+                                      (942, 1672, False), (1280, 720, False)]:
+            probe = json.dumps({'streams': [{'width': width, 'height': height}]})
+            with self.subTest(size=(width, height)), patch.object(gate.subprocess, 'check_output', return_value=probe):
+                if valid:
+                    gate.validate_task(self.root, task)
+                else:
+                    with self.assertRaisesRegex(ValueError, 'aspect ratio'):
+                        gate.validate_task(self.root, task)
+        with self.assertRaises(ValueError):
+            gate.check_dimensions(self.lock, 941, 1672)
+
+    def test_start_frame_only_keeps_approval_and_cannot_sneak_in_a_last_frame(self):
+        task = self.endpoint_task()
+        task['mediaNodeIds'] = ['start']
+        task['mediaTypes'] = {'start': 'image'}
+        task['frameReferences'].pop('end')
+        task = self.task('画幅：9:16\n{{Node start}}', **task)
+        # task() writes the supplied body before applying the other fields.
+        task['promptSha256'] = hashlib.sha256((self.root / 'prompt.md').read_bytes()).hexdigest()
+        probe = json.dumps({'streams': [{'width': 720, 'height': 1280}]})
+        with patch.object(gate.subprocess, 'check_output', return_value=probe):
+            self.assertEqual(len(gate.validate_frame_references(self.root, task)), 1)
+            task['frameReferences']['start']['role'] = 'last-frame'
+            with self.assertRaisesRegex(ValueError, 'role/order'):
+                gate.validate_task(self.root, task)
+            task['frameReferences']['start']['role'] = 'first-frame'
+            task['frameReferences']['end'] = {}
+            with self.assertRaisesRegex(ValueError, 'mapped'):
+                gate.validate_task(self.root, task)
 
     def test_missing_lock_has_no_default(self):
         (self.root / 'PRODUCTION_RULES.md').write_text('no format', encoding='utf-8')

@@ -22,7 +22,18 @@ Inside `画面与动作`, use the plain-text labels `构图与主体：`, `道�
 
 **One shot has one time range only.** Do not add inner timestamps, numbered performance beats, subshots, second-by-second instructions or dialogue time tables. Dialogue can have ordinary paragraph breaks for readability, without extra times or headings. Continuous actions and subtle expressions unfold naturally in complete prose. State necessary simultaneity with words such as “while speaking”; write actions, reactions and completion in causal order. Do not split every utterance or action into a new shot merely to satisfy the format.
 
-For relevant shots in new/redesigned multi-person scenes, start `画面与动作` with a plain `站位锁定：` paragraph and finish that same field with plain `位置承接：`, following [actor state continuity](../../../../PRODUCTION_SOP.md#actor-state-continuity). State actual visible actors, posture, world landmark/chair, orientation/gaze and relevant props, then the causal action and resulting state. These are ordinary prose labels inside the picture field, not additional bold fields, headings, time ranges or subshots. The global scene restores the unit's necessary starting facts; the last shot supplies its outgoing state. Omit unrelated full-scene cast from close-ups, preserve required off-screen geography, and never depend on an unseen earlier prompt or diagram. Standing-to-seated action and motivated camera movement remain valid; this rule does not force frozen poses or a duration/shot quota.
+<a id="select-visible-facts"></a>
+## From continuity design to model prose
+
+Use the INTERNAL top view and state rows under [actor state continuity](../../../../PRODUCTION_SOP.md#actor-state-continuity) to work out the whole scene, including off-screen actors, prop ownership and adjacent cuts. The model receives only the text and media actually submitted for the current request; do not assume it sees the diagram, preceding task or director's records.
+
+Select the necessary facts for the current framing and action before writing:
+
+- Include the visible or audible subjects, relevant starting conditions, causal action, exact speech and readable response. Include off-screen relationships only when they affect this shot. Translate world-map labels and axis decisions into the chosen camera's visible foreground/background, screen positions and eyelines.
+- State each fact where it serves its purpose: references identify assets, atmosphere establishes the shared premise, and shot prose describes the visible event. Do not re-list unchanged hands, positions or props at the end when the action already makes the result clear. Emphasize an ending pose or state when it is needed for the shot's meaning or usable cut.
+- Choose actions for the story and edit. Do not add handling, tidying, hand changes or gestures merely to complete a state table. Resolve unnecessary complexity through framing, blocking and motivated cuts or ellipses; keep story-bearing transfers and boundary crossings causally legible.
+
+The picture field does not require `站位锁定：` or `位置承接：`. Write the necessary facts as natural action prose. For example, `林特助右手拿着一张支票，左臂托住打开的公文包。将支票甩向狗仔甲，纸张碰脸后落到鞋前。` already expresses the transfer and result; a second full ending-state inventory is unnecessary. Keep the complete state record for checking the next shot. This selection is about relevance, not a word limit or permission to omit confirmed dialogue or required actions.
 
 ## Story-driven shot count
 

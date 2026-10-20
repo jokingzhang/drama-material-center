@@ -124,7 +124,7 @@ def prompt_lines(body):
             i += 1
         if stack:
             raise ValueError('Unclosed prompt quotation')
-        prefix = re.search(r'([\w·]+(?:（[^（）\n]+）)?)\s*[：:]\s*$', body[:start])
+        prefix = re.search(r'([\w·]+(?:、[\w·]+)*(?:（[^（）\n]+）)?)\s*[：:]\s*$', body[:start])
         if not prefix:
             raise ValueError('Quoted prompt text requires explicit speaker attribution or 画面文字 label')
         speaker = prefix[1]

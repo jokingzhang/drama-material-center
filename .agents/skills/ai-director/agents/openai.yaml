@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI短剧导演工作流"
-  short_description: "一起讨论剧情与观看体验，按场景选择导演技巧，完成分镜、提示词与制作检查"
-  default_prompt: "使用 $ai-director 根据当前剧情和我的新信息设计分镜，关键选择一次讨论一个并给出推荐，再把合适的表演、摄影、剪辑和声音方法写入可执行提示词。"
+  display_name: "AI分镜与素材导演"
+  short_description: "接收现成剧本，主动运用导演与美术方法，完成可剪接分镜、提示词和图片素材接入"
+  default_prompt: "使用 $ai-director 根据我提供的剧本设计分镜，主动选用相关技能，检查并复用图片素材，处理本次授权范围内的缺口，完成视频提示词和实际引用。"

@@ -136,14 +136,82 @@ def validate_task(project, task):
         raise ValueError('Task orientation conflicts with the project lock')
     if not unique_strings(task.get('mediaNodeIds')):
         raise ValueError('mediaNodeIds must be a unique array')
-    refs = re.findall(r'\{\{Node ([^}]+)\}\}', body)
-    if refs != task['mediaNodeIds'] or len(refs) != len(set(refs)):
+    mode = task.get('modeType', 'mixed2video')
+    if mode not in ('mixed2video', 'text2video', 'frames2video'):
+        raise ValueError('Unsupported video input mode')
+    if mode == 'text2video' and task['mediaNodeIds']:
+        raise ValueError('text2video must not contain media references')
+    # A bound asset may be mentioned again in individual shots. Its first
+    # occurrence establishes input order; repeated prose is not another input.
+    refs = list(dict.fromkeys(re.findall(r'\{\{Node ([^}]+)\}\}', body)))
+    if refs != task['mediaNodeIds']:
         raise ValueError('Prompt references must match ordered, unique mediaNodeIds')
     if task.get('localPublicationVerified') is not True:
         raise ValueError('Formal index, local API and page verification required before creation')
-    validate_dialogue(project, task, body)
+    dialogue = validate_dialogue(project, task, body)
+    sound = task.get('enableSound', 'on')
+    if sound not in ('on', 'off'):
+        raise ValueError('enableSound must be on or off')
+    if sound == 'off' and dialogue.get('lineIds'):
+        raise ValueError('Confirmed dialogue cannot be generated with sound off')
+    validate_frame_references(project, task)
     validate_audio_references(project, task)
     return lock, body
+
+
+def validate_frame_references(project, task):
+    if task.get('modeType') != 'frames2video':
+        return []
+    ids = task['mediaNodeIds']
+    refs = task.get('frameReferences', {})
+    if (len(ids) not in (1, 2) or set(refs) != set(ids)
+            or any(task.get('mediaTypes', {}).get(node) != 'image' for node in ids)):
+        raise ValueError('Frames mode requires one or two mapped image endpoints')
+    measured = []
+    for node, role in zip(ids, ('first-frame', 'last-frame')):
+        ref = refs[node]
+        approval = ref.get('approval', {})
+        if (ref.get('role') != role or approval.get('confirmed') is not True
+                or not nonempty_string(approval.get('source'))
+                or not nonempty_string(approval.get('quote'))):
+            raise ValueError('Frame role/order and specific user approval are required')
+        path = project_file(project, ref['path'])
+        data = path.read_bytes()
+        if hashlib.sha256(data).hexdigest() != ref.get('sha256'):
+            raise ValueError('Frame source hash mismatch')
+        probe = read_json(subprocess.check_output([
+            'ffprobe', '-v', 'error', '-select_streams', 'v:0',
+            '-show_entries', 'stream=width,height', '-of', 'json', str(path),
+        ], text=True))['streams'][0]
+        lock = load_lock(project)
+        # Reference stills may be rounded to the nearest integer pixel by an
+        # image generator (e.g. 941x1672 for 9:16). Do not resample approved
+        # pixels to hide that rounding. Generated video stays strictly checked
+        # by check_dimensions; stills allow only half a pixel of width error.
+        numerator, denominator = map(int, lock['aspectRatio'].split(':'))
+        if (probe['width'] <= 0 or probe['height'] <= 0
+                or 2 * abs(probe['width'] * denominator - probe['height'] * numerator) > denominator):
+            raise ValueError('Frame reference aspect ratio differs from project lock')
+        measured.append({'nodeId': node, 'role': role, 'path': ref['path'],
+                         'sha256': ref['sha256'], 'sha1': hashlib.sha1(data).hexdigest()})
+    return measured
+
+
+def validate_remote_frames(task, evidence, params=None):
+    for item in evidence:
+        node = item['nodeId']
+        source = cli(['node', node, '-p', task['projectUuid']])
+        data = source['data']
+        urls = data.get('url', [])
+        meta = data.get('resourceMeta', {}).get('items', [])
+        if (source.get('nodeKey') != node or data.get('type') != 'image'
+                or len(urls) != 1 or not nonempty_string(urls[0]) or len(meta) != 1
+                or meta[0].get('kind') != 'image' or meta[0].get('hashSha1') != item['sha1']):
+            raise ValueError('Actual frame source differs from approved local bytes')
+        if params is not None:
+            refs = [x for x in params.get('imageList', []) if x['nodeId'] == node]
+            if len(refs) != 1 or refs[0].get('url') != urls[0]:
+                raise ValueError('Stale frame URL in actual endpoint inputs')
 
 
 def is_wan3(task):
@@ -226,8 +294,9 @@ def cli(args):
 
 
 def supports_extend_prompt(model):
-    # Seedance draft schema has searchEnabled/autoCompliance, not extendPrompt.
-    return model != 'Seedance 2.5（样片模式）'
+    # These current Seedance schemas do not expose Wan's extendPrompt setting.
+    return model not in ('Seedance 2.5（样片模式）', '即梦1.5 Pro',
+                         'Seedance 1.5 Pro', 'seedance-1.5-pro')
 
 
 def preflight(project, task):
@@ -240,8 +309,17 @@ def preflight(project, task):
     if len(set(bodies)) != 1:
         raise ValueError('Local/text/video prompt mismatch')
     expected = {'ratio': lock['aspectRatio'], 'resolution': task['resolution'],
-                'duration': task['durationSeconds'], 'enableSound': 'on'}
-    if params['settings'] != expected or params['model'] != task['model'] or params['modeType'] != 'mixed2video':
+                'duration': task['durationSeconds'], 'enableSound': task.get('enableSound', 'on')}
+    model_matches = params['model'] == task['model']
+    if not model_matches:
+        # Some CLI models persist the canonical key instead of the display name.
+        # Resolve the requested model through the official CLI, never a task-supplied alias.
+        schema = cli(['model', task['model']])
+        model_matches = (schema.get('modality') == 'video'
+                         and bool(schema.get('modelKey'))
+                         and params['model'] == schema['modelKey'])
+    if (params['settings'] != expected or not model_matches
+            or params['modeType'] != task.get('modeType', 'mixed2video')):
         raise ValueError('Node settings differ from project-locked task')
     advanced = params.get('advancedSettings', {})
     if supports_extend_prompt(task['model']) and advanced.get('extendPrompt') != 0:
@@ -257,7 +335,14 @@ def preflight(project, task):
             if any(task['mediaTypes'][ref['nodeId']] != kind for ref in params.get(kind + 'List', [])):
                 raise ValueError('Actual media types differ from local audio audit')
     expected_order = sorted(task['mediaNodeIds'], key=lambda n: {'image': 0, 'video': 1, 'audio': 2}[task.get('mediaTypes', {}).get(n, 'image')])
-    if params.get('mixedListOrder') != expected_order:
+    actual_order = params.get('mixedListOrder')
+    if task.get('modeType') in ('text2video', 'frames2video') and actual_order is None:
+        # Endpoint order is carried by imageList, not a mixed-reference cache.
+        if task.get('modeType') == 'frames2video':
+            actual_order = [x['nodeId'] for x in params.get('imageList', [])]
+        else:
+            actual_order = []
+    if actual_order != expected_order:
         raise ValueError('Mixed reference order differs')
     if params.get('mixedList') is not None and [x['nodeId'] for x in params['mixedList']] != expected_order:
         raise ValueError('Stale mixed media list')
@@ -266,8 +351,13 @@ def preflight(project, task):
         raise ValueError('Actual graph edges differ')
     audio = validate_audio_references(project, task)
     validate_remote_audio(task, audio, params)
+    frames = validate_frame_references(project, task)
+    if frames and [x['nodeId'] for x in params.get('imageList', [])] != task['mediaNodeIds']:
+        raise ValueError('Actual first/last image order differs')
+    validate_remote_frames(task, frames, params)
     return {'projectLock': lock, 'threePromptSha256': [hashlib.sha256(x.encode()).hexdigest() for x in bodies],
-            'settings': expected, 'mediaAndEdges': 'PASS', 'audioReferences': audio}
+            'settings': expected, 'mediaAndEdges': 'PASS', 'audioReferences': audio,
+            'frameReferences': frames}
 
 
 def main():
@@ -296,8 +386,9 @@ def main():
         if task.get('videoNodeId'):
             raise ValueError('Task already has videoNodeId; no duplicate creation')
         validate_remote_audio(task, validate_audio_references(args.project_dir, task))
+        validate_remote_frames(task, validate_frame_references(args.project_dir, task))
         command = ['node', '--x', str(task['x']), '--y', str(task['y']), 'create', task['name'], '-p', task['projectUuid'], '-t', 'video']
-        settings = [f"model={task['model']}", 'modeType=mixed2video', f"ratio={lock['aspectRatio']}", f"resolution={task['resolution']}", f"duration={task['durationSeconds']}", 'enableSound=on', 'count=1']
+        settings = [f"model={task['model']}", f"modeType={task.get('modeType', 'mixed2video')}", f"ratio={lock['aspectRatio']}", f"resolution={task['resolution']}", f"duration={task['durationSeconds']}", f"enableSound={task.get('enableSound', 'on')}", 'count=1']
         if supports_extend_prompt(task['model']):
             settings.append('extendPrompt=0')
         for setting in settings:

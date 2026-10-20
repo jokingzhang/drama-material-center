@@ -1,9 +1,13 @@
-import { Check, ChevronDown, ChevronUp, Copy, List, Maximize2, Search, Type, X } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Copy, Image as ImageIcon, List, Maximize2, Search, Type, Volume2 } from "lucide-react";
 import { Children, isValidElement, memo, type ReactNode, type RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
+import { getPromptReferences } from "../lib/projectStory";
+import { canonicalPromptReference, remarkPromptReferences } from "../lib/promptReferences";
+import type { PromptReferencePreview, PromptReferenceItem } from "../types/story";
+import { PromptReferenceStrip, isPlayablePromptReference } from "./PromptReferenceStrip";
+import { ReferenceMediaDialog } from "./ReferenceMediaDialog";
 
 interface MarkdownPreviewProps {
   source: string;
@@ -11,11 +15,6 @@ interface MarkdownPreviewProps {
   assetPath: string;
   expanded?: boolean;
   onOpenMaterial?: (path: string) => void;
-}
-
-interface PreviewImage {
-  alt: string;
-  src: string;
 }
 
 interface DocumentHeading {
@@ -224,7 +223,8 @@ const markdownComponents: Components = {
   },
 };
 
-const markdownRemarkPlugins = [remarkGfm, remarkBreaks, remarkImageGalleries];
+const markdownRemarkPlugins = [remarkGfm, remarkBreaks, remarkImageGalleries, remarkPromptReferences];
+const noReferences: PromptReferenceItem[] = [];
 
 const MarkdownDocument = memo(function MarkdownDocument({
   articleRef,
@@ -245,56 +245,57 @@ const MarkdownDocument = memo(function MarkdownDocument({
 });
 
 export function MarkdownPreview({ source, projectId, assetPath, expanded = false, onOpenMaterial }: MarkdownPreviewProps) {
-  const [previewImage, setPreviewImage] = useState<PreviewImage | null>(null);
+  const [selectedReference, setSelectedReference] = useState<{ reference: PromptReferenceItem; trigger: HTMLElement; autoPlay: boolean } | null>(null);
+  const [referenceResult, setReferenceResult] = useState<{ projectId: string; path: string; source: string; preview?: PromptReferencePreview; error?: string } | null>(null);
   const [outlineOpen, setOutlineOpen] = useState(true);
   const [fontScale, setFontScale] = useState(1);
   const [documentQuery, setDocumentQuery] = useState("");
   const [matchCount, setMatchCount] = useState(0);
   const [activeMatch, setActiveMatch] = useState(0);
   const [activeHeadingIndex, setActiveHeadingIndex] = useState(0);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const articleRef = useRef<HTMLElement>(null);
   const contentScrollRef = useRef<HTMLDivElement>(null);
   const outlineRef = useRef<HTMLElement>(null);
   const previousExpandedRef = useRef(expanded);
   const headings = useMemo(() => documentHeadings(source), [source]);
+  const hasMediaReferences = /\{\{\s*(?:Mixed\s+\d+|Node\s+[a-zA-Z0-9_-]+)\s*\}\}/i.test(source);
+  const shouldLoadReferences = hasMediaReferences || /(?:prompt|提示词)/i.test(assetPath);
+  const currentReferenceResult = referenceResult?.projectId === projectId && referenceResult.path === assetPath && referenceResult.source === source
+    ? referenceResult : undefined;
+  const referencePreview = currentReferenceResult?.preview;
+  const references = referencePreview?.references ?? noReferences;
+  const referenceMap = useMemo(() => new Map(references.map((reference) => [canonicalPromptReference(reference.reference), reference])), [references]);
+
+  useEffect(() => {
+    setSelectedReference(null);
+    if (!shouldLoadReferences) return;
+    const controller = new AbortController();
+    Promise.all([
+      getPromptReferences(projectId, assetPath, controller.signal),
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(source)).then((value) =>
+        Array.from(new Uint8Array(value), (byte) => byte.toString(16).padStart(2, "0")).join("")),
+    ])
+      .then(([preview, displayedHash]) => {
+        if (controller.signal.aborted) return;
+        const verifiedPreview: PromptReferencePreview = preview.promptSha256 && preview.promptSha256 !== displayedHash
+          ? { promptPath: assetPath, state: "CONFLICT", reason: "正文在读取期间发生变化，请重新打开提示词后再查看引用素材。", references: [] }
+          : preview;
+        setReferenceResult({ projectId, path: assetPath, source, preview: verifiedPreview });
+      })
+      .catch((reason: unknown) => {
+        if (!controller.signal.aborted) setReferenceResult({ projectId, path: assetPath, source, error: reason instanceof Error ? reason.message : "引用素材暂时无法读取。" });
+      });
+    return () => controller.abort();
+  }, [assetPath, projectId, shouldLoadReferences, source]);
+
+  const openReference = useCallback((reference: PromptReferenceItem, trigger: HTMLElement) => {
+    if (isPlayablePromptReference(reference)) setSelectedReference({ reference, trigger, autoPlay: reference.kind === "audio" });
+  }, []);
+  const closeMedia = useCallback(() => setSelectedReference(null), []);
 
   const renderedHeadings = useCallback(() => (
     Array.from(articleRef.current?.querySelectorAll<HTMLElement>("h1[id], h2[id], h3[id]") ?? [])
   ), []);
-
-  const openImage = useCallback((image: PreviewImage, trigger: HTMLButtonElement) => {
-    triggerRef.current = trigger;
-    setPreviewImage(image);
-  }, []);
-
-  const closeImage = useCallback(() => setPreviewImage(null), []);
-
-  useEffect(() => {
-    if (!previewImage) return;
-
-    const previousBodyOverflow = document.body.style.overflow;
-    const focusFrame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
-
-    document.body.style.overflow = "hidden";
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") closeImage();
-      if (event.key === "Tab") {
-        event.preventDefault();
-        closeButtonRef.current?.focus();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.cancelAnimationFrame(focusFrame);
-      window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousBodyOverflow;
-      triggerRef.current?.focus();
-    };
-  }, [closeImage, previewImage]);
 
   useEffect(() => {
     setDocumentQuery("");
@@ -383,7 +384,7 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         const parent = node.parentElement;
-        if (!node.textContent?.trim() || parent?.closest("button, script, style, mark[data-document-search]")) return NodeFilter.FILTER_REJECT;
+        if (!node.textContent?.trim() || parent?.closest("button:not(.prompt-reference-chip), script, style, mark[data-document-search]")) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       },
     });
@@ -413,7 +414,7 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
     setMatchCount(count);
     setActiveMatch(count ? 1 : 0);
     return () => clearSearchHighlights(root);
-  }, [documentQuery, source]);
+  }, [documentQuery, references, source]);
 
   function goToMatch(direction: -1 | 1) {
     const marks = articleRef.current?.querySelectorAll<HTMLElement>("mark[data-document-search]");
@@ -438,6 +439,24 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
       const text = extractText(children);
       return <h3 id={headingId(text)}>{children}</h3>;
     },
+    button({ children }) {
+      const token = extractText(children);
+      const reference = referenceMap.get(canonicalPromptReference(token));
+      const canOpen = reference && isPlayablePromptReference(reference);
+      return (
+        <button
+          type="button"
+          className={`prompt-reference-chip${canOpen ? "" : " is-unavailable"}`}
+          disabled={!canOpen}
+          title={reference ? `${reference.label}${reference.reason ? `：${reference.reason}` : ""}` : "此版本尚未关联该引用素材"}
+          aria-label={canOpen ? `${reference.kind === "audio" ? "试听" : "查看"} ${token}：${reference.label}` : `${token}：引用未关联`}
+          onClick={(event) => { if (reference) openReference(reference, event.currentTarget); }}
+        >
+          {reference?.kind === "audio" ? <Volume2 size={13} aria-hidden="true" /> : <ImageIcon size={13} aria-hidden="true" />}
+          {children}
+        </button>
+      );
+    },
     a({ children, href, title }) {
       const materialPath = resolveMaterialPath(href, assetPath);
       return (
@@ -461,13 +480,13 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
       const resolvedSrc = resolveMaterialUrl(src, projectId, assetPath);
       if (!resolvedSrc) return null;
 
-      const image = { alt: alt || "文档图片", src: resolvedSrc };
+      const image: PromptReferenceItem = { label: alt || "文档图片", url: resolvedSrc, reference: "", kind: "image", resolution: "RESOLVED" };
       return (
         <button
           className="markdown-image-button"
           type="button"
-          onClick={(event) => openImage(image, event.currentTarget)}
-          aria-label={`全屏查看图片：${image.alt}`}
+          onClick={(event) => openReference(image, event.currentTarget)}
+          aria-label={`全屏查看图片：${image.label}`}
           title="点击全屏查看"
         >
           <img src={resolvedSrc} alt={alt || ""} title={title} />
@@ -478,7 +497,7 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
         </button>
       );
     },
-  }), [assetPath, onOpenMaterial, openImage, projectId]);
+  }), [assetPath, onOpenMaterial, openReference, projectId, referenceMap]);
 
   return (
     <>
@@ -528,38 +547,20 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
             aria-label={expanded ? "文档正文（独立滚动）" : undefined}
             tabIndex={expanded ? 0 : undefined}
           >
+            {(hasMediaReferences || references.length > 0) && (
+              <div className="prompt-reference-context">
+                {!currentReferenceResult && <p className="prompt-reference-message" role="status">正在读取引用素材…</p>}
+                {currentReferenceResult?.error && <p className="prompt-reference-message" role="status">{currentReferenceResult.error}</p>}
+                {referencePreview && references.length === 0 && <p className="prompt-reference-message">{referencePreview.reason || "此版本尚未关联引用素材。"}</p>}
+                {references.length > 0 && <PromptReferenceStrip references={references} onOpen={openReference} />}
+              </div>
+            )}
             <MarkdownDocument articleRef={articleRef} components={components} source={source} />
           </div>
         </div>
       </div>
 
-      {previewImage && createPortal(
-        <div
-          className="image-lightbox"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`图片全屏预览：${previewImage.alt}`}
-          onClick={closeImage}
-        >
-          <button
-            ref={closeButtonRef}
-            className="image-lightbox-close"
-            type="button"
-            onClick={closeImage}
-            aria-label="关闭图片全屏预览"
-          >
-            <X size={20} aria-hidden="true" />
-            关闭
-          </button>
-          <img
-            className="image-lightbox-content"
-            src={previewImage.src}
-            alt={previewImage.alt}
-            onClick={(event) => event.stopPropagation()}
-          />
-        </div>,
-        document.body,
-      )}
+      {selectedReference && <ReferenceMediaDialog reference={selectedReference.reference} trigger={selectedReference.trigger} autoPlay={selectedReference.autoPlay} onClose={closeMedia} />}
     </>
   );
 }

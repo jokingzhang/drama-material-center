@@ -10,6 +10,8 @@ import {
   type CreateProjectInput,
 } from "./projectWorkspace.ts";
 import { createProjectStoryCatalog } from "./projectStoryCatalog.ts";
+import { createPromptReferenceResolver } from "./promptReferences.ts";
+import { parseKnowledgeMediaRange } from "./knowledgeCaseMedia.ts";
 
 const contentTypes: Record<string, string> = {
   ".md": "text/markdown; charset=utf-8",
@@ -121,7 +123,7 @@ function projectRoute(pathname: string) {
   }
   const storyMatch = pathname.match(/^\/api\/projects\/([^/]+)\/story$/);
   if (storyMatch) return { projectId: decodeURIComponent(storyMatch[1]), action: "story" as const };
-  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal|search|summary)$/);
+  const match = pathname.match(/^\/api\/projects\/([^/]+)\/(assets|cover|file|reveal|search|summary|prompt-references)$/);
   if (!match) return undefined;
   return { projectId: decodeURIComponent(match[1]), action: match[2] };
 }
@@ -182,6 +184,7 @@ function statusFor(error: ProjectWorkspaceError) {
 function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspaceRoot: string) {
   const workspace = createProjectWorkspace(workspaceRoot);
   const storyCatalog = createProjectStoryCatalog(workspaceRoot);
+  const promptReferences = createPromptReferenceResolver(workspaceRoot);
 
   server.middlewares.use(async (request, response, next) => {
     if (!request.url?.startsWith("/api/")) {
@@ -218,6 +221,11 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
         sendJson(response, 200, await storyCatalog.readProjectStory(route.projectId, {
           ...(route.episodeId ? { episodeId: route.episodeId } : {}),
         }));
+        return;
+      }
+
+      if (request.method === "GET" && route.action === "prompt-references") {
+        sendJson(response, 200, await promptReferences.readPromptReferences(route.projectId, url.searchParams.get("path") ?? ""));
         return;
       }
 
@@ -289,12 +297,28 @@ function attachMaterialMiddleware(server: ViteDevServer | PreviewServer, workspa
         return;
       }
 
-      if (request.method === "GET" && route.action === "file") {
+      if ((request.method === "GET" || request.method === "HEAD") && route.action === "file") {
         const target = await workspace.resolveMaterialPath(route.projectId, url.searchParams.get("path") ?? "");
-        response.statusCode = 200;
+        const fileStat = await stat(target);
+        if (!fileStat.isFile()) throw new ProjectWorkspaceError("material_not_found", "素材文件不存在。");
+        const rangeHeader = request.headers.range;
+        const range = parseKnowledgeMediaRange(typeof rangeHeader === "string" ? rangeHeader : undefined, fileStat.size);
         response.setHeader("Content-Type", contentTypes[extname(target).toLowerCase()] ?? "application/octet-stream");
         response.setHeader("Content-Disposition", "inline");
-        createReadStream(target).pipe(response);
+        response.setHeader("Accept-Ranges", "bytes");
+        response.setHeader("Cache-Control", "no-store");
+        if (rangeHeader && !range) {
+          response.statusCode = 416;
+          response.setHeader("Content-Range", `bytes */${fileStat.size}`);
+          response.setHeader("Content-Length", 0);
+          response.end();
+          return;
+        }
+        response.statusCode = range ? 206 : 200;
+        response.setHeader("Content-Length", range ? range.end - range.start + 1 : fileStat.size);
+        if (range) response.setHeader("Content-Range", `bytes ${range.start}-${range.end}/${fileStat.size}`);
+        if (request.method === "HEAD") response.end();
+        else createReadStream(target, range).pipe(response);
         return;
       }
 

@@ -2,6 +2,31 @@ export type StoryObjectStatus = "MISSING" | "IN_PROGRESS" | "READY" | "BLOCKED" 
 
 export type StoryAssetKind = "story" | "image" | "video" | "audio" | "other";
 
+/** A read-only view of references for one exact prompt version. */
+export interface PromptReferenceItem {
+  reference: string;
+  label: string;
+  assetId?: string;
+  kind: "image" | "audio" | "video" | "other";
+  version?: string;
+  assetStatus?: string;
+  responsibility?: string;
+  durationSeconds?: number;
+  url?: string;
+  resolution: "RESOLVED" | "UNREGISTERED" | "MISSING_FILE" | "VERSION_MISMATCH" | "UNSUPPORTED" | "CONFLICT";
+  reason?: string;
+}
+
+export interface PromptReferencePreview {
+  promptPath: string;
+  promptSha256?: string;
+  unitId?: string;
+  sourcePlanPath?: string;
+  state: "RESOLVED" | "UNAVAILABLE" | "CONFLICT";
+  reason?: string;
+  references: PromptReferenceItem[];
+}
+
 export interface StoryAssetLink {
   assetId: string;
   materialType: string;
