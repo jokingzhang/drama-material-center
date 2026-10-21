@@ -65,7 +65,7 @@ description: 拆分镜与图片素材的主入口。接收用户直接提供或�
 
 所有正式成果沿用根素材 schema、版本目录和两份正式索引。视频／图片提示词、实际素材、运行证据分别登记；候选清单不代替正式绑定。按 [local-first order](references/workflow-contract.md#local-first-libtv-order) 完成本地当前稿、索引与 API／页面回读后，才做已授权的 LibTV 变更。视频创建／运行统一经项目画幅与台词门禁，不绕过官方 CLI。
 
-已有媒体返修先判断实际剪辑用途：具体哪处妨碍理解或接剪，现有入出点／原声能否解决，确需重生成时究竟改变什么。保留最好用版本；口音、音色、音量、语速和夸张程度分别判断，不把“别夸张”自动改为低声。无硬错误且可按既定用途使用时停止可选返修，用户已接受的版本受原范围保护。
+已有媒体返修先判断实际剪辑用途：具体哪处妨碍理解或接剪，现有入出点／原声能否解决，确需重生成时究竟改变什么。能通过简单剪辑保留必要剧情、动作和完整对白并接好相邻片段时，记为“剪辑后可用”，标明保留／避开区间；不因局部缺陷整条判废或自动重生成。保留最好用版本；口音、音色、音量、语速和夸张程度分别判断，不把“别夸张”自动改为低声。无硬错误且可按既定用途使用时停止可选返修，用户已接受的版本受原范围保护。
 
 只读相关知识，按 [knowledge-model.md](references/knowledge-model.md) 检索；旧 Develop／Study／角色交接文档是历史资料。详尽授权、执行复用和变更传播按 [workflow-contract.md](references/workflow-contract.md) 的相关部分读取，不重新跑一遍已完成流程。
 
@@ -127,7 +127,7 @@ For feedback such as “flat”, “unclear” or “feels wrong”, use [feedba
 
 Creative completion does not authorize image generation, video generation, LibTV writes or runs, publication, or spending. Obtain or recover separate authorization for those actions.
 
-After generation, inspect images by opening them, video by continuous playback, and audio by listening. For topology-changing actions, inspect the action window across contact and completion. Report technical success, business integration, media QA, and human acceptance separately. Keep accepted user choices; do not reopen them for optional polish without new hard evidence.
+After generation, inspect images by opening them, video by continuous playback, and audio by listening. For topology-changing actions, inspect the action window across contact and completion. Apply the [media QA and paid-repair rules](references/review-mode.md#media-qa) to the actual story and edit use: prompt deviations are not automatically hard faults, and unverified suspicions do not justify paid regeneration. Report technical success, business integration, media QA, and human acceptance separately. Keep accepted user choices; do not reopen them for optional polish without new hard evidence.
 
 ## Deliver one coherent result
 
