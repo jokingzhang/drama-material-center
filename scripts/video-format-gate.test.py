@@ -340,6 +340,24 @@ class GateTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             gate.check_dimensions(self.lock, 941, 1672)
 
+    def test_landscape_frame_integer_pixel_rounding_preserves_approved_pixels(self):
+        task = self.endpoint_task()
+        landscape = {**self.lock, 'orientation': 'landscape', 'aspectRatio': '16:9',
+                     'timelineWidth': 1920, 'timelineHeight': 1080}
+        with patch.object(gate, 'load_lock', return_value=landscape):
+            for width, height, valid in [(1672, 941, True), (1280, 720, True),
+                                          (1672, 942, False), (1670, 941, False),
+                                          (720, 1280, False)]:
+                probe = json.dumps({'streams': [{'width': width, 'height': height}]})
+                with self.subTest(size=(width, height)), patch.object(gate.subprocess, 'check_output', return_value=probe):
+                    if valid:
+                        gate.validate_frame_references(self.root, task)
+                    else:
+                        with self.assertRaisesRegex(ValueError, 'aspect ratio'):
+                            gate.validate_frame_references(self.root, task)
+        with self.assertRaises(ValueError):
+            gate.check_dimensions(landscape, 1672, 941)
+
     def test_start_frame_only_keeps_approval_and_cannot_sneak_in_a_last_frame(self):
         task = self.endpoint_task()
         task['mediaNodeIds'] = ['start']
@@ -358,6 +376,117 @@ class GateTests(unittest.TestCase):
             task['frameReferences']['end'] = {}
             with self.assertRaisesRegex(ValueError, 'mapped'):
                 gate.validate_task(self.root, task)
+
+    def frames_audio_task(self, endpoints=('start',), seconds=(5, 5)):
+        frames = self.endpoint_task()['frameReferences']
+        audio = self.audio_task(seconds)
+        audio_ids = list(audio['audioReferences'])
+        # Interleave sounds with endpoints to prove only image order controls
+        # first/last frames; overall prompt order still matches every input.
+        ids = [audio_ids[0], endpoints[0], *audio_ids[1:], *endpoints[1:]]
+        return self.task('画幅：9:16\n' + '\n'.join('{{Node ' + n + '}}' for n in ids),
+                         model='Seedance 2.5', modeType='frames2video',
+                         mediaNodeIds=ids,
+                         mediaTypes={n: 'image' if n in endpoints else 'audio' for n in ids},
+                         frameReferences={n: frames[n] for n in endpoints},
+                         audioReferences=audio['audioReferences'], enableSound='on', videoNodeId='video')
+
+    def frame_audio_responses(self, task):
+        result = self.node_responses(task)
+        params = result[1]['data']['params']
+        image_ids = [n for n in task['mediaNodeIds'] if task['mediaTypes'][n] == 'image']
+        audio_ids = [n for n in task['mediaNodeIds'] if task['mediaTypes'][n] == 'audio']
+        params.update(modeType='frames2video', advancedSettings={},
+                      imageList=[{'nodeId': n, 'url': 'https://example.test/' + n} for n in image_ids],
+                      audioList=[{'nodeId': n, 'url': 'https://example.test/' + n} for n in audio_ids])
+        params.pop('mixedListOrder')
+        result[2]['edges'] = [{'source': n, 'target': 'video'} for n in ['text', *task['mediaNodeIds']]]
+        result.extend(self.audio_node(task, n) for n in audio_ids)
+        result.extend({'nodeKey': n, 'data': {'type': 'image', 'url': ['https://example.test/' + n],
+            'resourceMeta': {'items': [{'kind': 'image', 'hashSha1': hashlib.sha1(n.encode()).hexdigest()}]}}}
+            for n in image_ids)
+        return result
+
+    def frame_probe(self, command, **kwargs):
+        if pathlib.Path(command[-1]).suffix == '.png':
+            return json.dumps({'streams': [{'width': 720, 'height': 1280}]})
+        return self.real_check_output(command, **kwargs)
+
+    def test_frames_keep_one_or_two_endpoints_with_independently_audited_voice_inputs(self):
+        self.real_check_output = gate.subprocess.check_output
+        for endpoints in [('start',), ('start', 'end')]:
+            # Seedance has no Wan 15-second cumulative reference limit.
+            task = self.frames_audio_task(endpoints, seconds=(8, 8))
+            with self.subTest(endpoints=endpoints), patch.object(gate.subprocess, 'check_output', side_effect=self.frame_probe):
+                gate.validate_task(self.root, task)
+                with patch.object(gate, 'cli', side_effect=self.frame_audio_responses(task)):
+                    evidence = gate.preflight(self.root, task)
+                self.assertEqual([x['nodeId'] for x in evidence['frameReferences']], list(endpoints))
+                self.assertEqual(evidence['audioReferences']['totalSeconds'], 16)
+                self.assertIsNone(evidence['audioReferences']['limitSeconds'])
+                sources = {node['nodeKey']: node for node in self.frame_audio_responses(task)[3:]}
+                def create_response(args):
+                    return {'nodeKey': 'created'} if 'create' in args else sources[args[1]]
+                with patch.object(gate, 'cli', side_effect=create_response) as remote:
+                    self.invoke('create', {k: v for k, v in task.items() if k != 'videoNodeId'})
+                command = next(call.args[0] for call in remote.call_args_list if 'create' in call.args[0])
+                self.assertIn('modeType=frames2video', command)
+                self.assertIn('enableSound=on', command)
+                self.assertNotIn('--run', command)
+                self.assertEqual([command[i + 1] for i, value in enumerate(command) if value == '--left'],
+                                 ['text', *task['mediaNodeIds']])
+
+    def test_frames_voice_inputs_cannot_bypass_endpoint_or_local_audio_validation(self):
+        self.real_check_output = gate.subprocess.check_output
+        for conflict in ['missing-audio', 'audio-as-endpoint', 'wrong-role', 'unapproved',
+                         'changed-frame', 'changed-audio', 'unknown-type', 'extra-image', 'no-image']:
+            task = self.frames_audio_task()
+            if conflict == 'missing-audio':
+                task['audioReferences'].pop('audio-1')
+            elif conflict == 'audio-as-endpoint':
+                task['frameReferences']['audio-0'] = task['frameReferences']['start']
+            elif conflict == 'wrong-role':
+                task['frameReferences']['start']['role'] = 'last-frame'
+            elif conflict == 'unapproved':
+                task['frameReferences']['start']['approval']['confirmed'] = False
+            elif conflict == 'changed-frame':
+                (self.root / 'start.png').write_bytes(b'changed')
+            elif conflict == 'changed-audio':
+                (self.root / 'audio-1.wav').write_bytes(b'changed')
+            elif conflict == 'unknown-type':
+                task['mediaTypes']['audio-1'] = 'video'
+            elif conflict == 'extra-image':
+                task['mediaTypes']['audio-1'] = 'image'
+            else:
+                task['mediaTypes']['start'] = 'audio'
+            with self.subTest(conflict=conflict), patch.object(gate.subprocess, 'check_output', side_effect=self.frame_probe), patch.object(gate, 'cli') as remote:
+                with self.assertRaises(ValueError):
+                    self.invoke('create', {k: v for k, v in task.items() if k != 'videoNodeId'})
+                remote.assert_not_called()
+
+    def test_frames_voice_preflight_rejects_wrong_endpoints_audio_cache_types_and_edges(self):
+        self.real_check_output = gate.subprocess.check_output
+        for conflict in ['reversed-frames', 'wrong-type', 'missing-edge', 'audio-hash', 'audio-url', 'frame-url']:
+            task = self.frames_audio_task(('start', 'end'))
+            responses = self.frame_audio_responses(task)
+            params = responses[1]['data']['params']
+            if conflict == 'reversed-frames':
+                params['imageList'].reverse()
+            elif conflict == 'wrong-type':
+                params['imageList'].append(params['audioList'].pop())
+            elif conflict == 'missing-edge':
+                responses[2]['edges'].pop()
+            elif conflict == 'audio-hash':
+                responses[3]['data']['resourceMeta']['items'][0]['hashSha1'] = 'wrong'
+            elif conflict == 'audio-url':
+                params['audioList'][0]['url'] = 'stale'
+            else:
+                params['imageList'][0]['url'] = 'stale'
+            with self.subTest(conflict=conflict), patch.object(gate.subprocess, 'check_output', side_effect=self.frame_probe), patch.object(gate, 'probe_audio_seconds', return_value=gate.Decimal(5)), patch.object(gate, 'cli', side_effect=responses), patch.object(gate.subprocess, 'run') as paid_run:
+                with self.assertRaises(ValueError):
+                    self.invoke('run', task)
+                paid_run.assert_not_called()
+                self.assertNotIn('runDispatched', json.loads((self.root / 'task.json').read_text()))
 
     def test_missing_lock_has_no_default(self):
         (self.root / 'PRODUCTION_RULES.md').write_text('no format', encoding='utf-8')
@@ -521,6 +650,48 @@ class GateTests(unittest.TestCase):
             evidence = gate.preflight(self.root, task)
         self.assertEqual(evidence['threePromptSha256'], [task['promptSha256']] * 3)
         self.assertEqual(evidence['settings']['ratio'], '9:16')
+
+    def test_kling_creation_omits_unsupported_sound_and_extension(self):
+        task = self.task(model='可灵 4.0', resolution='720p', durationSeconds=30)
+        with patch.object(gate, 'cli', return_value={'nodeKey': 'created'}) as remote:
+            self.invoke('create', task)
+        command = remote.call_args.args[0]
+        self.assertIn('resolution=720p', command)
+        self.assertFalse(any(item.startswith(('enableSound=', 'extendPrompt=')) for item in command))
+        self.assertNotIn('--run', command)
+
+    def test_seedance25_creation_preserves_sound_without_wan_extension(self):
+        for model in ('Seedance 2.5', 'star-video2.5'):
+            with self.subTest(model=model), patch.object(gate, 'cli', return_value={'nodeKey': 'created'}) as remote:
+                self.invoke('create', self.task(model=model, resolution='720p'))
+                command = remote.call_args.args[0]
+                self.assertIn('enableSound=on', command)
+                self.assertIn('resolution=720p', command)
+                self.assertFalse(any(item.startswith('extendPrompt=') for item in command))
+                self.assertNotIn('--run', command)
+
+    def test_seedance25_preflight_rejects_stale_wan_extension(self):
+        task = self.task(model='Seedance 2.5', videoNodeId='video')
+        responses = self.node_responses(task)
+        responses[1]['data']['params']['advancedSettings'] = {}
+        with patch.object(gate, 'cli', side_effect=responses):
+            gate.preflight(self.root, task)
+        responses[1]['data']['params']['advancedSettings']['extendPrompt'] = 0
+        with patch.object(gate, 'cli', side_effect=responses):
+            with self.assertRaisesRegex(ValueError, 'Unsupported prompt extension'):
+                gate.preflight(self.root, task)
+
+    def test_kling_preflight_accepts_schema_settings_and_blocks_extra_fields(self):
+        task = self.task(model='可灵 4.0', videoNodeId='video')
+        responses = self.node_responses(task)
+        del responses[1]['data']['params']['settings']['enableSound']
+        responses[1]['data']['params']['advancedSettings'] = {}
+        with patch.object(gate, 'cli', side_effect=responses):
+            gate.preflight(self.root, task)
+        responses[1]['data']['params']['settings']['enableSound'] = 'on'
+        with patch.object(gate, 'cli', side_effect=responses):
+            with self.assertRaisesRegex(ValueError, 'Node settings'):
+                gate.preflight(self.root, task)
 
     def test_project_inputs_cannot_escape_or_be_symlinks(self):
         self.task()

@@ -25,7 +25,7 @@ Inside `画面与动作`, use the plain-text labels `构图与主体：`, `道�
 <a id="select-visible-facts"></a>
 ## From continuity design to model prose
 
-Use the INTERNAL top view and state rows under [actor state continuity](../../../../PRODUCTION_SOP.md#actor-state-continuity) to work out the whole scene, including off-screen actors, prop ownership and adjacent cuts. The model receives only the text and media actually submitted for the current request; do not assume it sees the diagram, preceding task or director's records.
+Use the current top-view blocking/camera diagram and state rows under [actor state continuity](../../../../PRODUCTION_SOP.md#actor-state-continuity) to work out the whole scene, including off-screen actors, prop ownership and adjacent cuts. Crop each model diagram to the current shot/unit and map every crop to its actual shot numbers and responsibility. Keep cross-unit overview boards in director records, never rely on “use only panel X” to exclude unrelated pixels. A shared panel with other-unit cameras/actions needs consumer-specific variants. The model receives only the text and media actually submitted for the current request; do not assume it sees the diagram, preceding task or director's records.
 
 Select the necessary facts for the current framing and action before writing:
 
