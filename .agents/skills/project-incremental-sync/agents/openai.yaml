@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目增量同步"
+  short_description: "在本地工作区与移动硬盘之间双向增量复制短剧项目，保留旧版并校验文件"
+  default_prompt: "使用 $project-incremental-sync，将当前指定短剧项目按本次要求的方向增量同步，保留目标独有文件，备份同名变更并核对复制结果。"
