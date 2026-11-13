@@ -1,0 +1,4 @@
+interface:
+  display_name: "女性角色图库选型"
+  short_description: "从 RuiC 人像图库检索并查看女性角色候选，按需导入项目后衔接人物设计"
+  default_prompt: "使用 $ruic-character-reference，根据当前角色设定检索、查看并比较人像参考；按授权导入选中原图，生图默认使用内置 imagegen，明确指定 LibTV 时使用官方 libtv-cli。"

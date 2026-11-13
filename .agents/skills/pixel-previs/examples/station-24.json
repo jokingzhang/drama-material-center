@@ -1,0 +1,47 @@
+{
+  "title": "末班车前的失物",
+  "note": "同一场戏的 24 种候选拍法；每一条可独立替换，并非连续 24 镜成片。",
+  "w": 768,
+  "h": 432,
+  "fps": 24,
+  "cast": {
+    "qing": {"name":"许青","v":1,"x":-1,"z":8},
+    "chuan": {"name":"陆川","v":2,"x":2.4,"z":10,"h":-45}
+  },
+  "set": {
+    "seat": {"s":"bench","x":0,"z":9.5},
+    "light": {"s":"lamp","x":2.7,"z":12,"h":4},
+    "gate": {"s":"door","x":4.8,"z":14,"h":2.8},
+    "post": {"s":"pillar","x":-2.3,"z":4.2,"h":2.4,"wd":0.6},
+    "letter": {"s":"box","x":0,"z":9.45,"y":0.5,"h":0.24,"wd":0.44,"pal":{"T":"#E4B268","F":"#C87B3E","D":"#955931"}},
+    "tree": {"s":"tree","x":-5.4,"z":13},
+    "lamp2": {"s":"lamp","x":-4.5,"z":17},
+    "seat2": {"s":"bench","x":5.4,"z":7}
+  },
+  "shots": [
+    {"move":"M01","beat":"许青停在长椅前，陆川还在远处等。","dur":3,"w":0,"p":[{"ref":"qing","x":-3.5,"to":[-1,8]},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":{"x":0,"y":1.35,"z":1,"mm":30},"at":[0,1,9]},
+    {"move":"M02","beat":"顺着许青的视线，从她摇到灯下的陆川。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":0,"y":1.25,"z":3,"mm":35,"at":[-1,1,8]},{"at":[2.4,1,10]}]},
+    {"move":"M03","beat":"从陆川的站位仰看到集合地点的路灯。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":2.45,"y":1.05,"z":6.6,"mm":33,"at":[2.4,0.55,10]},{"at":[2.7,3.75,12]}]},
+    {"move":"M04","beat":"许青发现少了东西，越过前景柱靠近她。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-1.15,"y":1.15,"z":0.5,"mm":30},{"z":5.55}],"at":[-1,1.05,8]},
+    {"move":"M05","beat":"许青原地认出长椅上的橙色信封。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":0.3,"y":1.35,"z":5.3,"mm":24},{"mm":67}],"at":[0,0.63,9.45]},
+    {"move":"M06","beat":"从许青身前退开，露出与她相隔一段距离的陆川。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-0.8,"y":1.15,"z":5.75,"mm":31},{"z":-0.6}],"at":[[-1,1,8],[0.3,1,9]]},
+    {"move":"M07","beat":"横移越过近柱，原先被挡的许青显出来。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-3.7,"y":1.15,"z":0,"mm":30,"yaw":6},{"x":0.3}]},
+    {"move":"M08","beat":"从空箱后升起，看到另一侧仍在等待的陆川。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"},{"s":"box","x":2.4,"z":7.5,"h":1,"wd":1.2}],"c":[{"x":2.4,"y":0.55,"z":4.5,"mm":28,"pitch":-4},{"y":1.75}]},
+    {"move":"M09","beat":"绕许青看向长椅，让她与信封的距离显出来。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"tree"}],"o":[4.2,4.2,-25,75],"at":[-1,1,8]},
+    {"move":"M10","beat":"并行跟住走向长椅的许青，远处陆川逐渐靠近画面中心。","dur":3,"w":0,"p":[{"ref":"qing","x":-3,"z":8,"to":[0.6,8]},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"tree"}],"c":{"mm":30},"follow":{"who":0,"off":[0,1.25,-4.5],"look":[0,1,0]}},
+    {"move":"M11","beat":"跟许青一起等回应；呼吸感只落在轻微晃动上。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":{"x":-0.8,"y":1.35,"z":5.1,"mm":32},"at":[-1,1.1,8]},
+    {"move":"M12","beat":"从许青迅速甩到回应她的陆川，再停在他身上。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":0.7,"y":1.2,"z":6,"mm":29,"at":[-1,1,8]},{"at":[2.4,1,10]}],"t":[1.05,1.43]},
+    {"move":"M13","beat":"从许青升起，揭示她、长椅、陆川和出口的位置。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-0.8,"y":1.35,"z":4.7,"mm":28},{"x":0,"y":7,"z":0}],"at":[[-1,1,8],[0.8,0,10]]},
+    {"move":"M14","beat":"沿站台高位飞过，从许青一侧带出通往陆川的路线。","dur":3,"w":0,"p":[{"ref":"qing","x":-2.5,"to":[-1,8]},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-4,"y":5,"z":1,"mm":29,"pitch":-26,"yaw":18},{"x":0.8,"z":4}]},
+    {"move":"M15","beat":"把两个人、路灯和出口收进同一颗小星球，交代彼此方位。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"},{"ref":"lamp2"},{"ref":"seat2"}],"c":[{"x":-0.7,"z":7,"y":4.2,"yaw":-12},{"y":5.2,"yaw":12}],"planetRadius":[1.0,0.39]},
+    {"move":"M16","beat":"绕许青一整圈看清她在找谁，回到起始侧。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"light"},{"ref":"gate"},{"ref":"seat"},{"ref":"letter"},{"ref":"tree"},{"ref":"lamp2"}],"o":[4.4,4.4,0,360],"at":[-1,1,8],"t":[0.12,2.85]},
+    {"move":"M17","beat":"信封落下的瞬间凝住；绕开许青，才看到陆川也在场。","dur":3,"w":0,"p":[{"ref":"qing","x":-1.2,"z":8.45,"to":[-1.35,8.45]},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"light"},{"ref":"gate"},{"ref":"letter","z":9,"keys":[{"t":0,"y":1.85},{"t":1.12,"y":0.51}],"x":0.3,"wd":0.62,"h":0.33}],"o":[3.5,3.5,-22,103],"pivot":[0,9.0],"at":[0,0.95,9.0],"freezeWindow":[0.48,2.36],"t":[0.48,2.36]},
+    {"move":"M18","beat":"许青发觉信封不见；站台水平线倾过去，人物没有绕位。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-0.8,"y":1.3,"z":4.6,"mm":34,"roll":0},{"roll":28}],"at":[-1,1.12,8]},
+    {"move":"M19","beat":"许青僵住；她保持原大小，身后的站台向外撑开。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-1,"y":1.05,"z":2,"mm":54},{"z":5.8,"mm":19.8}],"at":[-1,1.05,8]},
+    {"move":"M20","beat":"先看清近处信封，再把焦点交给后面的陆川。","dur":3,"w":0,"p":[{"ref":"chuan","x":1.85,"z":13}],"add":[{"ref":"light"},{"ref":"gate"},{"ref":"seat","x":0.2,"z":8.72},{"ref":"letter","x":0.2,"z":8.7,"y":0.52,"wd":0.65,"h":0.36}],"c":{"x":0.7,"y":1.05,"z":6.8,"mm":24,"yaw":8},"focus":[1.9,6.2],"t":[0.7,2.05]},
+    {"move":"M21","beat":"陆川终于看到那只橙色信封，猛地认准它的位置。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":1.5,"y":1.55,"z":5.2,"mm":24},{"mm":91}],"at":[0,0.63,9.45]},
+    {"move":"M22","beat":"跟随许青寻找出口的视线，低飞穿过两排柱子，落到陆川。","dur":3,"w":0,"p":[{"ref":"chuan"}],"add":[{"ref":"light"},{"ref":"gate"},{"s":"pillar","x":-2.2,"z":2,"h":2.5},{"s":"pillar","x":1.75,"z":2,"h":2.5},{"s":"pillar","x":-1.2,"z":5,"h":2.5},{"s":"pillar","x":2.7,"z":5,"h":2.5}],"path":null,"e":"lin","t":[0.15,2.6],"c":[{"t":0.15,"x":-1.4,"y":0.95,"z":-1,"yaw":9,"mm":21,"roll":0},{"t":1.05,"x":-0.2,"y":1.05,"z":3,"yaw":13,"roll":-8},{"t":1.8,"x":1.0,"y":1.2,"z":6,"yaw":13,"roll":7},{"t":2.6,"x":1.65,"y":1.3,"z":7.65,"roll":0,"yaw":17.7,"pitch":-5.8}]},
+    {"move":"M23","beat":"从高处俯冲到长椅，落实许青寻找的信封。","dur":3,"w":0,"p":[{"ref":"qing"},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"c":[{"x":-2.4,"y":8,"z":-1,"mm":28},{"x":0.45,"y":1.35,"z":7.35}],"at":[0,0.63,9.45],"t":[0.15,2.46]},
+    {"move":"M24","beat":"快速掠过许青身侧，贴近信封后刹住，显出目标。","dur":3,"w":0,"p":[{"ref":"qing","x":-1.5,"z":8.5},{"ref":"chuan"}],"add":[{"ref":"seat"},{"ref":"letter"},{"ref":"light"},{"ref":"gate"},{"ref":"post"},{"ref":"tree"}],"o":[4.8,1.55,-62,8],"pivot":[0,9.45],"at":[0,0.63,9.45],"c":[{"y":2.4,"mm":26},{"y":0.95,"mm":36}]}
+  ]
+}

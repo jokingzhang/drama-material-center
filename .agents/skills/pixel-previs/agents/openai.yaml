@@ -1,0 +1,4 @@
+interface:
+  display_name: "像素白模预演"
+  short_description: "把当前剧情和人物编排成可播放的镜头，用 24 种运镜检验机位、走位与切点"
+  default_prompt: "用 $pixel-previs 根据本场剧情、人物和地标选择合适的运镜，导出可编辑的镜头方案与干净的像素白模预演视频。"

@@ -25,7 +25,10 @@ def fingerprint(path):
     st = path.lstat()
     if not stat.S_ISREG(st.st_mode):
         raise SyncError(f"不是普通文件：{path}")
-    return (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+    # macOS exFAT can assign transient synthetic inode numbers to empty files.
+    # These change after cache eviction without any file content/metadata change.
+    inode = 0 if st.st_size == 0 and st.st_ino >= 2**63 else st.st_ino
+    return (st.st_dev, inode, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
 
 
 def digest(path):
