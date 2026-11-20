@@ -418,6 +418,10 @@ class GateTests(unittest.TestCase):
             # Seedance has no Wan 15-second cumulative reference limit.
             task = self.frames_audio_task(endpoints, seconds=(8, 8))
             with self.subTest(endpoints=endpoints), patch.object(gate.subprocess, 'check_output', side_effect=self.frame_probe):
+                if len(endpoints) == 1:
+                    with self.assertRaisesRegex(ValueError, 'Single-image opening frame'):
+                        gate.validate_task(self.root, task)
+                    continue
                 gate.validate_task(self.root, task)
                 with patch.object(gate, 'cli', side_effect=self.frame_audio_responses(task)):
                     evidence = gate.preflight(self.root, task)

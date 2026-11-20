@@ -154,8 +154,10 @@ def validate_task(project, task):
         raise ValueError('enableSound must be on or off')
     if sound == 'off' and dialogue.get('lineIds'):
         raise ValueError('Confirmed dialogue cannot be generated with sound off')
-    validate_frame_references(project, task)
+    frames = validate_frame_references(project, task)
     validate_audio_references(project, task)
+    if len(frames) == 1:
+        raise ValueError("Single-image opening frame: bind the approved frame and shot-specific visual assets in a compatible mode")
     return lock, body
 
 
