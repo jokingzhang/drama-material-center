@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const referencePattern = /\{\{Mixed\s+\d+\}\}|@图片\d+|<Subject\s+\d+>|\{\{Node\s+[^{}\n]+\}\}/gi;
 const close = (left, right) => Math.abs(left - right) < 0.000_001;
 const lightingFormat = "single-level-shots-lighting";
-const lightingMarkers = /^(?:\*\*(?:人物资产|环境资产|物品资产|声音资产|视频资产|景别与镜头运动|画面与动作|光影表现)：\*\*|\[整体场景与氛围\]|【多分镜时间轴】)/m;
+const lightingMarkers = /^(?:\*\*(?:接镜资产|人物资产|环境资产|物品资产|声音资产|视频资产|景别与镜头运动|画面与动作|光影表现)：\*\*|\[整体场景与氛围\]|【多分镜时间轴】)/m;
 const usesLightingFormat = (output, contract) => contract?.format === lightingFormat
   || (!contract?.format && lightingMarkers.test(output));
 
@@ -228,7 +228,7 @@ export function validateSingleLevelShots(output, contract) {
 
 function validateLightingPrelude(output, firstShotIndex) {
   const errors = [];
-  const assetHeadings = ['**人物资产：**', '**环境资产：**', '**物品资产：**', '**声音资产：**', '**视频资产：**'];
+  const assetHeadings = ['**接镜资产：**', '**人物资产：**', '**环境资产：**', '**物品资产：**', '**声音资产：**', '**视频资产：**'];
   const ordered = [...assetHeadings, '[整体场景与氛围]', '【多分镜时间轴】'];
   const sections = [...output.matchAll(/^(\*\*[^*\n]+：\*\*|\[[^\n]+\]|【[^\n]+】)([^\n]*)$/gm)];
   let cursor = -1;

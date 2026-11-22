@@ -5,6 +5,7 @@ import {
   BrainCircuit,
   CalendarDays,
   CheckCircle2,
+  ChevronLeft,
   ChevronRight,
   CircleDashed,
   Clapperboard,
@@ -274,8 +275,8 @@ function ProductionDashboard({ story }: { story: ProjectStoryReadModel }) {
         <TodayPlanCard schedule={story.productionSchedule} today={today} />
       </div>
       <section className="story-episode-stage-board" aria-label={`${production.totalEpisodes} 集生产阶段总览`}>
-        <header><h2>{production.totalEpisodes} 集生产阶段总览</h2><span>横向查看全部分集</span></header>
-        <div className="story-episode-stage-rail">{production.episodes.map((episode) => {
+        <h2>{production.totalEpisodes} 集生产阶段总览</h2>
+        <div className="story-episode-stage-grid">{production.episodes.map((episode) => {
           const evidenceLabel = episode.completionEvidence?.kind === "human-playback"
             ? "成片人审通过"
             : episode.completionEvidence?.kind === "user-confirmation"
@@ -589,6 +590,9 @@ function EpisodeAcceptanceSummary({ episode, assets }: { episode: EpisodeDetailR
 function EpisodeDetail({ story, sceneId, onOpen }: { story: ProjectStoryReadModel; sceneId?: string; onOpen: StoryAssetOpenHandler }) {
   const episode = story.episode;
   if (!episode) return null;
+  const episodeIndex = story.episodes.findIndex((candidate) => candidate.id === episode.id);
+  const previousEpisode = story.episodes[episodeIndex - 1];
+  const nextEpisode = episodeIndex >= 0 ? story.episodes[episodeIndex + 1] : undefined;
   const selectedScene = sceneId ? episode.scenes.find((scene) => scene.id === sceneId) : undefined;
   const scenes = sceneId ? (selectedScene ? [selectedScene] : []) : episode.scenes;
   const documents = deduplicateAssets([episode.script, ...episode.relatedFiles]);
@@ -610,7 +614,19 @@ function EpisodeDetail({ story, sceneId, onOpen }: { story: ProjectStoryReadMode
   ]);
   return (
     <article className="story-detail-page episode-detail-page">
-      <Link className="story-back-link" to={sceneId ? projectEpisodePath(story.project.id, episode.id) : projectStorySectionPath(story.project.id, "episodes")}><ArrowLeft size={16} />{sceneId ? `返回 ${episode.id}` : "返回分集"}</Link>
+      <div className="episode-detail-toolbar">
+        <Link className="story-back-link" to={sceneId ? projectEpisodePath(story.project.id, episode.id) : projectStorySectionPath(story.project.id, "episodes")}><ArrowLeft size={16} />{sceneId ? `返回 ${episode.id}` : "返回分集"}</Link>
+        {!sceneId && (
+          <nav className="episode-detail-navigation" aria-label="切换上下集">
+            {previousEpisode
+              ? <Link className="secondary-button" to={projectEpisodePath(story.project.id, previousEpisode.id)} title={`${previousEpisode.id} ${previousEpisode.title}`}><ChevronLeft size={16} />上一集</Link>
+              : <button className="secondary-button" type="button" disabled><ChevronLeft size={16} />上一集</button>}
+            {nextEpisode
+              ? <Link className="secondary-button" to={projectEpisodePath(story.project.id, nextEpisode.id)} title={`${nextEpisode.id} ${nextEpisode.title}`}>下一集<ChevronRight size={16} /></Link>
+              : <button className="secondary-button" type="button" disabled>下一集<ChevronRight size={16} /></button>}
+          </nav>
+        )}
+      </div>
       <header className="detail-heading"><div><span className="story-eyebrow">{episode.id}</span><h1>{sceneId ? selectedScene?.heading ?? "场次不存在" : episode.title}</h1><p>{sceneId ? selectedScene?.summary ?? "这个场次不在当前分集索引中。" : episode.summary}</p></div>{sceneId && selectedScene && <CompletionLine completion={selectedScene.completion} />}</header>
       {!sceneId && <div className="episode-fact-row"><span><Users size={16} />{episode.characterIds.length} 位人物</span><span><MapPin size={16} />{episode.locationIds.length} 个场景</span><span><BookOpenText size={16} />{episode.sceneCount} 场</span></div>}
       {!sceneId && <EpisodeReusableAssets story={story} groups={reusableGroups} onOpen={onOpen} />}

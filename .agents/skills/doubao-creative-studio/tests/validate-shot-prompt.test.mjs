@@ -425,6 +425,22 @@ test('lighting prelude categories must appear in the documented order', () => {
   assert.match(validateShotBlockPrompt(modified, lightingContract).join('; '), /asset\/atmosphere\/timeline order/);
 });
 
+test('lighting shots accept an optional continuity category before character assets', () => {
+  const heading = '**人物资产：**';
+  const continuity = '**接镜资产：**\n上一单元尾帧 {{Mixed 4}}，镜头1承接原站位和机位。\n\n';
+  const withContinuity = lightingBody.replace(heading, continuity + heading);
+  const value = { ...lightingContract, referencePlan: { assets: [
+    ...lightingContract.referencePlan.assets, { reference: '{{Mixed 4}}', subject: '上一单元尾帧' },
+  ] } };
+  assert.deepEqual(validateShotBlockPrompt(withContinuity, value), []);
+  assert.match(validateShotBlockPrompt(
+    lightingBody.replace('[整体场景与氛围]', continuity + '[整体场景与氛围]'), value,
+  ).join('; '), /接镜资产.*order|asset\/atmosphere\/timeline order/);
+  assert.match(validateShotBlockPrompt(
+    lightingBody.replace(heading, '**接镜资产：**\n\n' + heading), lightingContract,
+  ).join('; '), /接镜资产.*nonempty/);
+});
+
 for (const category of ['声音资产', '视频资产']) {
   for (const [name, inserted, pattern] of [
     ['empty', `**${category}：**\n\n`, /nonempty/],
