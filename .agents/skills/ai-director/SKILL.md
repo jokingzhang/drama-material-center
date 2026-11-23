@@ -45,24 +45,27 @@ description: 拆分镜与图片素材的主入口。接收用户直接提供或�
 1. **整场观看设计。** 明确事件与对白保护范围、观众的信息顺序、主要变化、人物行动／反应和结束落点。方向有实质歧义才按 [分镜讨论](references/storyboard-discussion.md) 讨论一个关键问题；已定方向或要求直接写时继续。
 2. **摄影镜头与接点。** 决定每镜必须让观众看见什么、哪里换视点，以及前后怎样接。新信息、反应或必要细节可以推动切镜；一句台词、一个动作节拍、旧节点编号或模板秒数不单独构成切镜理由。需要连续观看的过程保留完整镜头。
 3. **按实际入画倒推素材。** 同时查看现有人物、场景、道具的真实图片，核对机位、动作起点和状态。镜头可以暴露素材缺口，图片也可以暴露拍法冲突；先调整相容机位／调度与最小参考，必要时再补图，不要求先完成全套素材才设计镜头。
-4. **补齐本次需要的图片。** 按 [art-role.md](references/art-role.md) 负责从需求、图像提示词、授权生成／改图到核看和正式接入的闭环。每张图有明确职责和消费者；纯文本任务保留真实缺口，不能虚构已生成。
-5. **组合生成任务并定稿正文。** 镜头方案成立后，按表演时间、顺序动作、参考相容性、声音归属和实际模型能力组合单元。一个任务可含一个或多个真实镜头；另开任务要有具体容量、输入或叙事依据。同步检查受素材变更影响的镜头和接点，再按当前四字段格式写自包含正文。
+4. **补齐本次需要的图片。** 按 [art-role.md](references/art-role.md) 负责从需求、图像提示词、授权生成／改图到核看和正式接入的闭环。先确认本集 `SHOT-PLAN` 的机位视角、单元边界（存在正反打或互斥视角背景冲突时先拆单元）和缺图清单，再补齐缺失人物、分视角场景与道具图；纯文本任务保留真实缺口，不能虚构已生成。
+5. **组合生成任务并定稿正文。** 镜头视角、补图核看与单元边界稳定后，再批量落盘四字段自包含视频提示词正文与 `REFERENCE-PLAN`，避免写完一整集提示词后再因视角冲突推倒拆单元。一个任务可含一个或多个真实镜头；另开任务要有具体容量、输入或叙事依据。
 
-**多人戏先用全景定座次与道具位置，再按单独视角配背景。** 第 2 步先看与剧情相符的全景，以固定地标确定各人的席位、站位、座位占用及关键道具的位置或持有者，并记录剧情中实际发生的变化。由此推导说话者、听者、反应和道具的可见范围与视线。第 3 步按 [逐镜背景检查](../../../PRODUCTION_SOP.md#shot-background-coverage)，在现有分镜里用镜号、机位与朝向、入画人物和道具状态、背景缩略图或图片链接对照每个视角。同一视向且状态相容时复用，缺哪一向就补哪一向。第 5 步核对每张背景图能否在对应镜头生效，回切全景时检查座次、站位和道具状态是否接得上。
+**多人戏先用全景定座次与道具位置，再按单独视角配背景。** 第 2 步先看与剧情相符的全景，以固定地标确定各人的席位、站位、座位占用及关键道具的位置或持有者，并记录剧情中实际发生的变化。由此推导说话者、听者、反应和道具的可见范围与视线。第 3 步按 [逐镜背景检查](../../../PRODUCTION_SOP.md#shot-background-coverage)，在现有分镜里用镜号、机位与朝向、入画人物和道具状态、背景缩略图或图片链接对照每个视角。同一视向且状态相容时复用，缺哪一向就按母版同源路由补哪一向。第 5 步核对每张背景图能否在对应镜头生效，回切全景时检查座次、站位和道具状态是否接得上。
 
 切摄影镜头回答“观众为什么此刻换视点”；拆生成任务回答“为什么需要另一次模型调用”。不把每句对白拆成任务，也不为了少建节点把复杂调度塞在一起。固定机位、画外处理和有动机的时间省略均可使用，但不能隐藏必须看懂的动作、删掉确认剧情或违背明确连续观看要求。
 
 定稿前按 [从导演设计到模型正文](references/shot-block-format.md#select-visible-facts) 筛选本镜信息。完整站位图、首尾状态和接点由导演推导与核对；正文只写当前输入下需要看见、听见和执行的事实，同一事实通常写一次。先判断动作是否服务剧情与接镜，再检查格式，不为补齐状态记录添加收纳、换手、整理或表演动作。
 
-按 [逐镜素材引用](../../../PRODUCTION_SOP.md#critical-asset-coverage) 核对分镜提到的人物，包括可辨认或承担动作的保安、股东、随行人员。为有剧情或连续性职责的人物关联相容素材。替换后不影响剧情与接镜的不可辨背景人群可简记例外。
+按 [逐镜素材引用](../../../PRODUCTION_SOP.md#critical-asset-coverage) 在编写分镜提示词与绑定素材时一次对齐：
+- 画面中实际入画的具名人物（含可辨认或承担动作的保安、股东、随行人员）必须绑定对应 `image.character` 人物标准图，不得以“接镜参考帧/场景图里已有该人物”为由省去；替换后不影响剧情与接镜的不可辨背景人群可简记例外。
+- 未入画、未绑定图片素材的画外人物，禁止在景别、画面或动作描述中写出全名（统一改为方向/画外方位，如“前方画外 / 画外北端方向”），仅逐字对白正文内的称呼除外。
+- 声音绑定不只看逐字台词：凡在画面或音效中发声的具名人物（含对白，以及笑、惨笑、狂笑、冷笑、哭泣、怒吼、叹气、喘息等非台词人声），**除非是仅出现一次且已决策不需要绑定声音的配角，否则都需要固定音色（`audio.voice`）**；项目已有时必须一并绑定（不得因无台词而漏绑），项目尚缺时列入缺口补齐。
 
-候选关键帧的生图输入和使用获批帧的视频输入，分别按 [关键帧素材与视频绑定](../../../PRODUCTION_SOP.md#opening-frame-assets) 核对。视频在资产栏开头用 **接镜资产：** 写明获批帧、来源、镜号和承接职责，并保留相应人物、环境、调度与物品引用。后续揭示新人物或空间时，给出相应身份图、背景机位和调度依据，并回读视频节点的直接绑定。
+候选关键帧的生图输入和使用获批帧的视频输入，分别按 [关键帧素材与视频绑定](../../../PRODUCTION_SOP.md#opening-frame-assets) 核对。视频在资产栏开头用 **接镜资产：** 写明获批帧、来源、镜号和承接职责，并保留相应人物、环境与物品引用。后续揭示新人物或空间时，给出相应身份图、背景机位和动作依据，并回读视频节点的直接绑定。
 
 ## 图片素材是本入口的交付职责
 
-只新增实际消费者需要的素材。实际看图后决定复用、改图或新建，参考必须覆盖 [关键素材](../../../PRODUCTION_SOP.md#critical-asset-coverage) 并满足 [可见相容性](../../../PRODUCTION_SOP.md#reference-compatibility)：身份／当前造型、空间地标、开合与持物状态、光向和动作阶段相容。人物标准图、干净场景、道具图各有职责；上传、哈希或同名标签不证明适用。默认准备或复用当前俯视站位和镜头调度图，按生成单元作为空间、站位与运镜参考接入。它可以带必要标注，但不能替代基础场景、人物造型与关键道具；其它未核对研究拼板仍属内部用途。
+只新增实际消费者需要的素材。实际看图后决定复用、改图或新建，参考必须覆盖 [关键素材](../../../PRODUCTION_SOP.md#critical-asset-coverage) 并满足 [可见相容性](../../../PRODUCTION_SOP.md#reference-compatibility)：身份／当前造型、空间地标、开合与持物状态、光向和动作阶段相容。人物标准图、干净场景、道具图各有职责；上传、哈希或同名标签不证明适用。
 
-新写／重设计和位置返修默认需要 [俯视站位和镜头调度图](../../../PRODUCTION_SOP.md#actor-state-continuity)，随移动更新阶段状态并按对应单元实际绑定。先核对图与当前正文、基础场景及演员状态相容，再将模型图像副本登记为 `media.reference`、职责为 `blocking-camera-reference`；原始编辑源仍作创作证据。按分镜裁切后接入：每张仅保留当前镜头/生成单元需要的阶段，多个阶段分别映射镜头序号；共享面板含其它单元机位或动作时拆成各自适用版本。禁止把跨单元总览整张投入模型，再用“只看某格”补救；裁片必须保留必要人物、地标和完整运动路径。替换时移除旧总览的媒体列表项及实际入边。只写内部链接不算接入。后续新制人物图默认一人一造型一张3:4竖版四宫格，左上正面胸像、右上四分之三侧胸像、左下全身背面、右下全身正面，详见 [人物标准图](../../../director-knowledge-base/图片素材/人物标准图.md)；已有可用图不追溯重做。
+新写／重设计和多人位置返修默认准备或复用 [俯视站位和镜头调度图](../../../PRODUCTION_SOP.md#actor-state-continuity) 作为**导演内部理解与排演工具**，用于理清座次、轴线、机位与每镜对应的背景选型，编辑源与成图统一留存在 `创作记录/<agent>/空间调度/<run-id>/`。**生成视频时不需要裁切上传，也不绑定到 `referencePlan` 或视频节点素材**（仅用户针对特定镜头明确特批时才可例外裁切绑定）。基础场景图、人物标准图与必要道具继续独立承担视觉参考职责。后续新制人物图默认一人一造型一张3:4竖版四宫格，左上正面胸像、右上四分之三侧胸像、左下全身背面、右下全身正面，详见 [人物标准图](../../../director-knowledge-base/图片素材/人物标准图.md)；已有可用图不追溯重做。
 
 本次已授权图片制作时，按 [生图路由](../../../PRODUCTION_SOP.md#image-generation-routing) 和当前项目选择使用 imagegen 或官方 libtv-cli → Lib Image，完成版本化保存、实际查看、必要局部返修、正式绑定和 API／页面回读，并把正确版本接入消费者。既有授权无需逐项再问；没有生图授权时交付图像提示词与缺口，不自动花费。关键帧仍受下方单独审核门槛保护。
 
@@ -70,7 +73,7 @@ description: 拆分镜与图片素材的主入口。接收用户直接提供或�
 
 作者在同一次 [最终检查](references/review-mode.md) 中先按播放顺序看整场是否讲得通、动作是否可见、镜头能否接，再核对逐字台词、全名、格式、时间、关键素材和引用；结构通过不等于拍法成立。只修有证据的缺口，保持有效范围。
 
-所有正式成果沿用根素材 schema、版本目录和两份正式索引。视频／图片提示词、实际素材、运行证据分别登记；候选清单不代替正式绑定。按 [local-first order](references/workflow-contract.md#local-first-libtv-order) 完成本地当前稿、索引与 API／页面回读后，才做已授权的 LibTV 变更。视频创建／运行统一经项目画幅与台词门禁，不绕过官方 CLI。
+所有正式成果沿用根素材 schema、版本目录和两份正式索引。视频／图片提示词、实际素材、运行证据分别登记；候选清单不代替正式绑定。按 [local-first order](references/workflow-contract.md#local-first-libtv-order) 完成本地当前稿与索引更新后，**必须先运行 `python3 scripts/check-episode-local.py --project-dir <项目目录> --episode <EP>`** 并通过 API／页面回读，才做已授权的 LibTV 变更。视频创建／运行统一经项目画幅与台词门禁，不绕过官方 CLI。
 
 已有媒体返修先判断实际剪辑用途：具体哪处妨碍理解或接剪，现有入出点／原声能否解决，确需重生成时究竟改变什么。能通过简单剪辑保留必要剧情、动作和完整对白并接好相邻片段时，记为“剪辑后可用”，标明保留／避开区间；不因局部缺陷整条判废或自动重生成。保留最好用版本；口音、音色、音量、语速和夸张程度分别判断，不把“别夸张”自动改为低声。无硬错误且可按既定用途使用时停止可选返修，用户已接受的版本受原范围保护。
 
@@ -112,11 +115,11 @@ Before any LibTV mutation use [local-first order](references/workflow-contract.m
 
 生成后实际打开原图，逐项核对正文、字形、标点、数字与单位，记录核对范围。OCR只能辅助，不能代替查看；错字、缺字、截断、占位字或无法辨认的必需内容应修复，未修复不得报告文字素材完成。若单独制作文字层或底图，必须在实际合成图中完整呈现文字，不能把未合成的示意底图当最终图片交付。
 
-区分剧中物件本身的中文内容与画外说明污染：真实纸面正文、票据字段、圈选笔迹可属于道具；当前俯视站位和镜头调度图中的必要网格、箭头、镜头编号与说明可以按明确空间/调度职责作为视频参考，不能变成成片文字；其它未核对规划图仍不直接接入。文字完整的图片不保证视频里文字自动正确；有可读文字镜头时仍需明确镜头消费者、可见时间、必要合成及最终媒体核验。文字侧向或暂时被遮挡是镜头调度，不豁免源图片的完整中文要求。
+区分剧中物件本身的中文内容与画外说明污染：真实纸面正文、票据字段、圈选笔迹可属于道具；导演内部使用的俯视站位和镜头调度图及规划图均不直接接入视频生成。文字完整的图片不保证视频里文字自动正确；有可读文字镜头时仍需明确镜头消费者、可见时间、必要合成及最终媒体核验。文字侧向或暂时被遮挡是镜头调度，不豁免源图片的完整中文要求。
 
 ## Use canonical full character names
 
-Use the exact canonical full character name when introducing a character in each independent generation unit, switching the acting subject, attributing speech, mapping references, or resolving ambiguous action, gaze, contact or sound ownership. Do not replace an established name with surname-only shorthand such as `江` or `霍`, initials or vague role labels.
+Use the exact canonical full character name when introducing a visible, image-bound character in each independent generation unit, switching the acting subject, attributing speech, mapping references, or resolving ambiguous action, gaze, contact or sound ownership. Do not replace an established name with surname-only shorthand such as `江` or `霍`, initials or vague role labels. For off-screen characters who are NOT visible and NOT bound to an image reference in the current unit, do NOT write their full names in camera/picture/action prose—use off-screen direction or position (e.g. `前方画外`, `画外北端方向`) instead so the video model does not hallucinate unbound characters into frame; verbatim spoken dialogue remains untouched.
 
 Within an unambiguous continuous action by the same subject, allow grammatical subject omission or a clearly resolved pronoun. Do not repeat a full name mechanically for every verb, body part or ending state. Reintroduce the full name whenever another person could be the actor, listener, holder or recipient. Check meaning in context; a pronoun or omitted subject is not itself a failure. Verbatim source quotations and approved dialogue remain unchanged. Actual naming or ownership errors in formally published prose are repaired as new versions within the affected scope.
 
