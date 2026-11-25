@@ -48,5 +48,10 @@
 - [从想法到故事](从想法到故事.md)：输入还不是剧本时使用。
 - [剧本诊断清单](剧本诊断清单.md)：已有大纲或剧本但效果不稳定时使用。
 - [对白、梗与情绪节拍](对白、梗与情绪节拍.md)：本轮包含场景对白、喜剧或情感落点时必读。
+- `script-writer` 短剧实战参考模块（按需加载，位于 `.agents/skills/script-writer/references/`）：
+  - `world-and-character-dev.md`：世界观规则四要素、反派基线与跨集连续性五账。
+  - `douyin-short-drama-pacing.md`：抖音/红果节奏档位、第一集生死线、五大钩子、冲突签名防重复与 AIGC 可拍性前置铁律。
+  - `dialogue-naturalization.md`：短剧对白密度、称呼四轴、去 AI 书面腔与带刺活人话。
+  - `anti-sycophancy-review.md`：反捧杀五维审稿透镜、改稿六把刀与外来剧本只补表演层边界。
 
 案例研究保存在 `../案例/`。只有当前问题需要范例或反例时，才读取一到三个相关案例。

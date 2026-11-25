@@ -143,6 +143,13 @@ class GateTests(unittest.TestCase):
         task = self.audio_task((8, 8), model='Seedance 2.5（样片模式）')
         self.assertIsNone(gate.validate_audio_references(self.root, task))
 
+    def test_magi_audio_limits_are_distinct_from_wan(self):
+        task = self.audio_task((16, 14), model='MAGI-2')
+        self.assertEqual(gate.validate_audio_references(self.root, task)['totalSeconds'], 30)
+        for seconds in [(1.999,), (30.001,), (16, 15), (2,) * 6]:
+            with self.subTest(seconds=seconds), self.assertRaisesRegex(ValueError, 'MAGI_AUDIO_LIMIT'):
+                gate.validate_task(self.root, self.audio_task(seconds, model='MAGI-2'))
+
     def test_audio_duration_cannot_be_unknown_nonfinite_or_without_audio(self):
         task = self.audio_task((8,))
         path = self.root / task['audioReferences']['audio-0']['path']
@@ -663,6 +670,37 @@ class GateTests(unittest.TestCase):
         self.assertIn('resolution=720p', command)
         self.assertFalse(any(item.startswith(('enableSound=', 'extendPrompt=')) for item in command))
         self.assertNotIn('--run', command)
+
+    def test_magi_creation_only_sends_supported_parameters(self):
+        task = self.task(model='MAGI-2', resolution='1080p')
+
+        def response(args):
+            if 'create' in args:
+                return {'nodeKey': 'created'}
+            return {'nodeKey': 'person', 'data': {'type': 'image'}}
+
+        with patch.object(gate, 'cli', side_effect=response) as remote:
+            self.invoke('create', task)
+        command = remote.call_args.args[0]
+        settings = [command[i + 1] for i, arg in enumerate(command) if arg == '-s']
+        self.assertEqual(settings, ['model=MAGI-2', 'modeType=mixed2video',
+                                    'ratio=9:16', 'resolution=1080p', 'duration=8', 'count=1'])
+        self.assertNotIn('--run', command)
+
+    def test_magi_preflight_requires_byte_identical_prompt(self):
+        task = self.task('画幅：9:16\n{{Node person}}\n', model='MAGI-2',
+                         resolution='1080p', videoNodeId='video')
+        responses = self.node_responses(task)
+        params = responses[1]['data']['params']
+        del params['settings']['enableSound']
+        params['settings']['resolution'] = task['resolution']
+        params['advancedSettings'] = {}
+        responses[0]['data']['content'] = params['prompt'].split('\n')
+        with patch.object(gate, 'cli', side_effect=responses):
+            self.assertEqual(gate.preflight(self.root, task)['threePromptSha256'], [task['promptSha256']] * 3)
+        params['prompt'] = params['prompt'].removesuffix('\n')
+        with patch.object(gate, 'cli', side_effect=responses), self.assertRaisesRegex(ValueError, 'prompt mismatch'):
+            gate.preflight(self.root, task)
 
     def test_seedance25_creation_preserves_sound_without_wan_extension(self):
         for model in ('Seedance 2.5', 'star-video2.5'):

@@ -224,6 +224,10 @@ def is_wan3(task):
     return task.get('model') in ('Wan 3.0', 'wanx3.0')
 
 
+def is_magi2(task):
+    return task.get('model') in ('MAGI-2', 'magi-2')
+
+
 def probe_audio_seconds(path):
     probe = read_json(subprocess.check_output([
         'ffprobe', '-v', 'error', '-select_streams', 'a:0',
@@ -237,17 +241,20 @@ def probe_audio_seconds(path):
 
 def validate_audio_references(project, task):
     wan = is_wan3(task)
-    if not wan and task.get('modeType') != 'frames2video':
+    magi = is_magi2(task)
+    if not (wan or magi) and task.get('modeType') != 'frames2video':
         return None
     types = task.get('mediaTypes')
     if (not isinstance(types, dict) or set(types) != set(task['mediaNodeIds'])
             or any(kind not in ('image', 'audio', 'video') for kind in types.values())):
         raise ValueError('Complete mediaTypes required; unknown inputs cannot bypass audio checks')
     audio_ids = [node for node in task['mediaNodeIds'] if types[node] == 'audio']
+    if magi and len(audio_ids) > 5:
+        raise ValueError('MAGI_AUDIO_LIMIT: at most five audio references')
     refs = task.get('audioReferences', {})
     if not isinstance(refs, dict) or set(refs) != set(audio_ids):
         raise ValueError('audioReferences must map every audio node to its local path and sha256')
-    if not wan and not audio_ids:
+    if not (wan or magi or audio_ids):
         return None
     measured = []
     total = Decimal(0)
@@ -259,12 +266,17 @@ def validate_audio_references(project, task):
         if sha256 != ref.get('sha256'):
             raise ValueError('Audio source hash mismatch; remeasure the actual reference version')
         seconds = probe_audio_seconds(path)
+        if magi and not Decimal(2) <= seconds <= Decimal(30):
+            raise ValueError(f'MAGI_AUDIO_LIMIT: each audio reference must be 2–30s, got {seconds}s')
         total += seconds
         measured.append({'nodeId': node, 'path': ref['path'], 'sha256': sha256,
                          'sha1': hashlib.sha1(data).hexdigest(), 'seconds': float(seconds)})
     if wan and total > Decimal(15):
         raise ValueError(f'WAN_AUDIO_LIMIT: cumulative reference audio {total}s exceeds 15s; split the unit')
-    return {'limitSeconds': 15 if wan else None, 'totalSeconds': float(total), 'items': measured}
+    if magi and total > Decimal(30):
+        raise ValueError(f'MAGI_AUDIO_LIMIT: cumulative reference audio {total}s exceeds 30s')
+    limit = 15 if wan else 30 if magi else None
+    return {'limitSeconds': limit, 'totalSeconds': float(total), 'items': measured}
 
 
 def validate_remote_audio(task, evidence, params=None):
@@ -307,12 +319,12 @@ def supports_extend_prompt(model):
     return model not in ('Seedance 2.5', 'star-video2.5',
                          'Seedance 2.5（样片模式）', '即梦1.5 Pro',
                          'Seedance 1.5 Pro', 'seedance-1.5-pro',
-                         '可灵 4.0', 'Kling 4.0', 'kling-v4')
+                         '可灵 4.0', 'Kling 4.0', 'kling-v4', 'MAGI-2', 'magi-2')
 
 
 def supports_enable_sound(model):
-    # Kling 4.0's current official schema exposes no sound toggle.
-    return model not in ('可灵 4.0', 'Kling 4.0', 'kling-v4')
+    # These schemas do not expose a sound toggle.
+    return model not in ('可灵 4.0', 'Kling 4.0', 'kling-v4', 'MAGI-2', 'magi-2')
 
 
 def preflight(project, task):
@@ -321,7 +333,9 @@ def preflight(project, task):
     video = cli(['node', task['videoNodeId'], '-p', task['projectUuid']])
     graph = cli(['project', task['projectUuid']])
     params = video['data']['params']
-    bodies = [body.strip(), '\n'.join(text['data']['content']).strip(), params['prompt'].strip()]
+    bodies = [body, '\n'.join(text['data']['content']), params['prompt']]
+    if not is_magi2(task):
+        bodies = [value.strip() for value in bodies]
     if len(set(bodies)) != 1:
         raise ValueError('Local/text/video prompt mismatch')
     expected = {'ratio': lock['aspectRatio'], 'resolution': task['resolution'],
@@ -348,7 +362,7 @@ def preflight(project, task):
     ids = [x['nodeId'] for x in media]
     if len(ids) != len(set(ids)) or set(ids) != set(task['mediaNodeIds']):
         raise ValueError('Actual media references differ')
-    if is_wan3(task) or task.get('modeType') == 'frames2video':
+    if is_wan3(task) or is_magi2(task) or task.get('modeType') == 'frames2video':
         for kind in ('image', 'audio', 'video'):
             if any(task['mediaTypes'][ref['nodeId']] != kind for ref in params.get(kind + 'List', [])):
                 raise ValueError('Actual media types differ from local audio audit')
