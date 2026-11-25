@@ -316,7 +316,7 @@ export function ProjectLibraryPage() {
       <header className="app-header">
         <div className="brand-block">
           <BrandMark />
-          <div><strong>{project?.name ?? projectId ?? "短剧素材库"}</strong><span>AI 短剧素材中心 · 创作工作台</span></div>
+          <div><strong>{project?.name ?? projectId ?? "短剧素材库"}</strong><span>兜导 · 短剧 Harness · 素材工作台</span></div>
         </div>
         <div className="header-actions">
           {projects.length > 0 && (

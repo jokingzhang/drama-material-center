@@ -1,96 +1,129 @@
-# AI 短剧素材中心
+<div align="center">
 
-一个只在本机运行的多项目短剧创作工作台。首页用封面卡片区分项目；进入项目后先按故事大概、角色设定、分集和场次理解剧本，再通过保留的统一文件树浏览真实剧本、图片、音频和视频。仓库级“导演知识库”用三组可读 Markdown 文档告诉 AI 怎样从想法或剧本继续完成故事、图片素材和分镜提示词；“原片拆解训练”围绕《我的妹妹不可爱》的具体片段组织专项、通识与 AI 生成练习；“AI 视频一周雷达”保留历史选题报告。
+<img src="public/brand-logo.png" alt="兜导 · 短剧 Harness" width="96" height="96" />
 
-桌面工作台支持：
+# 兜导 · 短剧 Harness
 
-- 可拖动的文件树与单一右侧工作区：点击文件夹显示铺满的缩略图概览；从内容区点击文件使用通用弹窗预览，从左侧文件树点击文件才切换为铺满的独立预览；
-- 文件夹与文件统一树、镜头/版本标签和路径状态提示；
-- 文件名搜索，以及 Markdown/文本正文搜索；
-- 保留真实宽高比的图片缩略图与比例标签、文本摘要、音频卡内按需试听、延迟加载的视频预览和 Markdown 大纲；
-- 沉浸阅读、文档内查找、字号调整和素材前后切换。
-- 提示词引用素材栏：准确关联的图片可点击放大，声音可点击试听；正文引用标签同步可点。点击遮罩或按 Esc 关闭当前预览层；未关联或版本不一致的历史引用会显示原因。
-- 可记忆的浅色/暗黑主题切换，首页、工作台与沉浸阅读保持一致。
-- 独立的剧本、图片素材、分镜提示词三类知识文档；AI 按当前任务渐进读取和维护，用户只需查看与确认。
-- AI 视频一周雷达历史页、双列报告卡片与可交互详情页；每周报告按版本进入 Git，旧版不覆盖。
+**本地多项目 AI 短剧生产底座：电影级分镜 SOP × 自动化工程门禁 × 导演可视化工作台**
 
-路径中的 `ACCEPTED`、`DRAFT` 等只作为文件命名提示展示，不代替实际查看、播放或人工验收。
+面向「已有剧本 → 角色 / 场景 / 道具 / 音色资产 → 电影级分镜与视频提示词 → 审片与成片交付」全链路，把分散的提示词经验收编为**可校验、可追溯、防穿帮、告别会动的 PPT** 的工程化 Harness。
 
-Web 程序、测试和 `weekly-radar/reports/` 中的轻量 HTML 周报进入 Git；`workspace/` 中的项目配置、封面、剧本、图片、视频及其他资源全部保持在本地。
+</div>
 
-## 启动
+---
+
+## 核心能力
+
+### 1. 电影级四阶导演工作流（SOP + 按阶段切片）
+
+详细执行规范见 [PRODUCTION_SOP.md](PRODUCTION_SOP.md) 与 [AGENTS.md](AGENTS.md)。创作任务按固定边界推进：**确认剧本 → 确认台词 → 设计分镜 → 双层机检 → 授权生产**：
+
+```text
+Stage 1 导演决策（风格档位 / 情境映射 / 权力几何 / 战斗按需挂载）
+  ↓
+Stage 2 空间排演与双栏分镜预览（默认人工停靠确认 + 本集资产缺口清单）
+  ↓
+Stage 3 四类资产闭环（3:4 人物四宫格 / 16:9 多视角场景 / 道具图 / LibTV 固定音色）
+  ↓
+Stage 4 提示词编译与双层机检（工程绑定 0 错误 + 反 PPT 电影感门禁 0 FAIL → 同步 LibTV）
+```
+
+- **按阶段动态切片规则**：通过 `scripts/slice-stage-context.py` 按 `S1–S4` 及战斗档位（`R1/R2/R3`）精确装载 `ai-director` 规则，避免一次性堆叠上下文导致注意力坍塌。
+- **工具默认路由**：人物标准图（3:4 四宫格）与道具图默认走内置 `imagegen`；16:9 场景母版/分视角图与固定音色默认经官方 `libtv-cli` 闭环落地，落盘后实际核看/试听再入账。
+
+### 2. 自动化硬门禁（先拦截，不花冤枉积分）
+
+| 门禁脚本 | 拦截目标 |
+| --- | --- |
+| `scripts/video-format-gate.py` | 剧级画幅硬锁（`9:16` / `16:9`），统一接管视频节点创建/运行与成片像素校验 |
+| `scripts/dialogue_gate.py` | 逐字台词合同校验，防止画面返修或改分镜时擅改已确认对白、说话人或顺序 |
+| `scripts/check-episode-local.py` | 本地引用计划、文件 SHA-256、视角冲突与四类关键素材绑定完整性校验 |
+| `scripts/check-storyboard-cinema.py` | 电影感与反 PPT 机检：拦截长静态站桩、内部规划词泄漏、时间轴错乱与画外人名泄漏 |
+| `scripts/audit-git-boundary.mjs` | 严守仓库与本地素材隔离，确保 `workspace/` 中真实短剧资产永不误提交 Git |
+
+### 3. 导演可视化工作台（本地 Web UI）
+
+纯本机运行、不上传云端，支持**浅色（纯白画布 + 浅灰侧栏）**与**暗色（中性炭黑影棚）**双模切换：
+
+- **紧凑单行工作台 + `⌘K` 全局跳转**：54px 毛玻璃顶栏内嵌阅读进度光丝，随时 `⌘K` / `Ctrl+K` 按集数、人物或场景一键直达。
+- **智能剧本目录**：自动滚动定位当前集，支持集数/标题即时筛选、制作阶段色点与数量统计。
+- **全剧制作总览**：SVG 完成度进度环、四阶段生产流程条、当前推进焦点与支持状态筛选的 60+ 集矩阵；切到人物/场景/分集列表时自动收敛为单行进度条。
+- **单集导演工作台**：
+  - 滚动吸顶毛玻璃 Scroll-Spy 导览条，长页实时追踪并切换区块；
+  - 人物 `3:4` 四宫格与道具图完整展示零裁切，场景图按 `16:9` 宽画幅呈现并自动解析机位视角与版本标签；
+  - 角色声音独立为紧凑横向音色试听条（支持拖动进度条与动态声波律动）；
+  - 全宽分集剧本横幅卡 + 分镜提示词序列卡，支持卡片**一键复制全文**。
+- **高效预览弹窗与引用核验**：
+  - 顶栏直接展示文档名与生产标签，内置「复制全文」与键盘 `←` / `→` 快速切镜；
+  - 单标题文档自动收起章节目录释放阅读宽度；
+  - 提示词顶部「引用素材条」支持图片放大、音频行内直接试听、点击 `{{Node ...}}` 编号一键复制，未关联或版本不一致的引用自动提示原因。
+- **延伸模块**：保留统一双栏素材文件浏览器、只读「导演知识库」、本地「原片拆解训练」及「AI 视频一周雷达」历史周报。
+
+> 路径中的 `ACCEPTED`、`DRAFT` 等仅作命名提示，不代替实际查看、完整播放试听或人工验收。
+
+---
+
+## 快速启动
 
 ```bash
 npm install
 npm run dev
 ```
 
-默认地址：`http://127.0.0.1:4373/`。
+启动后访问：`http://127.0.0.1:4373/`
 
-## 本地数据
+### 常用校验与构建命令
 
-默认工作区是仓库内的 `workspace/`。可以复制 `.env.example` 为 `.env.local`，把 `MATERIAL_CENTER_WORKSPACE` 改成其他本地目录或外接硬盘路径。
-
-实际项目不会被 Git 跟踪。运行 `npm run audit:git-boundary` 可以检查这一约束。
-
-## 原片拆解训练
-
-`/ai-video-practice` 只研究用户指定的《我的妹妹不可爱》第 1 集（06:43 版本）。每个专项有原片时间范围、可见观察与分析、相关通识比较、本片的具体选择、AI 短样、60–120 秒原创成片候选和复盘标准。课程数据位于 `src/data/videoPracticeCurriculum.ts`，无具体原作来源的条目不进入练习列表。
-
-每条通识通过 `src/data/videoPracticeConceptResources.ts` 关联具体讲解或案例，标注语言与阅读位置。画面风格另有带出处、作品名和观察提示的图片；图片从来源站点加载，失败时保留来源页入口，不写入项目生产素材。
-
-详情可选择电脑上的原片，在浏览器本地按专项时间段播放；文件不上传、不复制进 Git。页面间复用本地文件，刷新后需重选。网络按钮回到抖音原帖，不承诺第三方页面自动定位。
-
-“本轮作品”用于讨论和记录：自动带入已有原片，每个专项独立保留多轮草稿。记录只存当前浏览器的 localStorage，可导出 JSON 备份；它不是项目正式生产索引，也不代表剧本、台词、画幅锁或素材验收。试片前需标记看过并选用具体片段、写明成片目标与画幅意向；实际生产继续遵守 `PRODUCTION_SOP.md`。
-
-## AI 视频一周雷达
-
-项目级 Skill 位于 `.agents/skills/ai-video-weekly-radar/`。调用 `$ai-video-weekly-radar` 完成当周公开样本调研、复刻候选筛选、教学选题规划和证据整理；最终使用 Skill 自带的注册脚本，把报告写入：
-
-```text
-weekly-radar/reports/<YYYY-MM-DD--YYYY-MM-DD-vNN>/
-├── manifest.json
-├── report.html
-└── evidence.json       # 可选；本期已保留
+```bash
+npm run typecheck           # TypeScript 类型检查
+npm run test:app            # 前端与本地服务 Vitest 单元测试
+npm run test                # 全量测试（前端 + Skills + 视频门禁 + 台词门禁 + 本地校验）
+npm run build               # 生产构建
+npm run audit:git-boundary  # 检查本地素材与 Git 边界隔离
 ```
 
-同一观察周返修时递增 `vNN`，不得覆盖已有目录。服务端读取前会校验目录名、清单、普通文件边界和 SHA-256；未通过的报告会被隔离并在历史页提示。
+---
 
-每个项目使用下面的本地骨架：
+## 本地工作区与项目结构
+
+代码、Skills、门禁脚本、测试与 `weekly-radar/reports/` 轻量周报进入 Git；所有短剧项目配置、封面、剧本、图片、音频、视频和生产证据全部保留在本地工作区，不进入版本库。
+
+默认工作区位于仓库内 `workspace/`。如需指向外接硬盘或其他本地目录，可复制 `.env.example` 为 `.env.local` 并配置 `MATERIAL_CENTER_WORKSPACE`（相对路径以仓库根目录为准）。
+
+每个短剧项目遵循统一的本地自包含结构：
 
 ```text
 workspace/<project-id>/
-├── project.json        # 名称、说明和当前封面文件名
-├── cover.png           # 可选；也支持 jpg、webp、gif
+├── project.json                   # 项目显示名称、说明与封面
+├── cover.png                      # 可选（支持 png/jpg/webp/gif）
+├── PRODUCTION_RULES.md            # 剧级画幅锁与项目级规则
 ├── production/
-│   ├── story-index.v1.json      # 故事、角色、分集、场次和明确需求
-│   └── asset-bindings.v1.json   # 本地素材与稳定业务 ID 的关联
-└── library/
-    ├── 剧情/
-    ├── 图片/人物/
-    ├── 图片/场景/
-    ├── 音频/剧情/
-    └── 视频/成片/
+│   ├── story-index.v1.json        # 故事、人物、场景、分集与明确需求索引
+│   └── asset-bindings.v1.json     # 本地资产、哈希与稳定业务 ID 绑定
+├── library/
+│   ├── 剧情/                       # 统一剧本、角色设定、分集剧本与分镜提示词
+│   ├── 图片/                       # 人物/<CHAR>/<LOOK>/、场景/<LOC>/、道具/<PROP>/
+│   ├── 音频/                       # 人物/<CHAR>/、环境/<LOC>/、BGM/
+│   └── 视频/                       # 剧情/<EP>/<SCENE>/、成片/<EP>/
+├── 创作记录/                       # 俯视站位调度图、原始响应等内部创作证据
+├── 生产记录/                       # 媒体任务、下载、抽帧与 QA 证据
+└── 交付包/                         # 经正式验收后的顺序交付副本
 ```
 
-## 路由
+---
 
-- `/`：所有项目的封面卡片。
-- `/projects/:projectId/story`：剧本抬头、故事大概、角色卡和分集索引；项目默认入口。
-- `/projects/:projectId/story/characters/:characterId`：角色设定、主/备选造型和素材缺口。
-- `/projects/:projectId/story/episodes/:episodeId`：按需读取一集的场次和相关素材。
-- `/projects/:projectId/story/episodes/:episodeId/scenes/:sceneId`：指定场次的稳定深链。
-- `/projects/:projectId/library/*`：指定项目及素材目录。
-- `?file=...&preview=dialog&search=...&sort=...`：选中文件、内容区弹窗展示方式、搜索词和排序方式；没有 `preview=dialog` 的文件深链使用右侧独立预览。
-- `scope=current|project`、`content=1`、`display=list|grid`：搜索范围、正文搜索和素材展示方式。旧分集台参数会自动清理。
-- `/knowledge`：AI 导演的简单工作链路和三类知识入口。
-- `/knowledge/areas/:area`：某一类知识的 Markdown 文档列表。
-- `/knowledge/areas/:area/*`：具体知识文档，可直接刷新和复制链接。
-- `/ai-video-practice`：原片拆解项目与专项列表，分类和搜索以 URL 为准。
-- `/ai-video-practice/:exerciseId`：专项拆解与通识；`?tab=rounds` 打开本轮作品。
-- `/ai-video-radar`：AI 视频一周雷达历史列表；桌面端每行两份报告，窄屏自动改单列。
-- `/ai-video-radar/reports/:reportId`：某一期周报详情；保留报告内筛选交互，并使用紧凑顶部展示。
+## 主要页面路由
 
-导演知识页面在构建时发现仓库根 `director-knowledge-base/剧本`、`图片素材`、`分镜提示词` 中的 Markdown，并在点击文档时才读取正文。它不依赖导演知识 API、JSON 索引或使用记录。工作区内同名历史目录仍只是普通项目素材，不会被自动合并。
+所有视图与预览状态以 URL 为准，刷新或复制链接均可精准还原：
 
-这些状态以 URL 为准，复制地址或直接刷新都不会返回项目首页。
+- `/`：所有短剧项目封面卡片与新建入口
+- `/projects/:projectId/story`：全剧制作总览与故事大概（项目默认入口）
+- `/projects/:projectId/story?section=characters|locations|episodes`：人物设定 / 场景设定 / 分集视角
+- `/projects/:projectId/story/characters/:characterId`：单人物设定、标准图与音色
+- `/projects/:projectId/story/locations/:locationId`：单场景多视角母版与环境声
+- `/projects/:projectId/story/episodes/:episodeId`：单集导演工作台（通用资源、剧本、专属图、分镜提示词与验收）
+- `/projects/:projectId/story/episodes/:episodeId/scenes/:sceneId`：单场次稳定深链
+- `/projects/:projectId/library/*`：项目素材文件浏览器（支持目录树、文件名与正文检索、生产顺序排序）
+- `/knowledge`：仓库级只读导演知识库（`director-knowledge-base/剧本`、`图片素材`、`分镜提示词`）
+- `/ai-video-practice`：本地原片拆解训练与复盘工作区（记录存本机 `localStorage`，不写入正式生产索引）
+- `/ai-video-radar`：AI 视频一周雷达历史周报（按 `weekly-radar/reports/<YYYY-MM-DD--YYYY-MM-DD-vNN>/` 版本化留档并校验 SHA-256）

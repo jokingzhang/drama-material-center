@@ -127,7 +127,7 @@ export function ProjectsPage() {
       <header className="app-header">
         <div className="brand-block">
           <BrandMark />
-          <div><strong>AI 短剧素材中心</strong><span>多个项目 · 本地文件 · 不上传云端</span></div>
+          <div><strong>兜导 · 短剧 Harness</strong><span>本地多项目 AI 短剧导演工作台 · 不上传云端</span></div>
         </div>
         <div className="header-actions">
           <ThemeToggle />

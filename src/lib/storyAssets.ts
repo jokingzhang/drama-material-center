@@ -41,6 +41,65 @@ export function shotPromptDuration(content: string) {
   return duration ? `${duration} 秒` : undefined;
 }
 
+const versionTokenPattern = /(?:^|[-_.])(v\d{2,})(?=[-_.]|$)/i;
+const sceneAngleMap: Array<[RegExp, string]> = [
+  [/(?:^|[-_])OBLIQUE45(?:[-_.]|$)/i, "斜向 45°"],
+  [/(?:^|[-_])REVERSE(?:[-_.]|$)/i, "反向视角"],
+  [/(?:^|[-_])FRONT(?:[-_.]|$)/i, "正面主视角"],
+  [/(?:^|[-_])TOP(?:[-_.]|$)/i, "俯视平面"],
+  [/(?:^|[-_])LEFT(?:[-_.]|$)/i, "左侧视角"],
+  [/(?:^|[-_])RIGHT(?:[-_.]|$)/i, "右侧视角"],
+  [/(?:^|[-_])NIGHT[-_]?WORK(?:[-_.]|$)/i, "夜班氛围"],
+  [/(?:^|[-_])NIGHT(?:[-_.]|$)/i, "夜景"],
+  [/(?:^|[-_])DOOR[-_]?OPEN(?:[-_.]|$)/i, "开门视角"],
+  [/(?:^|[-_])CONVERSATION(?:[-_.]|$)/i, "对话区视角"],
+  [/(?:^|[-_])MASTER(?:[-_.]|$)/i, "场景母版"],
+  [/(?:^|[-_])WIDE(?:[-_.]|$)/i, "全景"],
+  [/(?:^|[-_])CLOSE(?:[-_.]|$)/i, "近景"],
+];
+
+export function assetVersionTag(name: string) {
+  return name.match(versionTokenPattern)?.[1]?.toLowerCase();
+}
+
+export function sceneViewBadge(name: string) {
+  for (const [pattern, label] of sceneAngleMap) {
+    if (pattern.test(name)) return label;
+  }
+  const stem = name.replace(/\.[^.]+$/, "").replace(versionTokenPattern, "");
+  const parts = stem.split(/[-_]+/).filter(Boolean);
+  const tail = parts.at(-1);
+  if (tail && /^[A-Z0-9]{2,16}$/i.test(tail) && !/^EP\d+$/i.test(tail)) return tail.toUpperCase();
+  return undefined;
+}
+
+export function readableAssetTitle(asset: StoryAssetLink, customLabel?: string) {
+  if (asset.materialType === "image.scene") {
+    const view = sceneViewBadge(asset.name);
+    const base = customLabel?.replace(/\s*·\s*场景图片$/, "").trim();
+    if (base && view) return `${base} · ${view}`;
+    if (view) return view;
+  }
+  if (asset.materialType === "image.prop" && (!customLabel || /道具图片|图片素材/.test(customLabel))) {
+    const stem = asset.name
+      .replace(/\.[^.]+$/, "")
+      .replace(versionTokenPattern, "")
+      .replace(/^(?:[A-Z0-9]+-)?(?:EP\d+-)?PROP-/i, "")
+      .replace(/-(?:STANDARD|CLEAN|DETAIL)$/i, "");
+    if (stem) return stem;
+  }
+  if (customLabel && customLabel.trim()) return customLabel.trim();
+  return asset.name.replace(/\.[^.]+$/, "");
+}
+
+export function shotUnitCode(asset: StoryAssetLink) {
+  const token = shotTokenFor(asset)?.token;
+  const transition = `${asset.path}/${asset.name}`.match(transitionTokenPattern)?.[1];
+  if (transition && token) return `T${transition}·${token}`;
+  if (transition) return `T${transition}`;
+  return token;
+}
+
 export function sortCurrentShotPrompts(assets: Array<StoryAssetLink | undefined>) {
   return deduplicateCurrentStoryAssets(assets)
     .filter((asset) => asset.materialType === "prompt.video")

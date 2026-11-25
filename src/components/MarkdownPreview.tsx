@@ -247,7 +247,8 @@ const MarkdownDocument = memo(function MarkdownDocument({
 export function MarkdownPreview({ source, projectId, assetPath, expanded = false, onOpenMaterial }: MarkdownPreviewProps) {
   const [selectedReference, setSelectedReference] = useState<{ reference: PromptReferenceItem; trigger: HTMLElement; autoPlay: boolean } | null>(null);
   const [referenceResult, setReferenceResult] = useState<{ projectId: string; path: string; source: string; preview?: PromptReferencePreview; error?: string } | null>(null);
-  const [outlineOpen, setOutlineOpen] = useState(true);
+  const headings = useMemo(() => documentHeadings(source), [source]);
+  const [outlineOpen, setOutlineOpen] = useState(() => headings.length > 1);
   const [fontScale, setFontScale] = useState(1);
   const [documentQuery, setDocumentQuery] = useState("");
   const [matchCount, setMatchCount] = useState(0);
@@ -257,7 +258,6 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
   const contentScrollRef = useRef<HTMLDivElement>(null);
   const outlineRef = useRef<HTMLElement>(null);
   const previousExpandedRef = useRef(expanded);
-  const headings = useMemo(() => documentHeadings(source), [source]);
   const hasMediaReferences = /\{\{\s*(?:Mixed\s+\d+|Node\s+[a-zA-Z0-9_-]+)\s*\}\}/i.test(source);
   const shouldLoadReferences = hasMediaReferences || /(?:prompt|提示词)/i.test(assetPath);
   const currentReferenceResult = referenceResult?.projectId === projectId && referenceResult.path === assetPath && referenceResult.source === source
@@ -302,7 +302,8 @@ export function MarkdownPreview({ source, projectId, assetPath, expanded = false
     setMatchCount(0);
     setActiveMatch(0);
     setActiveHeadingIndex(0);
-  }, [assetPath]);
+    setOutlineOpen(headings.length > 1);
+  }, [assetPath, headings.length]);
 
   useLayoutEffect(() => {
     if (previousExpandedRef.current === expanded) return;

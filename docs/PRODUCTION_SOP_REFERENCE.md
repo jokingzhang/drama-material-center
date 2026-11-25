@@ -12,18 +12,17 @@
 | --- | --- | --- |
 | 故事核心、人物动机、结构或场景推进不成立 | [script-writer](../.agents/skills/script-writer/SKILL.md) 按需选 `sw-premise-theme` / `sw-character-conflict` / `sw-story-structure` / `sw-scene-craft` | 不重写已经确定且未受影响的剧情 |
 | 创建、修改或诊断对白 | [script-writer](../.agents/skills/script-writer/SKILL.md) 按需调用 [sw-dialogue](../.agents/skills/sw-dialogue/SKILL.md) | 不为口语化强加口头禅或新事实；导演只借演法，不改已确认台词 |
+| 整场决策、情绪节拍、情境机位与风格切档 | [ai-director Stage 1 决策](../.agents/skills/ai-director/references/stage1-decision.md) | 不重写已确认剧本与台词 |
+| 空间调度、权力几何、表演手上活、微表情与听者反应 | [ai-director Stage 2A 调度与表演](../.agents/skills/ai-director/references/stage2-staging-acting.md) | 内部调度词与状态/重音标签不泄漏进视频模型正文 |
+| 选镜、构图、光影、长短单元、切点转场与八种大师镜头 | [ai-director Stage 2B 摄影与剪辑](../.agents/skills/ai-director/references/stage2-camera-editing.md) | 不机械限死时长，不把每镜移动或无动机特效当成电影感 |
+| 动作、格斗、武侠或玄幻战斗分镜 | [ai-director 战斗路由](../.agents/skills/ai-director/references/combat/combat-router.md)（按 R1/R2/R3 切片挂载） | 纯文戏默认不加载，零上下文负担 |
+| 四类资产（角色/16:9场景/道具/LibTV固定音色）补齐闭环 | [ai-director Stage 3 资产闭环](../.agents/skills/ai-director/references/stage3-asset-pipeline.md) | 复用已有合格资产，不先批量补图再找用途 |
 | 新人物外形、脸型区分、新造型或标准图一致性 | [人物外形设计](../.agents/skills/character-visual-designer/SKILL.md) | 换装保留已确认身份，不默认追加定妆照或多套候选图 |
 | 新女性角色从图库选脸或指定 RuiC 人像 ID | [女性角色图库选型](../.agents/skills/ruic-character-reference/SKILL.md)，衔接人物外形设计 | 元数据筛选后实际看图；只导入选中原图，不重挑已接受身份 |
-| 整场信息、节奏、切点和生成单元 | [叙事短片导演分镜](../.agents/skills/jimeng-narrative-director/SKILL.md) | 不默认每句话拆一个视频节点 |
-| 构图、景深、光影、材质与相机选择 | [摄影与光影设计](../.agents/skills/cinematography-director/SKILL.md) | 不因选构图就补关键帧，不把每镜移动当成电影感 |
-| 指定八种电影镜头（推拉变焦、环绕等） | [八种电影镜头提示词](../.agents/skills/cinematic-camera-prompts/SKILL.md) | 只选相关机制，保留四字段格式；不复制教程剧情或固定参数 |
-| 人声、环境／动作声、跨镜声音和配乐 | [声音与配乐设计](../.agents/skills/sound-music-director/SKILL.md) | 不逐节点随机配乐，不默认新增音色或选音实验 |
-| 连续动作、跟随或空间揭示 | [电影级长镜头](../.agents/skills/jimeng-cinematic-long-take/SKILL.md) | 不把未验证的两段拼接叫作一镜到底 |
-| 脸红、克制、停顿、忍笑等局部表演 | [AI演员微表情导演](../.agents/skills/jimeng-micro-expression-director/SKILL.md) | 已有明确方向时不再要求用户多选一轮试戏方案 |
-| 相邻镜头接得生硬或需设计转场 | [AI 视频转场导演](../.agents/skills/video-transition-director/SKILL.md) | 先修两端状态和剪辑点，不用特效掩盖错人、错空间或错道具 |
+| 整场配乐进出、混音与复杂跨镜音轨 | [声音与配乐设计](../.agents/skills/sound-music-director/SKILL.md) | 不逐节点随机配乐，默认通过 LibTV 补齐缺失固定音色 |
 | 快速试机位、走位、节拍或白模平替 | [像素白模预演](../.agents/skills/pixel-previs/SKILL.md) | 内部预演不自动作为模型输入 |
 | 检查真实三维边界、接触或道具几何 | [Blender 白模](../.agents/skills/blender/SKILL.md) | 只做必要局部，不给普通对白配白模，不做四肢精修 |
-| LibTV 能力查询、节点、引用、运行、下载 | 已安装的 `libtv-cli` Skill 及当前 CLI 帮助 | 工具执行不代替故事和导演判断 |
+| LibTV 能力查询、生图、固定音色(`audio`)、节点与运行 | 已安装的 `libtv-cli` Skill 及当前 CLI 帮助 | 工具执行不代替故事和导演判断 |
 
 ---
 

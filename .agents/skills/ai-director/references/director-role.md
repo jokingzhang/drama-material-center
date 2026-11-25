@@ -12,7 +12,7 @@
 
 | 当前决定需要的细节 | 继续读取 |
 | --- | --- |
-| 取景、清晰范围、光与材质 | [摄影与光影](../../cinematography-director/SKILL.md) 的相关部分 |
+| 取景、清晰范围、光与材质 | [摄影、长短单元与转场](stage2-camera-editing.md) 的相关部分 |
 | 台词演法、原声和跨镜声音 | [声音与配乐](../../sound-music-director/SKILL.md)；需要理解意图时取 sw-dialogue 的行动／倾听方法 |
 | 画内人物、门、家具、路线和持物 | [多人站位与首尾状态](../../../../PRODUCTION_SOP.md#actor-state-continuity)，必要的空间／连续性主题 |
 | 图片复用、新图、图像提示词和参考接入 | [art-role.md](art-role.md)；不单独重启美术阶段 |

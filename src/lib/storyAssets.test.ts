@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import type { StoryAssetLink } from "../types/story";
-import { collectSceneDedicatedAssets, shotPromptDuration, sortCurrentShotPrompts } from "./storyAssets";
+import {
+  assetVersionTag,
+  collectSceneDedicatedAssets,
+  readableAssetTitle,
+  sceneViewBadge,
+  shotPromptDuration,
+  shotUnitCode,
+  sortCurrentShotPrompts,
+} from "./storyAssets";
 
 function asset(assetId: string, path: string, materialType: string, status = "DRAFT", kind: StoryAssetLink["kind"] = "story"): StoryAssetLink {
   return { assetId, path, name: path.split("/").at(-1) ?? path, materialType, status, kind, legacyPath: false, url: `/file/${assetId}` };
@@ -47,5 +55,15 @@ describe("episode dedicated story assets", () => {
     expect(groups.textAssets.map((item) => item.assetId)).toEqual(["u01", "u02"]);
     expect(groups.textLabels).toEqual({ u01: "片段 U01", u02: "片段 U02" });
     expect(groups.imageAssets.map((item) => item.assetId)).toEqual(["keyframe", "prop"]);
+  });
+
+  it("extracts version tags, camera view badges, and unit codes for readable cards", () => {
+    expect(assetVersionTag("SCENE-QIUSHI-STUDIO-OBLIQUE45-v04.png")).toBe("v04");
+    expect(sceneViewBadge("SCENE-QIUSHI-STUDIO-OBLIQUE45-v04.png")).toBe("斜向 45°");
+    expect(sceneViewBadge("SCENE-QIUSHI-STUDIO-REVERSE-v04.png")).toBe("反向视角");
+    expect(sceneViewBadge("SCENE-QIUSHI-STUDIO-NIGHT-WORK-v02.png")).toBe("夜班氛围");
+    const sceneAsset = asset("s1", "SCENE-QIUSHI-STUDIO-FRONT-v04.png", "image.scene", "ACCEPTED", "image");
+    expect(readableAssetTitle(sceneAsset, "秋实工作室 · 场景图片")).toBe("秋实工作室 · 正面主视角");
+    expect(shotUnitCode(asset("u5", "EP52-S01-U05-VIDEO-SHOT-PROMPT-v04.md", "prompt.video"))).toBe("U05");
   });
 });

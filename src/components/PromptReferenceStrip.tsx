@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronUp, FileQuestion, Film, ImageIcon, ImageOff, Volume2 } from "lucide-react";
-import { useId, useState } from "react";
+import { Check, ChevronDown, ChevronUp, Copy, FileQuestion, Film, ImageIcon, ImageOff, Pause, Play, Volume2 } from "lucide-react";
+import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
 import type { PromptReferencePreview } from "../types/story";
 import "./ReferenceMedia.css";
 
@@ -48,40 +48,130 @@ function ReferenceCard({ reference, onOpen }: {
   onOpen: (reference: PromptReference, trigger: HTMLElement) => void;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const [copiedToken, setCopiedToken] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const available = isPlayablePromptReference(reference);
   const kind = promptReferenceKindLabel(reference);
   const label = reference.label || reference.reference;
   const duration = typeof reference.durationSeconds === "number" && Number.isFinite(reference.durationSeconds)
-    ? `${reference.durationSeconds.toFixed(1)} 秒`
+    ? `${reference.durationSeconds.toFixed(1)}s`
     : undefined;
 
+  useEffect(() => {
+    if (!copiedToken) return;
+    const timeout = window.setTimeout(() => setCopiedToken(false), 1600);
+    return () => window.clearTimeout(timeout);
+  }, [copiedToken]);
+
+  async function copyNodeToken(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!reference.reference) return;
+    try {
+      await navigator.clipboard.writeText(reference.reference);
+      setCopiedToken(true);
+    } catch {
+      setCopiedToken(false);
+    }
+  }
+
+  async function toggleInlineAudio(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const audio = audioRef.current;
+    if (!audio || !reference.url) return;
+    if (!audio.paused) {
+      audio.pause();
+      return;
+    }
+    document.querySelectorAll<HTMLMediaElement>("audio, video").forEach((media) => {
+      if (media !== audio && !media.paused) media.pause();
+    });
+    try {
+      await audio.play();
+    } catch {
+      setPlaying(false);
+    }
+  }
+
   return (
-    <li className={`prompt-reference-item${available ? "" : " is-unavailable"}`}>
-      <button
-        type="button"
-        className="prompt-reference-card"
-        disabled={!available}
-        title={available ? `${label} · ${reference.version ?? "未标版本"}` : reference.reason ?? unavailableLabel(reference)}
-        aria-label={available ? `${reference.kind === "audio" ? "试听" : "查看"}${kind} ${reference.reference}：${label}` : `${reference.reference}：${label}，${reference.reason ?? unavailableLabel(reference)}`}
-        onClick={(event) => onOpen(reference, event.currentTarget)}
-      >
-        <span className="prompt-reference-visual" aria-hidden="true">
-          {available && reference.kind === "image" && !imageFailed
-            ? <img src={reference.url} alt="" loading="lazy" decoding="async" onError={() => setImageFailed(true)} />
-            : reference.kind === "audio"
-              ? <Volume2 size={27} />
-              : reference.kind === "video"
-                ? <Film size={27} />
-                : reference.kind === "image"
-                  ? <ImageOff size={27} />
-                  : <FileQuestion size={27} />}
-          <span className="prompt-reference-number">{reference.reference}</span>
-        </span>
-        <span className="prompt-reference-card-copy">
-          <strong title={label}>{label}</strong>
-          <small>{available ? `${kind}${duration ? ` · ${duration}` : ""}` : unavailableLabel(reference)}</small>
-        </span>
-      </button>
+    <li className={`prompt-reference-item${available ? "" : " is-unavailable"}${playing ? " is-playing" : ""}`}>
+      <div className="prompt-reference-card-shell">
+        <button
+          type="button"
+          className="prompt-reference-card"
+          disabled={!available}
+          title={available ? `${label} · ${reference.version ?? "未标版本"}` : reference.reason ?? unavailableLabel(reference)}
+          aria-label={available ? `${reference.kind === "audio" ? "试听" : "查看"}${kind} ${reference.reference}：${label}` : `${reference.reference}：${label}，${reference.reason ?? unavailableLabel(reference)}`}
+          onClick={(event) => {
+            if (available && reference.kind === "audio") {
+              void toggleInlineAudio(event);
+            } else {
+              onOpen(reference, event.currentTarget);
+            }
+          }}
+        >
+          <span className={`prompt-reference-visual kind-${reference.kind}`} aria-hidden="true">
+            {available && reference.kind === "image" && !imageFailed
+              ? <img src={reference.url} alt="" loading="lazy" decoding="async" onError={() => setImageFailed(true)} />
+              : reference.kind === "audio"
+                ? (
+                  <span className="prompt-reference-audio-badge">
+                    <span className="prompt-reference-play-circle">
+                      {playing ? <Pause size={15} /> : <Play size={15} />}
+                    </span>
+                    {playing ? (
+                      <span className="studio-eq-bars" aria-hidden="true">
+                        <i /><i /><i /><i />
+                      </span>
+                    ) : (
+                      <Volume2 size={18} />
+                    )}
+                  </span>
+                )
+                : reference.kind === "video"
+                  ? <Film size={24} />
+                  : reference.kind === "image"
+                    ? <ImageOff size={24} />
+                    : <FileQuestion size={24} />}
+          </span>
+          <span className="prompt-reference-card-copy">
+            <strong title={label}>{label}</strong>
+            <small>
+              {available
+                ? `${reference.kind === "audio" ? (playing ? "播放中 · 点击暂停" : "点击直接试听") : kind}${duration ? ` · ${duration}` : ""}`
+                : unavailableLabel(reference)}
+            </small>
+          </span>
+        </button>
+
+        {reference.reference && (
+          <div className="prompt-reference-footer">
+            <button
+              type="button"
+              className={`prompt-reference-token${copiedToken ? " is-copied" : ""}`}
+              onClick={(event) => void copyNodeToken(event)}
+              title="点击复制节点引用编号"
+            >
+              <span>{reference.reference}</span>
+              {copiedToken ? <Check size={11} /> : <Copy size={11} />}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {available && reference.kind === "audio" && reference.url && (
+        <audio
+          ref={audioRef}
+          src={reference.url}
+          preload="none"
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onEnded={() => setPlaying(false)}
+        />
+      )}
+
       {!available && reference.reason && <span className="prompt-reference-unavailable-reason">{reference.reason}</span>}
     </li>
   );
@@ -102,12 +192,12 @@ export function PromptReferenceStrip({ references, onOpen }: {
     <section className="prompt-reference-strip" aria-label="提示词引用素材">
       <header className="prompt-reference-strip-heading">
         <button type="button" aria-expanded={!collapsed} aria-controls={contentId} onClick={() => setCollapsed((value) => !value)}>
-          <ImageIcon size={16} aria-hidden="true" />
+          <ImageIcon size={15} aria-hidden="true" />
           <strong>引用素材 <span>{references.length} 项</span></strong>
-          {collapsed ? <ChevronDown size={16} aria-hidden="true" /> : <ChevronUp size={16} aria-hidden="true" />}
+          {collapsed ? <ChevronDown size={15} aria-hidden="true" /> : <ChevronUp size={15} aria-hidden="true" />}
           <span className="sr-only">{collapsed ? "展开引用素材栏" : "收起引用素材栏"}</span>
         </button>
-        <span className="prompt-reference-strip-hint">点击看图或试听</span>
+        <span className="prompt-reference-strip-hint">图片点击放大 · 音频直接试听 · 编号可点复制</span>
       </header>
       <div id={contentId} hidden={collapsed}>
         <ul className="prompt-reference-grid">
@@ -118,7 +208,7 @@ export function PromptReferenceStrip({ references, onOpen }: {
         {references.length > 6 && (
           <button className="prompt-reference-show-all" type="button" aria-expanded={showAll} onClick={() => setShowAll((value) => !value)}>
             {showAll ? "收起多余素材" : `展开全部 ${references.length} 项`}
-            {showAll ? <ChevronUp size={15} aria-hidden="true" /> : <ChevronDown size={15} aria-hidden="true" />}
+            {showAll ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
           </button>
         )}
       </div>
