@@ -170,6 +170,29 @@ def is_scene_reference(ref: dict[str, Any], binding: dict[str, Any] | None) -> b
     return cat == "环境" or role in ("scene-master", "shot-background-reference")
 
 
+def is_declared_scene_intercut(
+    backgrounds: list[tuple[Any, Any]],
+    scene: dict[str, Any],
+    shot_count: Any,
+) -> bool:
+    intercuts = scene.get("intercutLocationIds")
+    main_location = scene.get("locationId")
+    if not main_location or not isinstance(intercuts, list) or not intercuts or type(shot_count) is not int:
+        return False
+    locations: set[str] = set()
+    covered: set[int] = set()
+    for location, shots in backgrounds:
+        if (not isinstance(location, str) or location in locations
+                or (location != main_location and location not in intercuts)
+                or not isinstance(shots, list) or not shots
+                or any(type(shot) is not int for shot in shots)
+                or len(shots) != len(set(shots)) or covered.intersection(shots)):
+            return False
+        locations.add(location)
+        covered.update(shots)
+    return main_location in locations and covered == set(range(1, shot_count + 1))
+
+
 def validate_episode(
     project_dir: Path,
     episode_id: str,
@@ -222,6 +245,13 @@ def validate_episode(
     doc_bindings: list[dict[str, Any]] = [
         d for d in (story_index.get("documentBindings") or []) if isinstance(d, dict)
     ]
+    scenes = {
+        scene["id"]: scene
+        for episode in (story_index.get("episodes") or [])
+        if isinstance(episode, dict) and episode.get("id") == episode_id
+        for scene in (episode.get("scenes") or [])
+        if isinstance(scene, dict) and isinstance(scene.get("id"), str)
+    }
 
     # 1. Locate active reference-plan bindings for this episode
     ep_plans = [
@@ -406,6 +436,7 @@ def validate_episode(
 
         seen_tokens: set[str] = set()
         unit_scene_paths: set[str] = set()
+        unit_backgrounds: list[tuple[Any, Any]] = []
         resolved_count = 0
 
         for ref in refs:
@@ -538,6 +569,9 @@ def validate_episode(
             if is_scene_reference(ref, binding):
                 unit_scene_paths.add(ref_lib_rel)
                 episode_scene_paths.add(ref_lib_rel)
+                subject = binding.get("subject")
+                location = subject.get("locationId") if isinstance(subject, dict) else None
+                unit_backgrounds.append((location, ref.get("shotNumbers")))
 
             resolved_count += 1
 
@@ -560,7 +594,11 @@ def validate_episode(
             )
         else:
             units_with_scene += 1
-            if len(unit_scene_paths) > 1:
+            scene_id = unit.get("sceneId")
+            scene = scenes.get(scene_id, {}) if isinstance(scene_id, str) else {}
+            if len(unit_scene_paths) > 1 and not is_declared_scene_intercut(
+                unit_backgrounds, scene, unit.get("shotCount")
+            ):
                 add_warning(
                     "MULTI_SCENE_IN_ONE_UNIT",
                     f"同一单元混绑了 {len(unit_scene_paths)} 张场景背景图（{sorted(unit_scene_paths)}），请确认当前模型能按镜头分配且不存在正反打视角冲突，否则建议拆单元。",

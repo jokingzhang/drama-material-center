@@ -275,6 +275,15 @@ class CheckEpisodeLocalTests(unittest.TestCase):
             self.assertTrue(res2["ok"])
             self.assertIn("MULTI_SCENE_IN_ONE_UNIT", {w["code"] for w in res2["warnings"]})
 
+    def test_intercut_requires_distinct_declared_locations_and_disjoint_shot_coverage(self) -> None:
+        scene = {"locationId": "LOC-HALL", "intercutLocationIds": ["LOC-STREET"]}
+        backgrounds = [("LOC-STREET", [1]), ("LOC-HALL", [2])]
+        self.assertTrue(MOD.is_declared_scene_intercut(backgrounds, scene, 2))
+        self.assertFalse(MOD.is_declared_scene_intercut(backgrounds, scene, 3))
+        self.assertFalse(MOD.is_declared_scene_intercut(backgrounds, {"locationId": "LOC-HALL"}, 2))
+        self.assertFalse(MOD.is_declared_scene_intercut([("LOC-STREET", [1]), ("LOC-HALL", [1])], scene, 2))
+        self.assertFalse(MOD.is_declared_scene_intercut([("LOC-HALL", [1]), ("LOC-HALL", [2])], scene, 2))
+
 
 if __name__ == "__main__":
     unittest.main()
