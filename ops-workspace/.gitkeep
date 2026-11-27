@@ -1,0 +1,2 @@
+# Local-only studio operations data directory (ignored by Git).
+# Keep personal plans, account notes, benchmarks, and TODOs here or override via MATERIAL_CENTER_OPS_DIR.

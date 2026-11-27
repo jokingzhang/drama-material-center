@@ -12,6 +12,7 @@ const WeeklyRadarDetailPage = lazy(() => import("./pages/WeeklyRadarPage").then(
 
 const VideoPracticeListPage = lazy(() => import("./pages/VideoPracticePage").then((module) => ({ default: module.VideoPracticeListPage })));
 const VideoPracticeDetailPage = lazy(() => import("./pages/VideoPracticePage").then((module) => ({ default: module.VideoPracticeDetailPage })));
+const StudioOpsPage = lazy(() => import("./pages/StudioOpsPage").then((module) => ({ default: module.StudioOpsPage })));
 
 function ProjectRedirect() {
   const { projectId = "" } = useParams();
@@ -22,6 +23,7 @@ export default function App() {
   return (
     <PracticeReferencePlayerProvider><Routes>
       <Route path="/" element={<ProjectsPage />} />
+      <Route path="/studio-ops" element={<Suspense fallback={<div className="route-error-page"><p>正在打开运营管家…</p></div>}><StudioOpsPage /></Suspense>} />
       <Route path="/knowledge/*" element={<Suspense fallback={<div className="route-error-page"><p>正在打开导演知识库…</p></div>}><DirectorKnowledgePage /></Suspense>} />
       <Route path="/ai-video-practice" element={<Suspense fallback={<div className="route-error-page"><p>正在打开 AI 视频练习室…</p></div>}><VideoPracticeListPage /></Suspense>} />
       <Route path="/ai-video-practice/:exerciseId" element={<Suspense fallback={<div className="route-error-page"><p>正在打开练习详情…</p></div>}><VideoPracticeDetailPage /></Suspense>} />

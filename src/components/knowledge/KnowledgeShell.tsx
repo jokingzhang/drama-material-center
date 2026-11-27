@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { knowledgeAreaPath } from "../../lib/routes";
 import { BrandMark } from "../BrandMark";
+import { StudioOpsNavLink } from "../StudioOpsNavLink";
 import { ThemeToggle } from "../ThemeToggle";
 import { VideoPracticeNavLink } from "../VideoPracticeNavLink";
 
@@ -19,6 +20,7 @@ export function KnowledgeShell({ children }: { children: ReactNode }) {
         </div>
         <div className="header-actions">
           <ThemeToggle />
+          <StudioOpsNavLink />
           <VideoPracticeNavLink />
           <Link className="course-link" to="/"><ArrowLeft size={18} />项目素材</Link>
         </div>

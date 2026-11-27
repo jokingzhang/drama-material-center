@@ -2,6 +2,7 @@ import { ArrowRight, BrainCircuit, FolderKanban, ImagePlus, Plus, RefreshCw, X }
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrandMark } from "../components/BrandMark";
+import { StudioOpsNavLink } from "../components/StudioOpsNavLink";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { VideoPracticeNavLink } from "../components/VideoPracticeNavLink";
 import { createProject, getProjects, uploadProjectCover } from "../lib/materials";
@@ -131,6 +132,7 @@ export function ProjectsPage() {
         </div>
         <div className="header-actions">
           <ThemeToggle />
+          <StudioOpsNavLink />
           <VideoPracticeNavLink />
           <Link className="course-link" to="/knowledge"><BrainCircuit size={18} />导演知识库</Link>
           <button className="secondary-button" type="button" disabled={loading} onClick={() => void refresh()}>

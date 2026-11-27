@@ -55,6 +55,14 @@ export function weeklyRadarReportPath(reportId: string) {
   return `${weeklyRadarPath()}/reports/${encodeURIComponent(reportId)}`;
 }
 
+export function studioOpsPath(tab?: "todos" | "accounts" | "docs", docPath?: string) {
+  const params = new URLSearchParams();
+  if (tab) params.set("tab", tab);
+  if (tab === "docs" && docPath) params.set("doc", docPath);
+  const query = params.toString();
+  return query ? `/studio-ops?${query}` : "/studio-ops";
+}
+
 export type KnowledgeCaseEntry = "image-asset" | "shot-prompt";
 
 export function knowledgeCasePath(caseId: string, from?: KnowledgeCaseEntry) {

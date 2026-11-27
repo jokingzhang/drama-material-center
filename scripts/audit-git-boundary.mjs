@@ -1,13 +1,13 @@
 import { execFileSync } from "node:child_process";
 import { statSync } from "node:fs";
 
-const allowedWorkspaceFiles = new Set(["workspace/.gitkeep"]);
+const allowedWorkspaceFiles = new Set(["workspace/.gitkeep", "ops-workspace/.gitkeep"]);
 const trackedFiles = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
   .split("\0")
   .filter(Boolean);
 
 const trackedWorkspaceData = trackedFiles.filter(
-  (path) => path.startsWith("workspace/") && !allowedWorkspaceFiles.has(path),
+  (path) => (path.startsWith("workspace/") || path.startsWith("ops-workspace/")) && !allowedWorkspaceFiles.has(path),
 );
 
 const oversizedFiles = trackedFiles.filter((path) => {
@@ -24,6 +24,10 @@ const ignoreProbes = [
   "workspace/example/library/剧情/EP01.md",
   "workspace/example/library/图片/角色.png",
   "workspace/example/library/视频/EP01.mp4",
+  "ops-workspace/state.json",
+  "ops-workspace/todos.json",
+  "ops-workspace/roadmap.md",
+  "ops-workspace/accounts/benchmarks.md",
 ];
 const ignoredProbeFailures = ignoreProbes.filter((path) => {
   try {

@@ -19,6 +19,7 @@ import { PreviewPane } from "../components/PreviewPane";
 import { ProjectViewTabs } from "../components/ProjectViewTabs";
 import { Sidebar } from "../components/Sidebar";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { StudioOpsNavLink } from "../components/StudioOpsNavLink";
 import { VideoPracticeNavLink } from "../components/VideoPracticeNavLink";
 import {
   assetsWithinDirectory,
@@ -325,6 +326,7 @@ export function ProjectLibraryPage() {
             </select>
           )}
           <ThemeToggle />
+          <StudioOpsNavLink compact />
           <VideoPracticeNavLink compact />
           <Link className="course-link knowledge-link" to="/knowledge"><BrainCircuit size={18} /><span className="responsive-action-label" data-compact-label="知识库">导演知识库</span></Link>
           <Link className="course-link all-projects-link" to="/"><ArrowLeft size={18} /><span className="responsive-action-label" data-compact-label="项目">所有项目</span></Link>

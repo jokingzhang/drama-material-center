@@ -3,6 +3,7 @@ import { configDefaults, defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { knowledgeCaseMediaPlugin } from "./server/knowledgeCaseMedia.ts";
 import { materialLibraryPlugin } from "./server/materialLibraryPlugin.ts";
+import { studioOpsPlugin } from "./server/studioOpsPlugin.ts";
 import { weeklyRadarPlugin } from "./server/weeklyRadarPlugin.ts";
 
 export default defineConfig(({ mode }) => {
@@ -16,6 +17,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       weeklyRadarPlugin(),
+      studioOpsPlugin({ opsRoot: env.MATERIAL_CENTER_OPS_DIR }),
       materialLibraryPlugin({ workspaceRoot: env.MATERIAL_CENTER_WORKSPACE }),
       knowledgeCaseMediaPlugin(),
     ],

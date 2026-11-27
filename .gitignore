@@ -13,6 +13,10 @@ coverage/
 workspace/*
 !workspace/.gitkeep
 
+# Personal studio operations, plans, account notes and TODOs are local-only.
+ops-workspace/*
+!ops-workspace/.gitkeep
+
 # Local browser QA output.
 .qa/
 .playwright-cli/
